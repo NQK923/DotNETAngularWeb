@@ -1,0 +1,72 @@
+
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<style>
+    .input-transition {
+        transition: width 0.3s ease;
+    }
+    .w-330 {
+        width:220px;
+    }
+
+    .w-175 {
+        width: 175px;
+    }
+    .mrr{ margin-right: 20%}
+    .mll{margin-left: 20%}
+
+</style>
+
+<body class="bg-gray-500">
+
+<div class="flex items-center justify-between">
+    <div class="bg-gradient-to-r from-black to-gray-500 p-3 flex">
+        <div class="flex">
+            <img class="h-11" src="../../../assets/img/icons8-history-100.png">
+            <P class=" text-white font-bold text-xl p-2 ">Lịch sử đọc</P> 
+        </div>
+    </div>
+
+</div>
+<div class="bg-gradient-to-r from-blue-800 to-gray-500">
+    <H1 class=" text-white font-bold text-xl py-2 px-4 ">Đã đọc gần đây</H1>
+    <div class="p-2 flex flex-wrap">
+
+        <div class="w-330 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden p-2 m-3">
+            <img class="w-full h-auto rounded-t-xl " src="../../../assets/img/imgrank.jpg" alt="Image description">
+            <div>
+                <p class="text-white font-bold text-lg"> jujutsu kaisen </p>
+                <p class="text-white text-sm"> emi fukada</p>
+            </div>
+          <div class="bg-black p-2 bg-gradient-to-r from-black to-gray-500 mt-2 flex justify-end">            
+                    <p class="text-blue-500 font-bold m-1">Xóa khỏi lịch sử đọc</p>
+            </div>
+        </div>
+        <div class="w-330 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden p-2 m-3">
+            <img class="w-full h-auto rounded-t-xl " src="../../../assets/img/imgrank.jpg" alt="Image description">
+            <div>
+                <p class="text-white font-bold text-lg"> jujutsu kaisen </p>
+                <p class="text-white text-sm"> emi fukada</p>
+            </div>
+          <div class="bg-black p-2 bg-gradient-to-r from-black to-gray-500 mt-2 flex justify-end">            
+                    <p class="text-blue-500 font-bold m-1">Xóa khỏi lịch sử đọc</p>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

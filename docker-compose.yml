@@ -1,0 +1,41 @@
+﻿services:
+  mangawebasp:
+    image: mangawebasp
+    build:
+      context: .
+      dockerfile: MangaWebASP/Dockerfile
+
+  mangaservice:
+    image: mangaservice
+    build:
+      context: .
+      dockerfile: MangaService/Dockerfile
+  banner:
+    image: banner
+    build:
+      context: .
+      dockerfile: Banner/Dockerfile
+
+  banners:
+    image: banners
+    build:
+      context: .
+      dockerfile: Banners/Dockerfile
+
+  notification:
+    image: notification
+    build:
+      context: .
+      dockerfile: Notification/Dockerfile
+
+  notificationmanageaccount:
+    image: notificationmanageaccount
+    build:
+      context: .
+      dockerfile: notificationManageAccount/Dockerfile
+  chapterservice:
+    image: chapterservice
+    build:
+      context: .
+      dockerfile: ChapterService/Dockerfile
+

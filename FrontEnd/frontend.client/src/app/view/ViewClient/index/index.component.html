@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<style>
+    .input-transition {
+        transition: width 0.3s ease;
+    }
+
+    .w-200 {
+        width: 150px;
+    }
+
+    .w-70 {
+        width: 70px;
+    }
+
+    .w-90 {
+        width: 90px;
+    }
+
+    .w-100{
+        width: 100px;
+    }
+
+    .w-120 {
+        width: 120px;
+    }
+
+    .h-300 {
+        height: 300px;
+    }
+
+    .h-90 {
+        min-height: 96%;
+        height: fit-content;
+    }
+
+    .w-30 {
+        width: 260px;
+        height: 50px;
+    }
+ 
+    
+</style>
+
+<body class="bg-gray-500 ">
+    <div id=" ListPicture ">
+        <div class="bg-black bg-opacity-80 ">
+            <div id="carouselExample" class="carousel slide  pb-5" data-ride="carousel" data-interval="3000">
+                <div class="carousel-inner  bg-black p-4">
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-4" *ngFor="let banner of threebanners">
+                                <img (click)="click(banner.url_manga)" class="rounded-lg d-block" [src]="banner.image_banner" alt="Ảnh 1">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="carousel-inner p-8">
+                    <div class="carousel-item active">
+                        <div class="row flex justify-between">
+                            <div class="col-6 "  *ngFor="let twoBanner of twobanners">
+                                <img (click)="click(twoBanner.url_manga)" class="rounded-lg d-block " [src]="twoBanner.image_banner" alt="Ảnh 1">
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="BodyWebsite">
+        <div class="row mt-2">
+            <div class="col-9 bg-black bg-opacity-80 ">
+                <!--truyen moi nhat-->
+                <div class="relative">
+                    <div class="bg-gradient-to-r from-blue-700 to-blue-500 w-30 h-8 absolute top-0 left-0"></div>
+                    <div class="text-4xl font-bold text-white relative m-10"
+                        style="top: 50%; transform: translateY(50%);">Truyện mới</div>
+                </div>
+                <div class="flex justify-end">
+                    <p class="text-blue-500 underline"> Xem thêm </p>
+                </div>
+
+                <div id="MainBody">
+                    <ul class="flex flex-wrap px-4">
+                        <li class="w-200 m-1 flex flex-col" *ngFor="let manga of recentMangas"
+                            (click)="viewMangaDetails(manga.id_manga)">
+                            <img [src]="manga.cover_img" class="w-full h-auto">
+                            <div class="flex justify-between items-center mt-2 px-1 border-t border-white pt-2">
+                                <p class="text-white text-sm">{{ manga.name }}</p>
+                                <img class="ml-4 h-4" src="../../../assets/img/iconeye.png">
+                                <p class="text-white text-sm text-end">{{ manga.totalViews | number }}</p>
+                            </div>
+                            <p class="text-gray-500 p-2 text-sm">{{ manga.author }}</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--top truyen-->
+                <div class="relative">
+                    <div class="bg-gradient-to-r from-blue-700 to-blue-500 w-30 h-8 absolute top-0 left-0"></div>
+                    <div class="text-4xl font-bold text-white relative m-10"
+                        style="top: 50%; transform: translateY(50%);">Truyện có lượt xem cao nhất</div>
+                </div>
+                <div class="flex justify-end">
+                    <p class="text-blue-500 underline"> Xem thêm </p>
+                </div>
+                <div id="MainBody">
+                    <ul class="flex flex-wrap px-4">
+                        <li class="w-200 m-1 flex flex-col" *ngFor="let top_manga of topMangas"
+                            (click)="viewMangaDetails(top_manga.id_manga)">
+                            <img [src]="top_manga.cover_img" class="w-full h-auto">
+                            <div class="flex justify-between items-center mt-2 px-1 border-t border-white pt-2">
+                                <p class="text-white text-sm">{{ top_manga.name }}</p>
+                                <img class="ml-4 h-4" src="../../../assets/img/iconeye.png">
+                                <p class="text-white text-sm text-end">{{ top_manga.totalViews | number }}</p>
+                            </div>
+                            <p class="text-gray-500 p-2 text-sm">{{ top_manga.author }}</p>
+                        </li>
+                    </ul>
+                </div>
+
+     
+                <div class="relative">
+                    <div class="bg-gradient-to-r from-blue-700 to-blue-500 w-30 h-8 absolute top-0 left-0"></div>
+                    <div class="text-4xl font-bold text-white relative m-10"
+                        style="top: 50%; transform: translateY(50%);">Truyện gợi ý </div>
+                </div>
+                <div class="flex justify-end">
+                    <p class="text-blue-500 underline"> Xem thêm </p>
+                </div>
+                <div id="MainBody">
+                    <ul class="flex flex-wrap px-4">
+
+                        <li class=" w-200 m-1 flex flex-col">
+                            <img src="https://jumpg-assets.tokyo-cdn.com/secure/title/100159/title_thumbnail_portrait_list/312127.jpg?hash=_aP2LM5GX0IqkJGKIuKXKA&expires=2145884400"
+                                class="w-full h-auto">
+                            <div class="flex justify-between items-center mt-2 px-1 border-t border-white pt-2">
+                                <p class="text-white text-sm">#001</p>
+                                <img class="ml-4 h-4" src="../../../assets/img/iconeye.png">
+                                <p class="text-white text-sm text-end">100.000</p>
+                            </div>
+                            <p class="text-gray-500 p-2 text-sm">Godila</p>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-3 -mx-2  ">
+                <div class="bg-gradient-to-r from-blue-800 to-blue-400 p-2 flex justify-between">
+
+                    <h1 class="font-bold text-2xl text-white flex items-center">
+                        <img src="../../../assets/img/icons8-star-30.png" alt="Icon" class="mr-2">
+                        Top Rating
+                    </h1>
+                </div>
+                <div class="bg-gradient-to-b from-blue-400 to-black p-2  h-90 ">
+                    <div class="flex flex-col">
+                        <div *ngFor="let top_rated_manga of topRatedMangas; let i = index" class="flex m-4">
+                            <div>
+                                <div class="text-white rounded-full text-center bg-yellow-500 w-8 m-2">{{+i+1}}
+                                </div>
+                                <img class="w-120" src={{top_rated_manga.cover_img}}>
+                            </div>
+                            <div>
+                                <p class="text-white ml-2 mt-10 font-bold text-xl">{{top_rated_manga.name}}</p>
+                                <p class="text-white m-2 text-sm">{{top_rated_manga.author}}</p>
+                                <div class="flex m-2">
+                                    <img src="../../../assets/img/icons8-star-30.png" alt="Icon" class="  h-5">
+                                    <p class="text-white font white text-sm ml-2">{{top_rated_manga.rating}}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="viewall " class="m-4">
+                        <div
+                            class="w-4/5 text-white font-bold border-2 border-blue-500 rounded-lg p-2 text-center mx-auto">
+                            View All
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</html>

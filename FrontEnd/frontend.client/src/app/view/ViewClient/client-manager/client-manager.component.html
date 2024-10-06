@@ -1,0 +1,359 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-body relative">
+    <div class="">
+        <div class="p-2 flex bg-main ">
+            <div class=" rounded-xl flex justify-center items-center px-4">
+                <img class="h-30 p-1" src="https://medibang.com/resources/images/mpc/logo_mpc_header.svg" alt="Logo">
+            </div>
+            <ul class="flex items-center">
+                <ul>
+                    <h1 (click)="goToIndex()" id="manageStories2"
+                        class="text-sm text-white cursor-pointer font-bold p-1 border-b-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                        Về trang chính</h1>
+
+                </ul>
+                <ul>
+                    <h1 id="manageStories1"
+                        class="text-sm text-white cursor-pointer font-bold p-1 border-b-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                        Quản lý tài khoản</h1>
+
+                </ul>
+
+            </ul>
+        </div>
+
+        <div class=" bg-body pl-2">
+            <div class="p-2 border-b boder-gray-500 ">
+                <div class="flex justify-between">
+                    <p class="   font-bold text-xl text-white "> Quản lý truyện của bạn </p>
+                    <div class="w-500">
+                        <input class=" form-control me-2" type="search" placeholder="Tìm kiếm truyện..."
+                            aria-label="Tìm kiếm truyện">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="flex items-end justify-end p-1 bg-body border-b boder-gray-500 ">
+                    <div
+                        class=" text-white border-2 border-yello text-yello p-1 px-2 mx-3 font-bold rounded-full w-auto">
+                        Lọc truyện
+                    </div>
+                </div>
+                <div class="flex items-end justify-end p-2 bg-body  border-b boder-gray-500 ">
+                    <div id="buttonAdd" class="btn-success border-2 border-green-200 flex  p-1  rounded-full mx-2">
+                        <img class="h-6" src="../../../assets/img/icons8-plus-20.png">
+                        <p class="font-bold"> Thêm Truyện</p>
+                    </div>
+                </div>
+                <div class="p-2 flex flex-wrap  bg-body">
+                    <div class="p-1 m-4 hover:bg-gray-200 flex  rounded-lg  border-2 border-yello " *ngFor="let manga of mangas">
+                        <div >
+                            <img class="h200 rounded-lg" src="{{manga.cover_img}}">
+                            <div>
+                                <p class="font-bold text-lg px-1 text-white"> {{manga.name}}</p>
+                                <p class="text-sm px-1 text-white"> {{manga.author}}</p>
+                                <div>
+                                    <div class=" w-220">
+                                        <div class="flex">
+                                            <div id="addChapter"
+                                                class=" w-50 text-center btn-success border-2 border-green-500 text-sm  p-1 m-1 font-bold rounded-full">
+                                                Thêm chương
+                                            </div>
+                                            <div id="updateChapter"
+                                                class=" w-50 text-center btn-warning border-2 text-white  text-sm p-1 m-1 font-bold rounded-full">
+                                                Sửa chương
+                                            </div>
+                                        </div>
+                                        <div class="flex">
+                                            <div id="deleteChapter"
+                                                class=" w-50 text-center btn-danger border-2 border-red-500 text-sm p-1 m-1 font-bold rounded-full">
+                                                Xóa chương
+                                            </div>
+                                            <div
+                                                class="w-50 text-center btn-primary border-2  text-sm  p-1 m-1 font-bold rounded-full">
+                                                Sửa truyện
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <div
+                                                class=" w-50 text-center btn-danger border-2 border-red-500 text-sm p-1 m-1 font-bold rounded-full">
+                                                Xóa truyện
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- them -->
+    <div id="overlay" class="hidden">
+        <div class="bg-black w-full h-full opacity-75 fixed top-0 left-0 z-10"></div>
+        <div class="absolute top-12 left-0 right-0 z-10 p-4  flex justify-center">
+            <div class="bg-white  ">
+                <div class="flex justify-between  ">
+                    <p class="p-2 text-xl font-bold mx-4"> Thêm Truyện </p>
+                    <p id="out" class="p-2 bg-red-500 font-bold mx-4 text-white"> Thoát </p>
+                </div>
+                <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+                    <div class="p-4">
+                        <input type="text" name="name" ngModel required class="form-control p-3 w-500 m-2 "
+                            placeholder="Tên truyện">
+                        <input type="text" name="author" ngModel required class="form-control p-3 w-500 m-2 "
+                            placeholder="Tác giả">
+                        <input type="text" name="describe" ngModel required class="form-control p-3 w-500 m-2 "
+                            placeholder="Mô tả">
+                        <div class="p-2">
+                            <!-- <P> Thể loại</P>
+                    <div class="flex">
+                        <input class="my-1" type="checkbox">
+                        <p>Tiểu thuyết</p>
+                    </div> -->
+                        </div>
+                        <form id="uploadForm" class="bg-white p-2 m-2 rounded shadow-md ">
+                            <input type="file" (change)="onFileSelected($event)" required id="fileInput"
+                                accept="image/*" required class="mb-4">
+                            <img id="preview" src="" alt="Hình ảnh xem trước" class="mt-4 hidden">
+                        </form>
+                        <button type="submit" [disabled]="!form.valid || !selectedFile"
+                            class="btn-primary p-2 rounded-xl w-full"> Thêm truyện </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--thêm chap-->
+    <div id="AddChap" class="hidden">
+        <div class="bg-black w-full h-full opacity-75 fixed top-0 left-0 z-10"></div>
+        <div class="absolute top-12 left-0 right-0 z-10 p-4  flex justify-center">
+            <div class="bg-white  rounded-xl ">
+                <div class="flex justify-between  ">
+                    <p class="p-2 text-xl font-bold mx-4"> Thêm Chương Truyện </p>
+                    <p id="outchap" class="p-2 bg-red-500 font-bold mx-4 text-white"> Thoát </p>
+                </div>
+                <P class="text-center"> Tên truyện : xxxxxxxx</P>
+                <div class="p-4">
+                    <input type="text" class="form-control p-3 w-500 m-2 " placeholder="Tên chương">
+                    <p class="px-2">Thêm ảnh đại diện</p>
+                    <form id="uploadForm" class="bg-white p-2 m-2 rounded shadow-md ">
+                        <input type="file" id="fileInput" accept="image/*" required class="mb-4">
+                        <img id="preview" src="" alt="Hình ảnh xem trước" class="mt-4 hidden">
+                    </form>
+
+                    <p class="px-2">Thêm ảnh</p>
+                    <form id="uploadForm" class="bg-white p-2 m-2 rounded shadow-md ">
+                        <input type="file" id="fileInput" accept="image/*" required class="mb-4" multiple>
+                        <img id="preview" src="" alt="Hình ảnh xem trước" class="mt-4 hidden">
+                    </form>
+                    <button class="btn-primary p-2 rounded-xl w-full"> Thêm chương </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--xoa chương-->
+    <div id="deletechapter" class="hidden">
+        <div class="bg-black w-full h-full opacity-75 fixed top-0 left-0 z-10"></div>
+        <div class="absolute top-12 left-0 right-0 z-10 p-4  flex justify-center">
+            <div class="bg-white w-1000 rounded-xl">
+                <div class="flex justify-between  ">
+                    <p class="p-2 text-xl font-bold mx-4"> Xóa chương </p>
+                    <p id="outdeletechapter" class="p-2 bg-red-500 font-bold mx-4 text-white"> Thoát </p>
+                </div>
+                <div class="bg-white p-2">
+                    <div class="  hover:bg-gray-400 w-full  rounded-lg">
+                        <div class=" flex p-2 items-center">
+                            <div>
+                                <img class=" rounded-lg h-24" src="../../../assets/img/book1.jpg" alt="Chapter Image">
+                            </div>
+                            <div class="row">
+                                <div class="col-10 flex flex-wrap items-center">
+                                    <p class="p-2 border-r border-black">Tên chương:xxxx</p>
+                                </div>
+                                <div class="col-2">
+                                    <div
+                                        class="btn-danger h-8 text-white text-center  text-sm p-1 m-1 font-bold rounded-lg w-24">
+                                        Xóa chương
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--xem thong tin-->
+    <div id="user" class="hidden">
+        <div class="bg-black w-full h-full opacity-25 fixed top-0 left-0 z-10"></div>
+        <div class="absolute top-0 left-0 right-0 z-10  flex justify-end h-full">
+            <div class="bg-white w-500 px-4">
+                <div class="flex justify-end ">
+                    <p id="outuser" class="p-2 bg-red-500 font-bold text-white"> Thoát </p>
+                </div>
+                <div class=" flex flex-col items-center">
+                    <div class="p-2">
+                        <img class="rounded-full border border-black" src="../../../assets/img/icons8-person-80.png"
+                            alt="Person">
+                    </div>
+                    <p class="font-bold">Name: xxxx</p>
+                </div>
+                <div class="flex justify-between">
+                    <button class="btn-info  border boder-black p-2  w-full font-bold "> Thông tin</button>
+                    <h1 id="updates" class=" Btn-light border  p-2 w-full font-bold "> Chỉnh sửa thông tin </h1>
+                </div>
+                <div class="w-auto h-auto border-l border-b border-r p-2">
+                    <input type="text" class=" w-full border p-1 m-1" id="readonly-input" placeholder="Tên: ......"
+                        readonly>
+                    <input type="text" class=" w-full border p-1 m-1" id="readonly-input" placeholder="Email: ......"
+                        readonly>
+                    <input type="text" class=" w-full border p-1 m-1" id="readonly-input"
+                        placeholder="Số điện thoại: ......" readonly>
+
+                </div>
+                <button class="btn-primary p-2 w-full my-2"> Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+    <!--sua chuong-->
+    <div id="viewupdatechapter" class="hidden">
+
+        <div class="bg-black w-full h-full opacity-75 fixed top-0 left-0 z-10"></div>
+
+        <div class="absolute top-0 left-0 right-0 z-10  flex justify-center h-full ">
+
+            <div class="p-20pt pt-2 w-75">
+                <img id="outupdatechapter" class="absolute top-0 right-10 z-10 p-3"
+                    src="../../../../assets/img/iconx.png">
+                <div class="w-full flex items-center justify-between py-2">
+                    <button class="Btn-light bg-white p-1 rounded-l-full text-sm"> Chương trước </button>
+                    <div class="flex items-center">
+                        <select id="comboBox c" class="bg-white rounded p-1 text-sm">
+                            <option value="chuong1">Chương 1</option>
+                            <option value="chuong2">Chương 2</option>
+                            <option value="chuong3">Chương 3</option>
+                            <option value="chuong4">Chương 4</option>
+                        </select>
+                    </div>
+                    <button class="Btn-light bg-white p-1 rounded-r-full text-sm"> Chương sau </button>
+                </div>
+
+                <div class="bg-black">
+
+                    <div class="py-1">
+                        <div class="flex justify-end items-center">
+                            <select id="comboBox c" class="bg-white rounded p-1 text-sm my-1">
+                                <option value="chuong1">Chỉnh sửa</option>
+                                <option value="chuong2">Thay thế </option>
+                                <option value="chuong3">Thêm trước</option>
+                                <option value="chuong4">Thêm sau</option>
+                                <option value="chuong4">Xóa</option>
+                            </select>
+                        </div>
+                        <img src="../../../assets/img/chapter1.1.jpg" alt="Chapter Image" class="max-w-full h-auto">
+                    </div>
+
+                    <div class="py-1">
+                        <div class="flex justify-end items-center">
+                            <select id="comboBox c" class="bg-white rounded p-1 text-sm my-1">
+                                <option value="chuong1">Chỉnh sửa</option>
+                                <option value="chuong2">Thay thế </option>
+                                <option value="chuong3">Thêm trước</option>
+                                <option value="chuong4">Thêm sau</option>
+                                <option value="chuong4">Xóa</option>
+                            </select>
+                        </div>
+                        <img src="../../../assets/img/chapter1.1.jpg" alt="Chapter Image" class="max-w-full h-auto">
+                    </div>
+                </div>
+
+                <div class="w-full flex items-center justify-between">
+                    <button class="Btn-light bg-white p-1 rounded-l-full text-sm"> Chương trước </button>
+                    <div class="flex items-center">
+                        <select id="comboBox c" class="bg-white rounded p-1 text-sm">
+                            <option value="chuong1">Chương 1</option>
+                            <option value="chuong2">Chương 2</option>
+                            <option value="chuong3">Chương 3</option>
+                            <option value="chuong4">Chương 4</option>
+                        </select>
+                    </div>
+                    <button class="Btn-light bg-white p-1 rounded-r-full text-sm"> Chương sau </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Sửa thông tin-->
+    <div id="updateuser" class="hidden">
+        <div class="bg-black w-full h-full opacity-25 fixed top-0 left-0 z-10"></div>
+        <div class="absolute top-0 left-0 right-0 z-10  flex justify-end h-full">
+            <div class="bg-white w-500 px-4">
+                <div class="flex justify-end ">
+                    <p id="outupdateuser" class="p-2 bg-red-500 font-bold text-white"> Thoát </p>
+                </div>
+                <div class=" flex flex-col items-center">
+                    <div class="p-2">
+                        <img class="rounded-full border border-black" src="../../../assets/img/icons8-person-80.png"
+                            alt="Person">
+                    </div>
+                    <p class="font-bold">Name: xxxx</p>
+                </div>
+                <div class="flex justify-between">
+                    <button id="userupdate" class="Btn-light  border boder-black p-2  w-full font-bold "> Thông
+                        tin</button>
+                    <button class=" btn-info border  p-2 w-full font-bold "> Chỉnh sửa thông tin </button>
+                </div>
+                <div class="w-auto h-auto border-l border-b border-r p-2">
+                    <input type="text" class=" w-full border p-1 m-1" id="readonly-input" placeholder="Tên: ......">
+                    <input type="text" class=" w-full border p-1 m-1" id="readonly-input" placeholder="Email: ......">
+                    <input type="text" class=" w-full border p-1 m-1" id="readonly-input"
+                        placeholder="Số điện thoại: ......">
+                    <button class="btn-primary w-full m-1 mt-4 p-1 text-white"> Chỉnh sửa thông tin </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid h-1 p-0 bg-gradient-to-r from-blue-800 to-gray-500"></div>
+    <div id="below" class="bg-gradient-to-b from-black to-blue-500">
+        <div class=" border-b border-gray-500 mx-2">
+            <div class="flex items-center justify-center p-4">
+                <img class="h-20" src="../../../assets/img/app_icon.919a13c7.png">
+                <p class="font-bold text-white m-2 "> Đem đến trang truyện chất lượng </p>
+            </div>
+        </div>
+        <div class="flex items-center justify-center">
+            <img class="m-2 bg-white rounded-full p-1" src="../../../assets/img/iconface.png">
+            <img class="m-2 bg-white rounded-full p-1" src="../../../assets/img/iconmess.png">
+        </div>
+        <div class="flex items-center justify-center ">
+            <p class="text-white m-4 text-sm">Hổ trợ</p>
+            <p class="text-white m-4 text-sm">Tin tức sự kiện</p>
+            <p class="text-white m-4 text-sm">Chính sách bảo mật</p>
+            <p class="text-white m-4 text-sm">Điểu khoản dịch vụ</p>
+            <p class="text-white m-4 text-sm">Xếp hạng nội dung </p>
+            <p class="text-white m-4 text-sm">Bảng quyền</p>
+            <p class="text-white m-4 text-sm">Nguyên tắc cộng đồng </p>
+
+        </div>
+        <div class="text-white font-bold p-8 flex items-center justify-center text-2xl">
+            DESIGIN BY NCT
+
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thống Kê Truyện</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+    .h-30 {
+        height: 60px;
+    }
+    .h200 {
+        height: 200px;
+    }
+    .h-400{
+        height: 400px;
+    }
+    .w-500 {
+        width: 500px;
+    }
+    .w-1000 {
+        width: 1000px;
+    }
+    .h-50 {
+        height: 50px;
+    }
+</style>
+
+<body class="bg-white relative">
+    <div class="row"> 
+        <div class="p-4 col-2 bg-white">
+            <div class="rounded-xl flex justify-center items-center bg-white">
+                <img (click)="goToIndex()" class="h-30 p-1" src="https://mangaplus.shueisha.co.jp/img/web_logo_190118_light-txt.06756983.png" alt="Logo">
+            </div>
+            <ul>
+                <li class="font-bold text-sm  text-center">Quản lý đọc truyện</li>
+                <ul class="flex mt-8 mx-2">
+                    <img class="h-4 mt-1" src="../../../assets/img/icons8-home-20.png">
+                    <li (click)="goToIndex()" class="font-bold text-center mx-2 ">Trang chính</li>
+                </ul>
+                <ul>
+                    <h1 (click)="goTomanager()" id="manageStories" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                        Quản lý truyện</h1>
+        
+                </ul>
+                <ul >
+                    <h1   (click)="goToacount()" id="manageStories1" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                        Quản lý tài khoản</h1>
+                </ul>
+                <ul >
+                    <h1 (click)="goToComment()" id="manageStories2" class="text-sm cursor-pointer  font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                        Quản lý bình luận</h1>
+                    
+                </ul>
+                <h1   (click)="goTostatiscal()" id="manageStories2" class="text-sm cursor-pointer border-yellow-500 text-yellow-500 font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                    Thống kê
+                </h1>
+                <h1  (click)="goToBanner()" id="manageStories4" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
+                    Quản lý Banner
+                </h1>
+                
+            </ul>
+        </div>
+
+        <div class="col-10 bg-white border border-black"> 
+            <div class="p-2 border-b border-gray-500">
+                <div class="flex row">
+                    <p class="col-4 font-bold text-xl">Thống kê truyện</p>
+                    
+                </div>
+            </div>
+            <div class="container mx-auto p-6">
+                <h1 class="text-2xl font-bold mb-4">Thống Kê Truyện</h1>
+                
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h2 class="text-lg font-semibold">Tổng Lượt Đọc</h2>
+                        <p class="text-3xl font-bold text-blue-600">1,250,111</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h2 class="text-lg font-semibold">Số Truyện</h2>
+                        <p class="text-3xl font-bold text-green-600">150</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h2 class="text-lg font-semibold">Thể Loại Phổ Biến</h2>
+                        <p class="text-3xl font-bold text-red-600">Hành Động</p>
+                    </div>
+                </div>
+        <div class="Statistical row">
+            <div class="col-8">
+                <h2 class="text-lg font-semibold mb-2 mt-4"> Truyện có lượt đọc cao nhất</h2>
+                <div class="flex justify-end my-2">
+                <div class="mx-2">
+                    <select id="myComboBox" class="border border-gray-300 rounded-full p-2 w-full ">
+                        <option value="" disabled selected>Lọc theo</option>
+                        <option value="type">Thể loại</option>
+                        <option value="year">Năm</option>
+                        <option value="month">Tháng</option>
+                        <option value="week">Tuần</option>
+                    </select>
+                </div>
+                
+                <div id="yearSelection" class="hidden mb-4">
+                    <select class="border border-gray-300 rounded-full p-2 w-full">
+                        <option value="" disabled selected>Chọn Năm</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+                <div id="typeSelection" class="hidden mb-4">
+                    <select class="border border-gray-300 rounded-full p-2 w-full">
+                        <option value="" disabled selected>Chọn Loại</option>
+                        <option value="2023">Tình cảm</option>
+                        <option value="2022">viễng tưởng </option>
+                        <option value="2021">Mecha</option>
+                    </select>
+                </div>
+
+                <div id="monthSelection" class="hidden mb-4">
+                    <select class="border border-gray-300 rounded-full p-2 w-full">
+                        <option value="" disabled selected>Chọn Tháng</option>
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
+                    </select>
+                </div>
+
+                <div id="weekSelection" class="hidden mb-4">
+                    <select class="border border-gray-300 rounded-full p-2 w-full">
+                        <option value="" disabled selected>Chọn Tuần</option>
+                        <option value="1">Tuần 1</option>
+                        <option value="2">Tuần 2</option>
+                        <option value="3">Tuần 3</option>
+                        <option value="4">Tuần 4</option>
+                    </select>
+                </div>
+                </div>
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b text-sm">Thứ hạng </th>
+                            <th class="py-2 px-4 border-b text-sm"> </th>
+                            <th class="py-2 px-4 border-b text-sm">Tên truyện </th>
+                            <th class="py-2 px-4 border-b text-sm">lượt đọc </th>
+                            <th class="py-2 px-4 border-b text-sm">Sao đánh giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2 px-4 border-b font-bold text-5xl text-red-500">1</td>
+                            <td class="py-2 px-4 border-b" ><img class=" rounded-lg h-24 p-1" src="../../../assets/img/book1.jpg" alt="Chapter Image"></td>
+                            <td class="py-2 px-4 border-b">Black clover</td>
+                            <td class="py-2 px-4 border-b">100.000.000</td>
+                            <td class="py-2 px-4 border-b">4.5/5</td>
+                        </tr>
+
+                        <tr>
+                            <td class="py-2 px-4 border-b font-bold text-5xl text-green-500">2</td>
+                            <td class="py-2 px-4 border-b" ><img class=" rounded-lg h-24 p-1" src="../../../assets/img/book1.jpg" alt="Chapter Image"></td>
+                            <td class="py-2 px-4 border-b">Black clover</td>
+                            <td class="py-2 px-4 border-b">100.000.000</td>
+                            <td class="py-2 px-4 border-b">4.5/5</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            <div class="StaisticalType col-4">    
+                <div class="mt-6">
+                    <h2 class="text-lg font-semibold mb-2">Thống Kê Theo Thể Loại</h2>
+                </div>
+        
+                <div class="mt-6 ">
+                    <h2 class="text-lg font-semibold mb-2">Chi Tiết Thể Loại</h2>
+                    <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b">Thể Loại</th>
+                                <th class="py-2 px-4 border-b">Lượt Đọc</th>
+                                <th class="py-2 px-4 border-b">Số Truyện</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border-b">Hành Động</td>
+                                <td class="py-2 px-4 border-b">500,000</td>
+                                <td class="py-2 px-4 border-b">50</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b">Khoa Học Viễn Tưởng</td>
+                                <td class="py-2 px-4 border-b">300,000</td>
+                                <td class="py-2 px-4 border-b">30</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b">Tình Cảm</td>
+                                <td class="py-2 px-4 border-b">200,000</td>
+                                <td class="py-2 px-4 border-b">40</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b">Hài Hước</td>
+                                <td class="py-2 px-4 border-b">250,000</td>
+                                <td class="py-2 px-4 border-b">20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>    
+            
+    
+    </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+</body>
+</html>
