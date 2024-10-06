@@ -13,7 +13,7 @@
         height: 60px;
     }
     .h200{
-        
+
         height: 200px;
     }
     .w-500{
@@ -31,7 +31,7 @@
 
 
 <body class="bg-white relative">
-     <div class="row"> 
+     <div class="row">
         <div class="p-4 col-2 bg-white  ">
             <div class=" rounded-xl flex justify-center items-center bg-white ">
                 <img (click)="goToIndex()" class="h-30 p-1" src="https://mangaplus.shueisha.co.jp/img/web_logo_190118_light-txt.06756983.png" alt="Logo">
@@ -39,13 +39,13 @@
             <ul>
                 <li class="font-bold text-sm text-center">Quản lý đọc truyện</li>
                 <ul class="flex mt-8 mx-2">
-                    <img class="h-4 mt-1" src="../../../assets/img/icons8-home-20.png">
+                    <img class="h-4 mt-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-home-20.png">
                     <li (click)="goToIndex()" class="font-bold text-center mx-2 ">Trang chính</li>
                 </ul>
                 <ul>
                     <h1 (click)="goTomanager()" id="manageStories" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý truyện</h1>
-        
+
                 </ul>
                 <ul >
                     <h1   (click)="goToacount()" id="manageStories1" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
@@ -54,7 +54,7 @@
                 <ul >
                     <h1 (click)="goToComment()" id="manageStories2" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý bình luận</h1>
-                    
+
                 </ul>
                 <h1  (click)="goTostatiscal()" id="manageStories2" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                     Thống kê
@@ -65,7 +65,7 @@
             </ul>
         </div>
 
-        <div class="col-10 bg-white border border-black"> 
+        <div class="col-10 bg-white border border-black">
             <div class="p-2 border-b boder-gray-500">
                 <div class="flex row ">
                     <p class=" col-4  font-bold text-xl "> Quản lý tài khoản </p>
@@ -81,21 +81,21 @@
                     </div>
                 </div>
                 <div class="flex items-end justify-end p-2 bg-white  border-b boder-gray-500 ">
-                    
+
                     <div id="buttonAdd" class="btn-success border-2 border-green-200 flex  p-1  rounded-full mx-2">
-                        <img class="h-6" src="../../../assets/img/icons8-plus-20.png">
+                        <img class="h-6" src="https://imagemanga.blob.core.windows.net/assets/icons8-plus-20.png">
                         <p  class="font-bold"> Thêm Tài khoản</p>
                     </div>
                 </div>
                 <div class="p-2 flex flex-wrap   bg-white ">
                     <div class=" mt-2 hover:bg-gray-200 flex items-center justify-between  rounded-lg  border-2 border-yellow-500 w-full ">
-                        <div class="flex p-1">                
-                            <img class=" bg-gray-200 rounded-full h-10 p-1" src="../../../assets/img/icons8-human-40.png">
-                            <P class="p-2 border-r border-black" >Tên tài khoản :xxxxx</P>                
-                            <P class="p-2 border-r border-black" >Mật khẩu : ........</P>                         
+                        <div class="flex p-1">
+                            <img class=" bg-gray-200 rounded-full h-10 p-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-human-40.png">
+                            <P class="p-2 border-r border-black" >Tên tài khoản :xxxxx</P>
+                            <P class="p-2 border-r border-black" >Mật khẩu : ........</P>
                             <P class="p-2 border-r border-black">Phân quyền : x</P>
                             <P class="p-2 border-r border-black">trạng thái : x</P>
-                        </div> 
+                        </div>
                         <div class="flex">
                             <button class="btn-success rounded-full p-2 mx-2 w-24"> Khích hoạt </button>
                             <button class="btn-warning rounded-full p-2 mx-2 w-24"> Vô hiệu  </button>
@@ -103,14 +103,14 @@
                             <button class="btn-danger rounded-full p-2 mx-2 w-24"> Xóa </button>
 
                         </div>
-                    </div>   
-                    
-                 
+                    </div>
 
-                    
+
+
+
                 </div>
             </div>
-        </div> 
+        </div>
 
     </div>
 
@@ -181,7 +181,7 @@
             </div>
         </div>
     </div>
-    </div>   
+    </div>
 
 </body>
 <script>
@@ -194,7 +194,7 @@
         button.addEventListener('click', () => {
             overlay.classList.toggle('hidden');
         });
-       
+
         const update = document.getElementById('update');
         const viewupdate = document.getElementById('viewupdate');
         const outs = document.getElementById('outs');
@@ -209,8 +209,8 @@
 
         // Thêm các lớp Tailwind CSS ngay lập tức
         manageStories.classList.add('border-yellow-500', 'text-yellow-500');
-       
-        
+
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

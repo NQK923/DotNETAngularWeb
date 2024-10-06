@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MangaService } from 'src/app/service/Manga/get_manga.service';
-import { MangaUploadService } from 'src/app/service/Manga/manga_upload.service';
+import { MangaService } from '../../../service/Manga/get_manga.service';
+import { MangaUploadService } from '../../../service/Manga/manga_upload.service';
 
 interface Manga {
   id_manga: number;

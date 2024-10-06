@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BannerService } from 'src/app/service/Banner/banner.service';
-import { ModelBanner } from 'src/app/Model/ModelBanner';
-import { MangaService } from 'src/app/service/Manga/get_manga.service';
-import { ChapterService } from 'src/app/service/Chapter/get_chapter.service';
+import { BannerService } from '../../../service/Banner/banner.service';
+import { ModelBanner } from '../../../Model/ModelBanner';
+import { MangaService } from '../../../service/Manga/get_manga.service';
+import { ChapterService } from '../../../service/Chapter/get_chapter.service';
 import { forkJoin, map } from 'rxjs';
 
 interface Manga {

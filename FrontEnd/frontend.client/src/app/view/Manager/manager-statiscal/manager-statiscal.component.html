@@ -32,7 +32,7 @@
 </style>
 
 <body class="bg-white relative">
-    <div class="row"> 
+    <div class="row">
         <div class="p-4 col-2 bg-white">
             <div class="rounded-xl flex justify-center items-center bg-white">
                 <img (click)="goToIndex()" class="h-30 p-1" src="https://mangaplus.shueisha.co.jp/img/web_logo_190118_light-txt.06756983.png" alt="Logo">
@@ -40,13 +40,13 @@
             <ul>
                 <li class="font-bold text-sm  text-center">Quản lý đọc truyện</li>
                 <ul class="flex mt-8 mx-2">
-                    <img class="h-4 mt-1" src="../../../assets/img/icons8-home-20.png">
+                    <img class="h-4 mt-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-home-20.png">
                     <li (click)="goToIndex()" class="font-bold text-center mx-2 ">Trang chính</li>
                 </ul>
                 <ul>
                     <h1 (click)="goTomanager()" id="manageStories" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý truyện</h1>
-        
+
                 </ul>
                 <ul >
                     <h1   (click)="goToacount()" id="manageStories1" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
@@ -55,7 +55,7 @@
                 <ul >
                     <h1 (click)="goToComment()" id="manageStories2" class="text-sm cursor-pointer  font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý bình luận</h1>
-                    
+
                 </ul>
                 <h1   (click)="goTostatiscal()" id="manageStories2" class="text-sm cursor-pointer border-yellow-500 text-yellow-500 font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                     Thống kê
@@ -63,20 +63,20 @@
                 <h1  (click)="goToBanner()" id="manageStories4" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                     Quản lý Banner
                 </h1>
-                
+
             </ul>
         </div>
 
-        <div class="col-10 bg-white border border-black"> 
+        <div class="col-10 bg-white border border-black">
             <div class="p-2 border-b border-gray-500">
                 <div class="flex row">
                     <p class="col-4 font-bold text-xl">Thống kê truyện</p>
-                    
+
                 </div>
             </div>
             <div class="container mx-auto p-6">
                 <h1 class="text-2xl font-bold mb-4">Thống Kê Truyện</h1>
-                
+
                 <div class="grid grid-cols-3 gap-4">
                     <div class="bg-white rounded-lg shadow p-4">
                         <h2 class="text-lg font-semibold">Tổng Lượt Đọc</h2>
@@ -104,7 +104,7 @@
                         <option value="week">Tuần</option>
                     </select>
                 </div>
-                
+
                 <div id="yearSelection" class="hidden mb-4">
                     <select class="border border-gray-300 rounded-full p-2 w-full">
                         <option value="" disabled selected>Chọn Năm</option>
@@ -163,7 +163,7 @@
                     <tbody>
                         <tr>
                             <td class="py-2 px-4 border-b font-bold text-5xl text-red-500">1</td>
-                            <td class="py-2 px-4 border-b" ><img class=" rounded-lg h-24 p-1" src="../../../assets/img/book1.jpg" alt="Chapter Image"></td>
+                            <td class="py-2 px-4 border-b" ><img class=" rounded-lg h-24 p-1" src="https://imagemanga.blob.core.windows.net/assets/book1.jpg" alt="Chapter Image"></td>
                             <td class="py-2 px-4 border-b">Black clover</td>
                             <td class="py-2 px-4 border-b">100.000.000</td>
                             <td class="py-2 px-4 border-b">4.5/5</td>
@@ -171,7 +171,7 @@
 
                         <tr>
                             <td class="py-2 px-4 border-b font-bold text-5xl text-green-500">2</td>
-                            <td class="py-2 px-4 border-b" ><img class=" rounded-lg h-24 p-1" src="../../../assets/img/book1.jpg" alt="Chapter Image"></td>
+                            <td class="py-2 px-4 border-b" ><img class=" rounded-lg h-24 p-1" src="https://imagemanga.blob.core.windows.net/assets/book1.jpg" alt="Chapter Image"></td>
                             <td class="py-2 px-4 border-b">Black clover</td>
                             <td class="py-2 px-4 border-b">100.000.000</td>
                             <td class="py-2 px-4 border-b">4.5/5</td>
@@ -181,11 +181,11 @@
 
 
             </div>
-            <div class="StaisticalType col-4">    
+            <div class="StaisticalType col-4">
                 <div class="mt-6">
                     <h2 class="text-lg font-semibold mb-2">Thống Kê Theo Thể Loại</h2>
                 </div>
-        
+
                 <div class="mt-6 ">
                     <h2 class="text-lg font-semibold mb-2">Chi Tiết Thể Loại</h2>
                     <table class="min-w-full bg-white border border-gray-300 rounded-lg">
@@ -222,15 +222,15 @@
                 </div>
             </div>
 
-        </div>    
-            
-    
+        </div>
+
+
     </div>
         </div>
     </div>
-    
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+
 </body>
 </html>

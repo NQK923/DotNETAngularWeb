@@ -35,11 +35,11 @@
                     Thêm vào mục yêu thích
                 </div>
                 <div class="text-yellow-500 text-sm border-2 mt-2 border-yellow-500 rounded-sm p-2 flex justify-center hover:bg-yellow-200">
-                    <img class="h-6 px-1" src="../../../assets/img/icons8-bell-30.png" alt="Bell Icon">
+                    <img class="h-6 px-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-bell-30.png" alt="Bell Icon">
                     <p class="text-yellow-500 text-sm hover:text-gray-500">Thông báo</p>
                 </div>
                 <div (click)="toggleRatingSection()"  id="Evaluate" class="text-yellow-500 text-sm border-2 mt-2 border-yellow-500 rounded-sm p-2 flex justify-center hover:bg-yellow-100 cursor-pointer">
-                    <img class="h-6 px-1" src="../../../assets/img/icons8-star-30.png" alt="Star Icon">
+                    <img class="h-6 px-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-star-30.png" alt="Star Icon">
                     <p class="text-yellow-500 text-sm hover:text-gray-500">Đánh giá: {{mangaDetails.rating}}/5</p>
                 </div>
 
@@ -48,9 +48,9 @@
                     <div #ratingSection class="hidden text-sm text-yellow-500  items-center border-2 border-yellow-500 rounded-sm my-1 p-1">
                         <div class="flex">
                             <p>Đánh giá : <span>{{ selectedRatingValue }}</span> sao </p>
-                            
+
                             <div class="flex space-x-1 cursor-pointer">
-                                <span *ngFor="let star of [1, 2, 3, 4, 5]" 
+                                <span *ngFor="let star of [1, 2, 3, 4, 5]"
                                     (click)="selectRating(star)"
                                     [ngClass]="{
                                         'text-yellow-500': selectedRatingValue >= star,
@@ -63,7 +63,7 @@
                         <div class="flex justify-center">
                             <button (click)="confirmRating()" class="  btn-warning w-full">Xác Nhận</button>
                         </div>
-                    </div>                  
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
                 <p class="p-4 text-white">{{mangaDetails.describe}}</p>
             </div>
             <div>
-                <img class="ml-4" src="../../../assets/img/logimg.svg" alt="Logo Image">
+                <img class="ml-4" src="https://imagemanga.blob.core.windows.net/assets/logimg.svg" alt="Logo Image">
             </div>
         </div>
     </div>
@@ -103,11 +103,11 @@
                     <div class="ml-auto text-right">
                         <p class="text-white">{{chapter.created_at | date:'HH:mm dd/MM/yyyy'}}</p>
                         <div class="flex items-center mt-2 px-1  pt-2">
-                            <img  src="../../../assets/img/iconeye.png">
+                            <img  src="https://imagemanga.blob.core.windows.net/assets/iconeye.png">
                             <p class="ml-4 text-white ">{{ chapter.view | number }}</p>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
         <div class="col-5 p-4">

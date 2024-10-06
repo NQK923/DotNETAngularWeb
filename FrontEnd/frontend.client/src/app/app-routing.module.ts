@@ -16,8 +16,6 @@ import { RegisterComponent } from './view/Account/register/register.component';
 import { UpdatePasswordComponent } from './view/Account/update-password/update-password.component';
 
 
-
-
 import { ManagerComponent } from './view/Manager/manager/manager.component';
 import { ManagerAccountComponent } from './view/Manager/manager-account/manager-account.component';
 import { ManagerStatiscalComponent } from './view/Manager/manager-statiscal/manager-statiscal.component';
@@ -28,7 +26,7 @@ const routes: Routes = [
   { path: '', component: IndexComponent },
   { path: 'titles/:id_manga', component: TitlesComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'user/:id_account', component: ClientManagerComponent },
+  { path: 'client-manager', component: ClientManagerComponent },
   { path: 'list-view', component: ListViewComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'faverite', component: FaveriteComponent },

@@ -13,7 +13,7 @@
         height: 60px;
     }
     .h200{
-        
+
         height: 200px;
     }
     .w-500{
@@ -31,7 +31,7 @@
 
 
 <body class="bg-white relative">
-     <div class="row"> 
+     <div class="row">
         <div class="p-4 col-2 bg-white  ">
             <div class=" rounded-xl flex justify-center items-center bg-white ">
                 <img (click)="goToIndex()" class="h-30 p-1" src="https://mangaplus.shueisha.co.jp/img/web_logo_190118_light-txt.06756983.png" alt="Logo">
@@ -39,13 +39,13 @@
             <ul>
                 <li class="font-bold text-sm  text-center">Quản lý đọc truyện</li>
                 <ul class="flex mt-8 mx-2">
-                    <img class="h-4 mt-1" src="../../../assets/img/icons8-home-20.png">
+                    <img class="h-4 mt-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-home-20.png">
                     <li (click)="goToIndex()" class="font-bold text-center mx-2 ">Trang chính</li>
                 </ul>
                 <ul>
                     <h1 (click)="goTomanager()" id="manageStories" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý truyện</h1>
-        
+
                 </ul>
                 <ul >
                     <h1   (click)="goToacount()" id="manageStories1" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
@@ -54,7 +54,7 @@
                 <ul >
                     <h1 (click)="goToComment()" id="manageStories2" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý bình luận</h1>
-                    
+
                 </ul>
                 <h1   (click)="goTostatiscal()" id="manageStories2" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                     Thống kê
@@ -65,7 +65,7 @@
             </ul>
         </div>
 
-        <div class="col-10 bg-white border border-black"> 
+        <div class="col-10 bg-white border border-black">
             <div class="p-2 border-b boder-gray-500">
                 <div class="flex row ">
                     <p class=" col-4  font-bold text-xl "> Quản lý truyện </p>
@@ -77,23 +77,23 @@
             <div>
                 <div class="flex items-end justify-end p-1 bg-white border-b boder-gray-500 ">
                     <div class="border-2 border-yello text-yello p-1 px-2 mx-3 font-bold rounded-full w-auto">
-                        Lọc truyện 
+                        Lọc truyện
                     </div>
                 </div>
                 <div class="flex items-end justify-end p-2 bg-white  border-b boder-gray-500 ">
                     <div id="buttonbrowse" class="btn-warning border-2 border-yellow-200 flex  p-1  rounded-full mx-2">
-                        <img class="h-6" src="../../../assets/img/icons8-done-48.png">
+                        <img class="h-6" src="https://imagemanga.blob.core.windows.net/assets/icons8-done-48.png">
                         <p class="font-bold text-white">Duyệt truyện</p>
                     </div>
                     <div id="buttonAdd" class="btn-success border-2 border-green-200 flex  p-1  rounded-full mx-2">
-                        <img class="h-6" src="../../../assets/img/icons8-plus-20.png">
+                        <img class="h-6" src="https://imagemanga.blob.core.windows.net/assets/icons8-plus-20.png">
                         <p  class="font-bold"> Thêm Truyện</p>
                     </div>
                 </div>
                 <div class="p-2 flex flex-wrap  bg-white ">
 
                     <div class="p-1 m-4 hover:bg-gray-200 flex  rounded-lg  border-2 border-yello">
-                        <img class="h200 rounded-lg" src="../../../assets/img/book1.jpg">
+                        <img class="h200 rounded-lg" src="https://imagemanga.blob.core.windows.net/assets/book1.jpg">
                         <div >
                             <p class="font-bold text-lg px-1"> Abiss age meo meo meo</p>
                             <p class="text-sm px-1"> emi fukada</p>
@@ -112,18 +112,18 @@
                                             Xóa truyện
                                         </div>
                                         <div id="DeleteChap" class=" btn-primary border-2  text-sm  p-1 m-1 font-bold rounded-full">
-                                           Xóa chương 
+                                           Xóa chương
                                         </div>
-                                        
+
                                     </div>
                                 </div>
 
                             </div>
                         </div>
-                    </div>   
+                    </div>
                 </div>
             </div>
-        </div> 
+        </div>
 
     </div>
 
@@ -147,7 +147,7 @@
                     <p>Tiểu thuyết</p>
                 </div>
                 </div>
-                
+
                 <form id="uploadForm" class="bg-white p-2 m-2 rounded shadow-md ">
                     <input type="file" id="fileInput" accept="image/*" required class="mb-4">
                     <img id="preview" src="" alt="Hình ảnh xem trước" class="mt-4 hidden">
@@ -157,7 +157,7 @@
         </div>
     </div>
     </div>
-    
+
 
 <!-- Duyệt truyện -->
     <div id="browse" class="hidden">
@@ -172,15 +172,15 @@
                     <div class="  hover:bg-gray-400 w-full  rounded-lg">
                         <div class=" flex p-2 items-center">
                             <div >
-                                <img class=" rounded-lg h-24" src="../../../assets/img/book1.jpg" alt="Chapter Image">
+                                <img class=" rounded-lg h-24" src="https://imagemanga.blob.core.windows.net/assets/book1.jpg" alt="Chapter Image">
                             </div>
-                             <div class="row">  
+                             <div class="row">
                                 <div class="col-10 flex flex-wrap items-center">
                                     <p class="p-2 border-r border-black">Tên manga:xxxx</p>
                                     <p class="p-2 border-r border-black">Tác giả:xxxx</p>
                                     <p class="p-2 border-r border-black">Số chương:xxxx</p>
                                     <p class="p-2 border-r border-black">Tác giả:xxxx</p>
-                                    <p class="p-2 border-r border-black">Mã người đăng :xxxxxxxxxx</p>                                                                         
+                                    <p class="p-2 border-r border-black">Mã người đăng :xxxxxxxxxx</p>
                                 </div>
                                 <div class="col-2">
                                     <div class="btn-primary h-8 text-white  text-sm p-1 m-1 font-bold rounded-lg">
@@ -190,7 +190,7 @@
                                         Không duyệt
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                </div>
@@ -210,7 +210,7 @@
             <div class="p-4">
                 <input type="text" class="form-control p-3 w-500 m-2 " placeholder="Tên chương">
                 <input type="text" class="form-control p-3 w-500 m-2 " placeholder="Đường dẫn đến kho ảnh truyện">
-                
+
                 <button class="btn-primary p-2 rounded-xl w-full"> Thêm chương  </button>
             </div>
         </div>
@@ -229,18 +229,18 @@
                 <div class="  hover:bg-gray-400 w-full  rounded-lg">
                     <div class=" flex p-2 items-center">
                         <div >
-                            <img class=" rounded-lg h-24" src="../../../assets/img/book1.jpg" alt="Chapter Image">
+                            <img class=" rounded-lg h-24" src="https://imagemanga.blob.core.windows.net/assets/book1.jpg" alt="Chapter Image">
                         </div>
-                         <div class="row">  
+                         <div class="row">
                             <div class="col-10 flex flex-wrap items-center">
-                                <p class="p-2 border-r border-black">Tên chương:xxxx</p>                                                              
+                                <p class="p-2 border-r border-black">Tên chương:xxxx</p>
                             </div>
                             <div class="col-2">
                                 <div class="btn-danger h-8 text-white text-center  text-sm p-1 m-1 font-bold rounded-lg w-24">
                                     Xóa chương
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                     </div>
                 </div>
            </div>

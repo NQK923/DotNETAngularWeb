@@ -48,8 +48,8 @@
         width: 260px;
         height: 50px;
     }
- 
-    
+
+
 </style>
 
 <body class="bg-gray-500 ">
@@ -72,7 +72,7 @@
                             <div class="col-6 "  *ngFor="let twoBanner of twobanners">
                                 <img (click)="click(twoBanner.url_manga)" class="rounded-lg d-block " [src]="twoBanner.image_banner" alt="Ảnh 1">
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                             <img [src]="manga.cover_img" class="w-full h-auto">
                             <div class="flex justify-between items-center mt-2 px-1 border-t border-white pt-2">
                                 <p class="text-white text-sm">{{ manga.name }}</p>
-                                <img class="ml-4 h-4" src="../../../assets/img/iconeye.png">
+                                <img class="ml-4 h-4" src="https://imagemanga.blob.core.windows.net/assets/iconeye.png">
                                 <p class="text-white text-sm text-end">{{ manga.totalViews | number }}</p>
                             </div>
                             <p class="text-gray-500 p-2 text-sm">{{ manga.author }}</p>
@@ -125,7 +125,7 @@
                             <img [src]="top_manga.cover_img" class="w-full h-auto">
                             <div class="flex justify-between items-center mt-2 px-1 border-t border-white pt-2">
                                 <p class="text-white text-sm">{{ top_manga.name }}</p>
-                                <img class="ml-4 h-4" src="../../../assets/img/iconeye.png">
+                                <img class="ml-4 h-4" src="https://imagemanga.blob.core.windows.net/assets/iconeye.png">
                                 <p class="text-white text-sm text-end">{{ top_manga.totalViews | number }}</p>
                             </div>
                             <p class="text-gray-500 p-2 text-sm">{{ top_manga.author }}</p>
@@ -133,7 +133,7 @@
                     </ul>
                 </div>
 
-     
+
                 <div class="relative">
                     <div class="bg-gradient-to-r from-blue-700 to-blue-500 w-30 h-8 absolute top-0 left-0"></div>
                     <div class="text-4xl font-bold text-white relative m-10"
@@ -150,7 +150,7 @@
                                 class="w-full h-auto">
                             <div class="flex justify-between items-center mt-2 px-1 border-t border-white pt-2">
                                 <p class="text-white text-sm">#001</p>
-                                <img class="ml-4 h-4" src="../../../assets/img/iconeye.png">
+                                <img class="ml-4 h-4" src="https://imagemanga.blob.core.windows.net/assets/iconeye.png">
                                 <p class="text-white text-sm text-end">100.000</p>
                             </div>
                             <p class="text-gray-500 p-2 text-sm">Godila</p>
@@ -164,7 +164,7 @@
                 <div class="bg-gradient-to-r from-blue-800 to-blue-400 p-2 flex justify-between">
 
                     <h1 class="font-bold text-2xl text-white flex items-center">
-                        <img src="../../../assets/img/icons8-star-30.png" alt="Icon" class="mr-2">
+                        <img src="https://imagemanga.blob.core.windows.net/assets/icons8-star-30.png" alt="Icon" class="mr-2">
                         Top Rating
                     </h1>
                 </div>
@@ -180,7 +180,7 @@
                                 <p class="text-white ml-2 mt-10 font-bold text-xl">{{top_rated_manga.name}}</p>
                                 <p class="text-white m-2 text-sm">{{top_rated_manga.author}}</p>
                                 <div class="flex m-2">
-                                    <img src="../../../assets/img/icons8-star-30.png" alt="Icon" class="  h-5">
+                                    <img src="https://imagemanga.blob.core.windows.net/assets/icons8-star-30.png" alt="Icon" class="  h-5">
                                     <p class="text-white font white text-sm ml-2">{{top_rated_manga.rating}}</p>
                                 </div>
 

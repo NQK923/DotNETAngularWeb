@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModelBanner } from 'src/app/Model/ModelBanner';
-import { BannerService } from 'src/app/service/Banner/banner.service';
+import { ModelBanner } from '../../../Model/ModelBanner';
+import { BannerService } from '../../../service/Banner/banner.service';
 
 @Component({
   selector: 'app-manager-banner',
@@ -9,7 +9,7 @@ import { BannerService } from 'src/app/service/Banner/banner.service';
   styleUrls: ['./manager-banner.component.css']
 })
 export class ManagerBannerComponent implements OnInit {
-   
+
       banners: ModelBanner[] = [];
 
 
@@ -30,11 +30,11 @@ export class ManagerBannerComponent implements OnInit {
         this.router.navigate(['/manager-comment']);
       }
       ngOnInit() {
-       
+
         this.applyTailwindClasses();
         this.loadBanners();
       }
-      
+
       applyTailwindClasses() {
         const manageStories = this.el.nativeElement.querySelector('#manageStories4');
         if (manageStories) {
@@ -54,21 +54,21 @@ export class ManagerBannerComponent implements OnInit {
         );
         this.setupEventListeners();
       }
-   
+
       @ViewChild('dataurl') urlInput!: ElementRef;
       @ViewChild('dataurlimg') imageInput!: ElementRef;
-  
+
       adddata() {
         const url_mangas = this.urlInput.nativeElement.value;
         const dataurlimgs = this.imageInput.nativeElement.files[0];
-    
+
         // Chỉ định các thuộc tính cần thiết mà không có id_Banner
         const newBanner: ModelBanner = {
             url_manga: url_mangas,
             image_banner: '', // Placeholder cho URL hình ảnh
             datePosted: new Date() // Sử dụng ngày giờ hiện tại
         };
-    
+
         // Nếu có tệp hình ảnh được chọn, đọc nó dưới dạng Data URL
         if (dataurlimgs) {
             const reader = new FileReader();
@@ -81,7 +81,7 @@ export class ManagerBannerComponent implements OnInit {
             this.submitBanner(newBanner); // Gửi mà không có hình ảnh
         }
     }
-    
+
     private submitBanner(newBanner: ModelBanner) {
       this.bannerService.addBanner(newBanner).subscribe(response => {
           if (response) {
@@ -130,5 +130,5 @@ export class ManagerBannerComponent implements OnInit {
     }
 
 
-      
+
     }

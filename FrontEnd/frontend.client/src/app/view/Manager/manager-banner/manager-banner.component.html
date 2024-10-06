@@ -13,7 +13,7 @@
         height: 60px;
     }
     .h200{
-        
+
         height: 200px;
     }
     .w-500{
@@ -34,7 +34,7 @@
 
 
 <body class="bg-white relative">
-     <div class="row"> 
+     <div class="row">
         <div class="p-4 col-2 bg-white  ">
             <div class=" rounded-xl flex justify-center items-center bg-white ">
                 <img (click)="goToIndex()" class="h-30 p-1" src="https://mangaplus.shueisha.co.jp/img/web_logo_190118_light-txt.06756983.png" alt="Logo">
@@ -42,13 +42,13 @@
             <ul>
                 <li class="font-bold text-sm  text-center">Quản lý đọc truyện</li>
                 <ul class="flex mt-8 mx-2">
-                    <img class="h-4 mt-1" src="../../../assets/img/icons8-home-20.png">
+                    <img class="h-4 mt-1" src="https://imagemanga.blob.core.windows.net/assets/icons8-home-20.png">
                     <li (click)="goToIndex()" class="font-bold text-center mx-2 ">Trang chính</li>
                 </ul>
                 <ul>
                     <h1 (click)="goTomanager()" id="manageStories" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý truyện</h1>
-        
+
                 </ul>
                 <ul >
                     <h1   (click)="goToacount()" id="manageStories1" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
@@ -57,7 +57,7 @@
                 <ul >
                     <h1 (click)="goToComment()" id="manageStories2" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                         Quản lý bình luận</h1>
-                    
+
                 </ul>
                 <h1   (click)="goTostatiscal()" id="manageStories3" class="text-sm cursor-pointer font-bold p-1 border-l-2 m-2 border-transparent hover:border-yellow-500 hover:text-yellow-500">
                     Thống kê
@@ -69,11 +69,11 @@
             </ul>
         </div>
 
-        <div class="col-10 bg-white border border-black"> 
+        <div class="col-10 bg-white border border-black">
             <div class="p-2 ">
                 <div class="flex justify-between p-2 border-b boder-gray-500">
                     <p class="font-bold text-xl">Quản lý banner</p>
-     
+
                 </div>
                 <div class="flex justify-between p-2 border-b boder-gray-500">
                     <p></p>
@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div>
-                
+
                 <div class="p-2  bg-white ">
                     <P class="text-xl font-bold"> Danh sách banner </P>
                     <div   class="flex flex-wrap justify-center">
@@ -94,11 +94,11 @@
                         </div>
                     </div>
                     </div>
-                 
+
 
                 </div>
             </div>
-        </div> 
+        </div>
 
     </div>
 <!--thêm banner-->
@@ -113,7 +113,7 @@
 
             <div class="p-4">
                 <input #dataurl type="text" class="form-control p-3 w-500 m-2 " placeholder="Đường dẫn đến truyện của banner">
-            
+
                 <p class="px-2">Thêm ảnh</p>
                 <form id="uploadForm" class="bg-white p-2 m-2 rounded shadow-md ">
                     <input #dataurlimg type="file" id="fileInput" accept="image/*" required class="mb-4" multiple>
@@ -124,7 +124,7 @@
         </div>
     </div>
 </div>
-    
+
 </body>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

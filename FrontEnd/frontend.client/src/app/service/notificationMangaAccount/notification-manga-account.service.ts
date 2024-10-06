@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ModelNotificationMangaAccount } from 'src/app/Model/ModelNotificationMangaAccount';
+import { ModelNotificationMangaAccount } from '../../Model/ModelNotificationMangaAccount';
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'

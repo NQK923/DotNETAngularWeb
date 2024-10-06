@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ModelBanner } from 'src/app/Model/ModelBanner';
+import { ModelBanner } from '../../Model/ModelBanner';
 @Injectable({
   providedIn: 'root'
 })

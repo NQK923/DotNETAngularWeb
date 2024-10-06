@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ChapterService } from '../../../service/Chapter/get_chapter.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MangaDetailsService } from 'src/app/service/Manga/manga_details.service';
+import { MangaDetailsService } from '../../../service/Manga/manga_details.service';
 
 interface Chapter {
   id_chapter: number;
