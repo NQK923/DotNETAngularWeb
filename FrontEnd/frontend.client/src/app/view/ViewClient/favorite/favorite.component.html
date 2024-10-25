@@ -1,0 +1,55 @@
+<div class="bg-gray-500">
+  <div class="bg-gray-500">
+
+    <div class="flex items-center justify-between">
+      <div class="bg-gradient-to-r from-black to-gray-500 p-2 flex">
+        <div class="flex">
+          <img class="h-10 mt-1" src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
+          <p class="text-white font-bold text-2xl p-2">Truyện yêu thích</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-gradient-to-r from-blue-900 to-gray-600 shadow-md">
+      <div class="p-2 flex flex-wrap justify-center">
+        <div *ngFor="let manga of getPagedMangas()"
+             class="w-72 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden m-3 transition-transform transform hover:scale-105 cursor-pointer">
+          <img (click)="viewMangaDetails(manga.id_manga)" [attr.title]="manga.name + ' \n' + manga.describe"
+               [src]="manga.cover_img"
+               alt="Image description"
+               class="w-full h-80 object-cover rounded-t-xl">
+          <div class="p-2">
+            <p class="text-white font-bold text-lg truncate">{{ manga.name }}</p>
+            <p class="text-white text-sm">{{ manga.author }}</p>
+          </div>
+          <div class="bg-gradient-to-r from-black-800 to-gray-600 p-2 mt-2 flex justify-between rounded-md">
+            <p (click)="removeFromFavorites(manga.id_manga)"
+               class="text-blue-500 font-bold text-sm m-1 hover:underline text-center">Bỏ yêu thích</p>
+          </div>
+          <div class="bg-gradient-to-r from-black-800 to-gray-600 p-2 mt-2 flex justify-between rounded-md">
+            <div class="flex items-center">
+              <img alt="Notification Icon" class="h-8 p-1"
+                   src="https://mangaimg.blob.core.windows.net/assets/icons8-bell-30.png">
+              <p class="text-blue-500 font-bold text-sm">Thông báo</p>
+            </div>
+            <div (click)="toggleNotification(manga.id_manga)" class="flex items-center">
+              <p [ngClass]="{'text-yellow-500': manga.is_notification, 'text-white': !manga.is_notification}"
+                 class="text-sm">Bật</p>
+              <p class="text-white text-sm mx-1">/</p>
+              <p [ngClass]="{'text-yellow-500': !manga.is_notification, 'text-white': manga.is_notification}"
+                 class="text-sm">Tắt</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagination p-2">
+        <button (click)="previousPage()" [disabled]="currentPage === 1" class="w-auto">
+          <img alt="" class="h-4" src="https://mangaimg.blob.core.windows.net/assets/arrow-left.png">
+        </button>
+        <span>Trang {{ currentPage }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages()" class="w-auto">
+          <img alt="" class="h-4" src="https://mangaimg.blob.core.windows.net/assets/arrow-right.png">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

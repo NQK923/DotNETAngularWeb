@@ -1,0 +1,17 @@
+.custom-dialog-title {
+  display: flex;
+  align-items: center;
+}
+
+.custom-dialog-title mat-icon {
+  margin-right: 8px;
+}
+
+.custom-dialog-content {
+  font-size: 16px;
+  color: #333;
+}
+
+.custom-dialog-actions {
+  justify-content: flex-end;
+}

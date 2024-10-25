@@ -1,0 +1,19 @@
+.input-transition {
+  transition: width 0.3s ease;
+}
+
+.w-220 {
+  width: 220px;
+}
+
+.w-70 {
+  width: 70px;
+}
+
+.selected {
+  color: rgb(245, 158, 11);
+}
+
+.white-icon {
+  filter: brightness(0) invert(1);
+}

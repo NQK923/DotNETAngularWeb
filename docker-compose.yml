@@ -1,0 +1,120 @@
+﻿services:
+  mangawebasp:
+    image: mangawebasp
+    build:
+      context: .
+      dockerfile: MangaWebASP/Dockerfile
+
+  mangaservice:
+    image: mangaservice
+    build:
+      context: .
+      dockerfile: MangaService/Dockerfile
+  banner:
+    image: banner
+    build:
+      context: .
+      dockerfile: Banner/Dockerfile
+
+  banners:
+    image: banners
+    build:
+      context: .
+      dockerfile: Banners/Dockerfile
+
+  notification:
+    image: notification
+    build:
+      context: .
+      dockerfile: Notification/Dockerfile
+
+  notificationmanageaccount:
+    image: notificationmanageaccount
+    build:
+      context: .
+      dockerfile: notificationManageAccount/Dockerfile
+  chapterservice:
+    image: chapterservice
+    build:
+      context: .
+      dockerfile: ChapterService/Dockerfile
+
+
+  account:
+    image: account
+    build:
+      context: .
+      dockerfile: Account/Dockerfile
+
+  account-1:
+    image: account-1
+    build:
+      context: .
+      dockerfile: Account/Dockerfile
+
+  categoryservice:
+    image: categoryservice
+    build:
+      context: .
+      dockerfile: CategoryService/Dockerfile
+
+
+  categorydetailsservice:
+    image: categorydetailsservice
+    build:
+      context: .
+      dockerfile: CategoryDetailsService/Dockerfile
+
+  mangafavoriteservice:
+    image: mangafavoriteservice
+    build:
+      context: .
+      dockerfile: MangaFavoriteService/Dockerfile
+
+  mangahistoryservice:
+    image: mangahistoryservice
+    build:
+      context: .
+      dockerfile: MangaHistoryService/Dockerfile
+
+  mangahistoryservice-1:
+    image: mangahistoryservice-1
+    build:
+      context: .
+      dockerfile: MangaHistoryService/Dockerfile
+
+  mangafavoriteservice-1:
+    image: mangafavoriteservice-1
+    build:
+      context: .
+      dockerfile: MangaFavoriteService/Dockerfile
+
+  infonotification:
+    image: infonotification
+    build:
+      context: .
+      dockerfile: InfoNotification/Dockerfile
+
+  infonotificationaccount:
+    image: infonotificationaccount
+    build:
+      context: .
+      dockerfile: infoNotificationAccount/Dockerfile
+
+  notificationmangaaccount:
+    image: notificationmangaaccount
+    build:
+      context: .
+      dockerfile: notificationMangaAccount/Dockerfile
+
+  infoaccount:
+    image: infoaccount
+    build:
+      context: .
+      dockerfile: infoAccount/Dockerfile
+
+  mangaviewhistoryservice:
+    image: mangaviewhistoryservice
+    build:
+      context: .
+      dockerfile: MangaViewHistoryService/Dockerfile

@@ -1,0 +1,118 @@
+<div>
+  <div class="row h-full w-full ">
+
+    <div class=" col-2 bg-zinc-900">
+      <div class="mt-4 ml-4">
+        <img (click)="goToIndex()" alt="Logo"
+             class="h-24 p-1 cursor-pointer" src="https://mangaimg.blob.core.windows.net/assets/logo4.png">
+      </div>
+      <ul class="pl-2">
+        <ul class="flex mt-8 mx-1">
+          <li (click)="goToIndex()" class="text-xl font-bold text-center mx-1  text-gray-100 cursor-pointer">Trang chủ
+          </li>
+        </ul>
+        <ul>
+          <h1 (click)="goToManager()"
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
+              id="manageStories">
+            Quản lý truyện</h1>
+
+        </ul>
+        <ul>
+          <h1 (click)="goToAccount()"
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
+              id="manageStories1">
+            Quản lý tài khoản</h1>
+        </ul>
+        <ul>
+          <h1 (click)="goToComment()"
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
+              id="manageStories2">
+            Quản lý bình luận</h1>
+
+        </ul>
+        <ul>
+          <h1 (click)="goToStatiscal()"
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
+              id="manageStories3">
+            Thống kê
+          </h1>
+        </ul>
+      </ul>
+    </div>
+
+    <div class="col-10 bg-zinc-600 border border-black">
+      <div class="p-2 border-b border-gray-500">
+        <div class="flex row ">
+          <p class=" col-5  font-bold text-xl text-gray-100"> Quản lý tài khoản </p>
+          <div class="col-7 hidden">
+            <input aria-label="Tìm kiếm truyện" class=" form-control me-2" placeholder="Tìm kiếm tài khoản..."
+                   type="search">
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class=" flex flex-wrap bg-zinc-600 ">
+          <div class="flex min-w-full border-1 border-yellow-500 py-2">
+            <div class="ml-4 w-1/6 text-gray-100"> Tài khoản</div>
+            <div class="w-25 text-gray-100"> mail</div>
+            <div class="ml-1 w-1/5 text-gray-100"> Trạng thái tài khoản</div>
+            <div class="ml-2 w-1/5 text-gray-100"> Trạng thái bình luận</div>
+            <div class="ml-6 text-gray-100">Phân quyền tài khoản</div>
+
+          </div>
+
+          <div *ngFor="let dataAccount of dataAccount"
+               class=" p-2 my-2 hover:bg-blue-100 flex items-center rounded-lg border-2 border-yellow-500 w-full">
+            <div class="flex w-full items-center">
+              <div class="flex w-1/6">
+                <img class="text-gray-100 bg-gray-200 rounded-full h-14 w-14"
+                     src="{{dataAccount.InfoAccount?.cover_img}}">
+                <p class=" text-sm text-gray-100 ml-2 mt-3 ">{{ dataAccount.Account.username }}</p>
+              </div>
+              <p class="text-gray-100 m-2 text-sm w-25">Gmail: {{ dataAccount.InfoAccount?.email }}</p>
+
+              <div class="text-gray-100 w-1/5 flex justify-between ">
+                <div>
+                  Trạng thái:
+                  <span *ngIf="dataAccount.Account.status; else inactive">Vô hiệu</span>
+                  <ng-template #inactive>Kích hoạt</ng-template>
+                </div>
+                <button (click)="UpdateStatus(dataAccount.Account.id_account, dataAccount.Account.username,
+              dataAccount.Account.password, dataAccount.Account.status,
+              dataAccount.InfoAccount?.email, dataAccount.Account.banComment)"
+                        [ngClass]="dataAccount.Account.status ? 'bg-green-500' : 'bg-red-500'"
+                        class=" text-sm border text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
+                  <span *ngIf="dataAccount.Account.status; else inactives">Kích hoạt</span>
+                  <ng-template #inactives>Vô hiệu</ng-template>
+                </button>
+              </div>
+
+              <div class=" text-sm text-gray-100 ml-4 w-1/5 flex justify-between">
+                <div class="flex">
+                  Bình luận:
+                  <span *ngIf="dataAccount.Account.banComment; else inactive">Vô hiệu</span>
+                  <ng-template #inactive>Kích hoạt</ng-template>
+                </div>
+                <button (click)="UpdateComment(dataAccount.Account.id_account, dataAccount.Account.username,
+              dataAccount.Account.password, dataAccount.Account.status,
+              dataAccount.InfoAccount?.email, dataAccount.Account.banComment)"
+                        [ngClass]="dataAccount.Account.banComment ? 'bg-green-500' : 'bg-red-500'"
+                        class="border text-sm text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
+                  <span *ngIf="dataAccount.Account.banComment; else inactives">Kích hoạt</span>
+                  <ng-template #inactives>Vô hiệu</ng-template>
+                </button>
+              </div>
+              <p class=" my-2 mx-6 text-gray-100 text-sm ">
+                Phân quyền:
+                <span *ngIf="dataAccount.Account.role; else inactive">Quản lý</span>
+                <ng-template #inactive>Người dùng</ng-template>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
