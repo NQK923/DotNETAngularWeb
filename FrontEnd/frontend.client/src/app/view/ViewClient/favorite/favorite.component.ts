@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
 import {MangaService} from "../../../service/Manga/manga.service";
 import {forkJoin, Observable} from 'rxjs';
+import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Manga {
   id_manga: number;
@@ -42,7 +43,9 @@ export class FavoriteComponent implements OnInit {
   constructor(
     private router: Router,
     private mangaFavoriteService: MangaFavoriteService,
-    private mangaService: MangaService
+    private mangaService: MangaService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
   ) {
   }
 
@@ -59,9 +62,6 @@ export class FavoriteComponent implements OnInit {
           if (favorite) {
             manga.is_notification = favorite.is_notification;
           }
-          if (manga.is_deleted) {
-
-          }
           return manga;
         });
       });
@@ -69,20 +69,36 @@ export class FavoriteComponent implements OnInit {
   }
 
   removeFromFavorites(mangaId: number) {
-    const confirmDelete = window.confirm("Bạn có chắc chắn muốn bỏ yêu thích manga này?");
-    if (confirmDelete) {
-      const idNumber = Number(localStorage.getItem('userId'));
-      this.mangaFavoriteService.toggleFavorite(idNumber, mangaId).subscribe(() => {
-        this.favoriteMangas = this.favoriteMangas.filter(manga => manga.id_manga !== mangaId);
-        this.mangas = this.mangas.filter(manga => manga.id_manga !== mangaId);
-      });
-    }
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn bỏ yêu thích không?',
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        const idNumber = Number(localStorage.getItem('userId'));
+        this.mangaFavoriteService.toggleFavorite(idNumber, mangaId).subscribe(() => {
+          this.favoriteMangas = this.favoriteMangas.filter(manga => manga.id_manga !== mangaId);
+          this.mangas = this.mangas.filter(manga => manga.id_manga !== mangaId);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Xoá thành công',
+            detail: 'Manga đã được xoá khỏi danh sách.'
+          });
+        }, (error) => {
+          this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá manga không thành công.'});
+          console.error('Error:', error);
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 
   toggleNotification(idManga: number) {
     const idNumber = Number(localStorage.getItem('userId'));
     const mangaFavorite = this.favoriteMangas.find(fav => fav.id_manga === idManga);
-
     if (mangaFavorite) {
       this.mangaFavoriteService.toggleNotification(idNumber, mangaFavorite.id_manga).subscribe(() => {
         mangaFavorite.is_notification = !mangaFavorite.is_notification;

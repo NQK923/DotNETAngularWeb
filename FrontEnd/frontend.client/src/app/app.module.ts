@@ -19,13 +19,14 @@ import {ManagerCommentComponent} from './view/Manager/manager-comment/manager-co
 import {ClientManagerComponent} from './view/ViewClient/client-manager/client-manager.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FavoriteComponent} from "./view/ViewClient/favorite/favorite.component";
-import {ConfirmDialogComponent} from './view/Dialog/confirm-dialog/confirm-dialog.component';
-import {MessageDialogComponent} from './view/Dialog/message-dialog/message-dialog.component';
 import {MatDialogActions, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {LoginComponent} from "./view/Account/login/login.component";
 import {UpdateAccountComponent} from "./view/Account/update-account/update-account.component";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   declarations: [
@@ -44,8 +45,6 @@ import {UpdateAccountComponent} from "./view/Account/update-account/update-accou
     ManagerCommentComponent,
     ClientManagerComponent,
     FavoriteComponent,
-    ConfirmDialogComponent,
-    MessageDialogComponent,
     LoginComponent,
     UpdateAccountComponent,
   ],
@@ -61,8 +60,10 @@ import {UpdateAccountComponent} from "./view/Account/update-account/update-accou
     MatDialogActions,
     MatButton,
     MatIcon,
+    ConfirmDialogModule,
+    ToastModule,
   ],
-  providers: [],
+  providers: [ConfirmationService, MessageService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

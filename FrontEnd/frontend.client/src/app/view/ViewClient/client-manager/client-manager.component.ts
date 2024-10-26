@@ -14,11 +14,9 @@ import {
 } from "../../../service/notificationMangaAccount/notification-manga-account.service";
 import {ModelNotificationMangaAccount} from "../../../Model/ModelNotificationMangaAccount";
 import {CategoryDetailsService} from "../../../service/Category_details/Category_details.service"
-import {MatDialog} from '@angular/material/dialog';
-import {ConfirmDialogComponent} from "../../Dialog/confirm-dialog/confirm-dialog.component";
-import {MessageDialogComponent} from "../../Dialog/message-dialog/message-dialog.component";
 import {forkJoin} from "rxjs";
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Manga {
   id_manga: number;
@@ -43,6 +41,7 @@ interface Chapter {
 interface Category {
   id_category: number;
   name: string;
+  description: string;
 }
 
 @Component({
@@ -101,7 +100,8 @@ export class ClientManagerComponent implements OnInit {
               private chapterService: ChapterService,
               private categoryDetailsService: CategoryDetailsService,
               private router: Router,
-              private dialog: MatDialog,
+              private confirmationService: ConfirmationService,
+              private messageService: MessageService
   ) {
   }
 
@@ -163,15 +163,12 @@ export class ClientManagerComponent implements OnInit {
     };
     switch (this.selectedOption) {
       case 'option2':
-        this.dialog.open(ConfirmDialogComponent, {
-          data: {message: 'Bạn có chắc chắn muốn thay thế ảnh hiện tại không?'},
-        }).afterClosed().subscribe(result => {
-          if (result) {
-            this.replaceImg(file, uri);
-          } else {
-            resetSelection();
-          }
-        });
+        this.confirmAction(
+          'Bạn có chắc chắn muốn thay thế ảnh hiện tại không?',
+
+          () => this.replaceImg(file, uri),
+          resetSelection
+        );
         break;
       case 'option3':
         this.confirmAction(
@@ -192,16 +189,6 @@ export class ClientManagerComponent implements OnInit {
     }
   }
 
-  confirmAction(message: string, onConfirm: () => void, onCancel: () => void) {
-    const confirmSelection = confirm(message);
-    if (confirmSelection) {
-      onConfirm();
-    } else {
-      onCancel();
-    }
-  }
-
-
   replaceImg(file: File, uri: string) {
     const fileExtension = file.name.split('.').pop();
     const currentNumber = parseFloat(uri.match(/\/(\d+(\.\d+)?)\.\w+$/)?.[1] || '0');
@@ -212,33 +199,44 @@ export class ClientManagerComponent implements OnInit {
     formData.append('files', this.selectedFile);
     formData.append('id_manga', this.selectedIdManga.toString());
     formData.append('index', this.selectedChapter.toString());
-    this.chapterService.deleteSingleImg(uri).subscribe();
-    this.chapterService.uploadSingleImg(formData).subscribe(() => {
-      alert('Thêm hình ảnh thành công!');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      this.selectedOption = 'option1';
-      this.isHidden = true;
+    this.chapterService.deleteSingleImg(uri).subscribe(() => {
+      const index = this.chapterImages.indexOf(uri);
+      if (index !== -1) {
+        this.chapterImages.splice(index, 1);
+      }
+      this.chapterService.uploadSingleImg(formData).subscribe(() => {
+        this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Thêm hình ảnh thành công!'});
+        const timestamp = new Date().getTime();
+        const newUri = uri.replace(/\/(\d+(\.\d+)?)\.\w+$/, `/${this.selectedFile?.name}?timestamp=${timestamp}`);
+        this.chapterImages.splice(index, 0, newUri);
+        this.selectedOption = 'option1';
+        this.isHidden = true;
+      }, error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Thêm hình ảnh thất bại, vui lòng thử lại!'
+        });
+        console.error(error);
+        this.selectedOption = 'option1';
+        this.isHidden = true;
+      });
     }, error => {
-      alert('Thêm hình ảnh thất bại, vui lòng thử lại!');
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xóa hình ảnh thất bại, vui lòng thử lại!'});
       console.error(error);
       this.selectedOption = 'option1';
       this.isHidden = true;
-    })
+    });
   }
 
   addPreImg(file: File, uri: string) {
     const fileExtension = file.name.split('.').pop();
     const currentIndex = this.chapterImages.indexOf(uri);
-    console.log("Cu:", currentIndex);
     if (currentIndex !== -1) {
       let newNumber: number;
       if (currentIndex == 0) {
         const currentNumber = parseFloat(uri.match(/\/(\d+(\.\d+)?)\.\w+$/)?.[1] || '0');
-        console.log("Number: ", currentNumber);
         newNumber = currentNumber / 2;
-        console.log(newNumber);
       } else {
         const preImage = this.chapterImages[currentIndex - 1];
         const currentNumber = parseFloat(uri.match(/\/(\d+(\.\d+)?)\.\w+$/)?.[1] || '0');
@@ -255,16 +253,16 @@ export class ClientManagerComponent implements OnInit {
       formData.append('id_manga', this.selectedIdManga.toString());
       formData.append('index', this.selectedChapter.toString());
       this.chapterService.uploadSingleImg(formData).subscribe(() => {
-        alert('Thêm hình ảnh thành công!');
+        this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Thêm hình ảnh thành công!'});
         this.chapterImages.splice(currentIndex, 0, newUri);
         this.selectedOption = 'option1';
         this.isHidden = true;
       }, error => {
-        alert('Thêm chương thất bại, vui lòng thử lại!');
+        this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Thêm chương thất bại, vui lòng thử lại!'});
         console.log(error);
         this.selectedOption = 'option1';
         this.isHidden = true;
-      })
+      });
     }
   }
 
@@ -292,12 +290,16 @@ export class ClientManagerComponent implements OnInit {
       formData.append('id_manga', this.selectedIdManga.toString());
       formData.append('index', this.selectedChapter.toString());
       this.chapterService.uploadSingleImg(formData).subscribe(() => {
-        alert('Thêm hình ảnh thành công!');
+        this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Thêm hình ảnh thành công!'});
         this.chapterImages.splice(currentIndex + 1, 0, newUri);
         this.selectedOption = 'option1';
         this.isHidden = true;
       }, error => {
-        alert('Thêm hình ảnh thất bại, vui lòng thử lại!');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Thêm hình ảnh thất bại, vui lòng thử lại!'
+        });
         console.log(error);
         this.selectedOption = 'option1';
         this.isHidden = true;
@@ -311,14 +313,14 @@ export class ClientManagerComponent implements OnInit {
 
   addChapter() {
     if (!this.chapterIndex || !this.chapterName || !this.selectedFiles) {
-      alert('Vui lòng nhập đủ thông tin');
+      this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin'});
       return;
     }
     this.isAddingChapter = true;
     const formData = this.createFormData();
     this.chapterService.addChapter(formData).subscribe(
       () => {
-        alert('Thêm chương thành công!');
+        this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Thêm chương thành công!'});
         this.finalizeAddChapter(formData);
       },
       error => this.handleAddChapterError(error, formData)
@@ -353,23 +355,22 @@ export class ClientManagerComponent implements OnInit {
   handleAddChapterError(error: any, formData: FormData) {
     if (error.status === 409) {
       const existingChapter = error.error.existingChapter;
-      const updateConfirmed = confirm(`Chương ${this.chapterIndex} đã tồn tại. Bạn có muốn cập nhật không?`);
-      if (updateConfirmed) {
-        this.updateChapter(existingChapter.id_chapter);
-      } else {
-        this.isAddingChapter = false;
-      }
+      this.confirmAction(
+        `Chương ${this.chapterIndex} đã tồn tại. Bạn có muốn cập nhật không?`,
+        () => this.updateChapter(existingChapter.id_chapter),
+        () => {
+          this.isAddingChapter = false;
+        }
+      );
     } else {
       console.error(error);
-      alert('Xảy ra lỗi! Vui lòng thử lại!!!!');
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xảy ra lỗi! Vui lòng thử lại!'});
       this.isAddingChapter = false;
     }
   }
 
-
   updateChapter(chapterId: number) {
     const formData = this.createFormData();
-
     this.chapterService.updateChapter(chapterId, formData).subscribe(
       () => {
         this.finalizeUpdateChapter();
@@ -380,7 +381,7 @@ export class ClientManagerComponent implements OnInit {
 
   finalizeUpdateChapter() {
     this.isAddingChapter = false;
-    alert('Cập nhật thành công!');
+    this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Cập nhật thành công!'});
     setTimeout(() => {
       window.location.reload();
     }, 2000);
@@ -388,18 +389,16 @@ export class ClientManagerComponent implements OnInit {
 
   handleUpdateChapterError(error: any) {
     this.isAddingChapter = false;
-    alert('Xảy ra lỗi! Vui lòng thử lại!!!!');
+    this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xảy ra lỗi! Vui lòng thử lại!'});
     console.error(error);
   }
-
 
   checkOption(event: any, imageUri: string) {
     this.selectedOption = event.target.value;
     this.isHidden = this.selectedOption === 'option1';
-
     switch (this.selectedOption) {
       case 'option2':
-        this.openMessageDialog('Hãy chọn ảnh để thay thế');
+        this.messageService.add({severity: 'info', summary: 'Thông báo', detail: 'Hãy chọn ảnh để thay thế'});
         break;
       case 'option3':
       case 'option4':
@@ -415,22 +414,26 @@ export class ClientManagerComponent implements OnInit {
   }
 
   showAddImageAlert() {
-    alert('Hãy chọn ảnh cần thêm');
+    this.messageService.add({severity: 'info', summary: 'Thông báo', detail: 'Hãy chọn ảnh cần thêm'});
   }
 
   confirmAndDeleteImage(imageUri: string) {
-    const confirmSelection = confirm('Bạn có chắc chắn muốn xoá ảnh này không?\nSau khi xoá không thể hoàn tác');
-    if (confirmSelection) {
-      this.chapterService.deleteSingleImg(imageUri).subscribe(
-        () => this.handleDeleteSuccess(imageUri),
-        (error) => this.handleDeleteError(error)
-      );
-    }
-    this.resetSelection();
+    this.confirmAction(
+      'Bạn có chắc chắn muốn xóa ảnh này không? Sau khi xóa không thể hoàn tác.',
+      () => {
+        this.chapterService.deleteSingleImg(imageUri).subscribe(
+          () => this.handleDeleteSuccess(imageUri),
+          (error) => this.handleDeleteError(error)
+        );
+      },
+      () => {
+        this.resetSelection();
+      }
+    );
   }
 
   handleDeleteSuccess(imageUri: string) {
-    alert("Xoá hình ảnh thành công!");
+    this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Xoá hình ảnh thành công!'});
     const index = this.chapterImages.indexOf(imageUri);
     if (index !== -1) {
       this.chapterImages.splice(index, 1);
@@ -438,7 +441,7 @@ export class ClientManagerComponent implements OnInit {
   }
 
   handleDeleteError(error: any) {
-    alert("Xoá hình ảnh thất bại, vui lòng thử lại!");
+    this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá hình ảnh thất bại, vui lòng thử lại!'});
     console.error(error);
   }
 
@@ -446,7 +449,6 @@ export class ClientManagerComponent implements OnInit {
     this.selectedOption = 'option1';
     this.isHidden = true;
   }
-
 
   loadChapters(): void {
     this.chapterService.getChaptersByMangaId(Number(this.selectedIdManga)).subscribe(chapters => {
@@ -471,7 +473,7 @@ export class ClientManagerComponent implements OnInit {
       const formData = this.buildFormData(addForm.controls);
       this.uploadOrUpdateManga(formData, 'upload');
     } else {
-      alert('Vui lòng nhập đủ thông tin!');
+      this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin!'});
     }
   }
 
@@ -512,7 +514,7 @@ export class ClientManagerComponent implements OnInit {
 
   handleSuccess(action: 'upload' | 'update') {
     const message = action === 'upload' ? 'Thêm truyện thành công!' : 'Cập nhật thành công!';
-    alert(message);
+    this.messageService.add({severity: 'success', summary: 'Thành công', detail: message});
     setTimeout(() => {
       window.location.reload();
     }, 1000);
@@ -520,7 +522,7 @@ export class ClientManagerComponent implements OnInit {
 
   handleError(action: 'upload' | 'update', error: any) {
     const message = action === 'upload' ? 'Thêm truyện thất bại, vui lòng thử lại!' : 'Cập nhật thất bại, vui lòng thử lại!';
-    alert(message);
+    this.messageService.add({severity: 'error', summary: 'Lỗi', detail: message});
     console.error(`${action === 'upload' ? 'Upload' : 'Update'} failed:`, error);
   }
 
@@ -536,26 +538,57 @@ export class ClientManagerComponent implements OnInit {
   }
 
   deleteChapter(index: number): void {
-    this.chapterService.deleteSelectedChapter(Number(this.selectedIdManga), index).subscribe(() => {
-      alert('Xoá thành công!');
-      this.getAllChapters(Number(this.selectedIdManga));
-    })
+    this.confirmAction(
+      'Bạn có chắc chắn muốn xóa chương này không? Sau khi xóa không thể hoàn tác.',
+      () => {
+        this.chapterService.deleteSelectedChapter(Number(this.selectedIdManga), index).subscribe(
+          () => {
+            this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Xoá thành công!'});
+            this.getAllChapters(Number(this.selectedIdManga));
+          },
+          (error) => {
+            this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá thất bại, vui lòng thử lại!'});
+            console.error('Chapter deletion failed:', error);
+          }
+        );
+      },
+      () => {
+      }
+    );
   }
 
   deleteManga(manga: Manga): void {
-    const deleteConfirmed = confirm(`Bạn có chắc chắn muốn xoá manga: ${manga.name} không? Sau khi xoá không thể hoàn tác!`);
-    if (!deleteConfirmed) {
-      return;
-    }
-    this.mangaService.deleteMangaById(manga.id_manga).subscribe(
+    this.confirmAction(
+      `Bạn có chắc chắn muốn xoá manga: ${manga.name} không? Sau khi xoá không thể hoàn tác!`,
       () => {
-        this.deleteRelatedData(manga.id_manga);
+        this.mangaService.deleteMangaById(manga.id_manga).subscribe(
+          () => {
+            this.deleteRelatedData(manga.id_manga);
+            this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Xoá manga thành công!'});
+          },
+          (error) => {
+            this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá thất bại, vui lòng thử lại!'});
+            console.error("Manga deletion failed:", error);
+          }
+        );
       },
-      (error) => {
-        alert("Xoá thất bại, vui lòng thử lại!");
-        console.error("Manga deletion failed:", error);
+      () => {
+
       }
     );
+  }
+
+  confirmAction = (message: string, onConfirm: () => void, onCancel: () => void) => {
+    this.confirmationService.confirm({
+      message: message,
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: onConfirm,
+      reject: onCancel
+    });
   }
 
   deleteRelatedData(mangaId: number): void {
@@ -579,12 +612,12 @@ export class ClientManagerComponent implements OnInit {
   }
 
   handleDeleteMangaSuccess(id: number): void {
-    alert('Xoá thành công!');
+    this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Xoá thành công!'});
     this.updateUIAfterDelete(id);
   }
 
   handleDeleteMangaError(error: any): void {
-    alert("Xoá thất bại, vui lòng thử lại!");
+    this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá thất bại, vui lòng thử lại!'});
     console.error("Error during deletion:", error);
   }
 
@@ -737,10 +770,12 @@ export class ClientManagerComponent implements OnInit {
   addAvatar(form: any) {
     const idAccount = localStorage.getItem('userId');
     if (!this.selectedFile) {
-      console.error('Chưa chọn file.');
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Chưa chọn file.'});
+      return;
     }
     if (!idAccount) {
-      console.error('Chưa nhập id.');
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Chưa nhập ID.'});
+      return;
     }
     if (this.selectedFile && idAccount) {
       const formData = new FormData();
@@ -748,36 +783,49 @@ export class ClientManagerComponent implements OnInit {
       formData.append('file', this.selectedFile, this.selectedFile.name);
       this.accountService.uploadavata(formData).subscribe(
         () => {
-          alert('Upload thành công:');
-          this.ngOnInit()
+          this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Upload thành công!'});
+          this.ngOnInit();
         },
         (error) => {
-          console.error(error);
-          alert('Upload thất bại:');
+          this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Upload thất bại!'});
+          console.error('Upload failed:', error);
         }
       );
     } else {
-      alert('Không có ảnh');
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không có ảnh'});
     }
   }
+
 
   updateInfo() {
     const userId = localStorage.getItem('userId');
     if (userId === null) {
-      console.error('User ID not found in local storage');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Không tìm thấy User ID trong local storage'
+      });
       return;
     }
+
     const emailElement = this.el.nativeElement.querySelector('#emailUser');
     const nameElement = this.el.nativeElement.querySelector('#nameUser');
-    if (emailElement.value == "" && nameElement.value == "") {
-      alert("Vui lòng nhập đủ thông tin")
+
+    if (emailElement.value === "" && nameElement.value === "") {
+      this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin'});
       return;
     }
+
     const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     if (!emailPattern.test(emailElement.value)) {
-      alert("Email phải có định dạng: example@gmail.com");
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Email phải có định dạng: example@gmail.com'
+      });
       return;
     }
+
     this.urlImg = '';
     this.accountService.getinfoAccount().subscribe(
       (data: ModelInfoAccount[]) => {
@@ -787,36 +835,46 @@ export class ClientManagerComponent implements OnInit {
         }
       },
       (error) => {
+        this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Lỗi khi lấy thông tin tài khoản.'});
         console.error('Error fetching account info:', error);
       }
     );
-    for (var i = 0; i < this.infoAccounts.length; i++) {
+
+    for (let i = 0; i < this.infoAccounts.length; i++) {
       if (this.infoAccounts[i].id_account === parseInt(userId, 10)) {
         this.urlImg = this.infoAccounts[i].cover_img || '';  // Ensure it's a string
         break;
       }
     }
+
     if (!emailElement || !nameElement) {
-      console.error('Email or Name input elements not found');
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không tìm thấy trường Email hoặc Tên'});
       return;
     }
+
     const updateInfo: ModelInfoAccount = {
       id_account: parseInt(userId, 10),
       email: emailElement.value,
       cover_img: this.urlImg,
       name: nameElement.value
     };
+
     this.accountService.updateaccount(updateInfo).subscribe({
       next: () => {
-        alert('Update successful');
-        this.ngOnInit()
+        this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Cập nhật thành công'});
+        this.ngOnInit();
       },
       error: (error) => {
-        console.error(error)
-        alert('An error occurred during the update. Please try again later.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Đã xảy ra lỗi trong quá trình cập nhật. Vui lòng thử lại sau.'
+        });
+        console.error(error);
       }
     });
   }
+
 
   takeData() {
     this.accounts = [];
@@ -952,11 +1010,5 @@ export class ClientManagerComponent implements OnInit {
 
   totalPages(): number {
     return Math.ceil(this.filteredMangas.length / this.itemsPerPage);
-  }
-
-  openMessageDialog(message: string): void {
-    this.dialog.open(MessageDialogComponent, {
-      data: {message},
-    });
   }
 }

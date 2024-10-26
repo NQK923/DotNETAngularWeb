@@ -24,6 +24,7 @@ interface Manga {
 interface Category {
   id_category: number;
   name: string;
+  description: string;
 }
 
 @Component({

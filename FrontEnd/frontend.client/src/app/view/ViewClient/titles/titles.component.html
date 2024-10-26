@@ -57,6 +57,7 @@
         </div>
         <div class="flex flex-wrap p-2">
           <div *ngFor="let category of filteredCategories"
+               [attr.title]="category.name + ' \n' + category.description"
                class="bg-yellow-500 text-gray-900 rounded-lg p-2 m-2 text-sm">
             {{ category.name }}
           </div>

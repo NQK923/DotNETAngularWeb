@@ -32,6 +32,7 @@ interface Manga {
 interface Category {
   id_category: number;
   name: string;
+  description: string;
 }
 
 @Component({
@@ -98,7 +99,6 @@ export class IndexComponent implements OnInit {
     );
     forkJoin(categoryObservables).subscribe(results => {
       results.forEach(({manga, categories}) => {
-        console.log("Cate", categories);
         manga.categories = categories;
       });
     });

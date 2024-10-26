@@ -16,7 +16,9 @@
   <div class="flex flex-col bg-gradient-to-r from-gray-800 to-gray-600 px-4 py-2">
     <div class="flex flex-wrap gap-3 mb-4">
       <!-- Categories checkboxes -->
-      <div *ngFor="let category of categories" class="flex items-center">
+      <div *ngFor="let category of categories" [attr.title]="category.name + ' \n' + category.description"
+           class="flex items-center">
+
         <input (change)="toggleCategorySelection(category.id_category)" [id]="'cat_' + category.id_category"
                [value]="category.id_category"
                class="h-4 w-4 rounded focus:ring focus:ring-blue-300" type="checkbox">

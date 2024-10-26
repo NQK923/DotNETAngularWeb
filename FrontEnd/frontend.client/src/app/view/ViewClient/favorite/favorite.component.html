@@ -1,15 +1,14 @@
 <div class="bg-gray-500">
   <div class="bg-gray-500">
-
-    <div class="flex items-center justify-between">
-      <div class="bg-gradient-to-r from-black to-gray-500 p-2 flex">
+    <div class="flex items-center justify-between bg-gradient-to-r from-gray-950 to-gray-600">
+      <div class=" p-2 flex">
         <div class="flex">
           <img class="h-10 mt-1" src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
           <p class="text-white font-bold text-2xl p-2">Truyện yêu thích</p>
         </div>
       </div>
     </div>
-    <div class="bg-gradient-to-r from-blue-900 to-gray-600 shadow-md">
+    <div class="bg-gray-950 shadow-md">
       <div class="p-2 flex flex-wrap justify-center">
         <div *ngFor="let manga of getPagedMangas()"
              class="w-72 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden m-3 transition-transform transform hover:scale-105 cursor-pointer">
@@ -46,10 +45,38 @@
           <img alt="" class="h-4" src="https://mangaimg.blob.core.windows.net/assets/arrow-left.png">
         </button>
         <span>Trang {{ currentPage }}</span>
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages()" class="w-auto">
+        <button (click)="nextPage()" [disabled]="currentPage >= totalPages()" class="w-auto">
           <img alt="" class="h-4" src="https://mangaimg.blob.core.windows.net/assets/arrow-right.png">
         </button>
       </div>
     </div>
   </div>
 </div>
+<p-confirmDialog #cd>
+  <ng-template let-message pTemplate="headless">
+    <div class="flex flex-column align-items-center pb-4 border-round bg-gray-800 rounded">
+      <div class="w-full bg-gray-900 p-3 rounded-top">
+        <span class="font-bold text-3xl text-white mb-3">{{ message.header }}</span>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3 pt-2 mx-4">
+        <i class="pi pi-trash text-red-500 text-2xl"></i>
+        <p class="text-lg text-gray-100 mb-0">{{ message.message }}</p>
+      </div>
+      <div class="flex justify-content-center gap-2 mt-4">
+        <button
+          (click)="cd.accept()"
+          class="w-20 rounded py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white"
+          label="Đồng ý"
+          pButton>
+        </button>
+        <button
+          (click)="cd.reject()"
+          class="p-button-outlined w-20 rounded py-1 px-2 border-1 border-gray-400 bg-transparent hover:bg-gray-800 text-gray-200"
+          label="Huỷ"
+          pButton>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
+<p-toast></p-toast>
