@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ModelNotificationMangaAccount} from '../../Model/ModelNotificationMangaAccount';
-import {Observable} from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationMangaAccountService {
   private apiUrl = 'https://localhost:44305/api/notificationMangAccount';
+  private api= 'https://localhost:44305/api/notificationMangAccountById';
 
   constructor(private http: HttpClient) {
   }
@@ -16,11 +17,23 @@ export class NotificationMangaAccountService {
     return this.http.get<ModelNotificationMangaAccount[]>(this.apiUrl);
   }
 
-  addinfonotification(notification: ModelNotificationMangaAccount): Observable<ModelNotificationMangaAccount> {
+  getNotificationMangaAcById( Id_manga: number): Observable<ModelNotificationMangaAccount[]> {
+    return this.http.get<ModelNotificationMangaAccount[]>(`${this.api}/?idManga=${Id_manga}`).pipe(
+      catchError((error: any) => {
+        console.error('Error fetching notification manga account', error);
+        return throwError(error);
+      })
+    );
+  }
+  addInfoNotification(notification: ModelNotificationMangaAccount): Observable<ModelNotificationMangaAccount> {
     return this.http.post<ModelNotificationMangaAccount>(this.apiUrl, notification);
   }
 
-  updateNotificationAccount(Comment: ModelNotificationMangaAccount): Observable<ModelNotificationMangaAccount> {
-    return this.http.put<ModelNotificationMangaAccount>(this.apiUrl, Comment);
+  updateNotificationAccount(data: ModelNotificationMangaAccount): Observable<ModelNotificationMangaAccount> {
+    return this.http.put<ModelNotificationMangaAccount>(this.apiUrl, data);
+  }
+
+  toggleNotiStatus(idNoti: number|undefined): Observable<any> {
+    return this.http.put(`${this.apiUrl}/status?idNotification=${idNoti}`,[]);
   }
 }

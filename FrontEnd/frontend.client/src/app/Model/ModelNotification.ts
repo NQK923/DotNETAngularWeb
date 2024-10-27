@@ -1,8 +1,7 @@
 export interface ModelNotification {
-  id_Notification?: number; // Ensure camelCase
-  content: string; // Ensure lowercase
-  time: Date;
-  isRead: boolean;
-  type_Noti: string;
+  id_Notification?: number;
+  content?: string;
+  time?: Date;
+  isRead?: boolean;
+  type_Noti?: string;
 }
-

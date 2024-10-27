@@ -142,16 +142,21 @@ export class ManagerComponent implements OnInit {
 
 // Xác nhận duyệt manga
   confirmBrowseManga(manga: Manga) {
-    const confirmed = confirm(`Bạn có chắc chắn muốn duyệt manga "${manga.name}"?`);
-    if (confirmed) {
-      this.browseManga(manga);
-    }
+    this.confirmAction(
+      `Bạn có chắc chắn muốn duyệt manga "${manga.name}"?`,
+      () => this.browseManga(manga),
+      () => console.log('Duyệt manga bị hủy') // Hoặc bất kỳ hành động nào bạn muốn khi hủy
+    );
   }
 
   async browseManga(manga: Manga) {
     try {
       await this.mangaService.changeStatus(manga.id_manga).toPromise();
-      alert("Duyệt thành công");
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Thành công',
+        detail: 'Duyệt thành công'
+      });
       this.removeFromList(manga.id_manga);
       this.allMangas.push(manga);
 
@@ -160,17 +165,22 @@ export class ManagerComponent implements OnInit {
         this.myManga.push(manga);
       }
     } catch (error) {
-      alert("Thất bại, vui lòng thử lại!");
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thất bại',
+        detail: 'Thất bại, vui lòng thử lại!'
+      });
       console.error(error);
     }
   }
 
 // Xác nhận xóa manga chưa duyệt
   confirmDeleteUnPostedManga(manga: Manga) {
-    const confirmed = confirm(`Bạn có chắc chắn muốn xoá manga "${manga.name}"?`);
-    if (confirmed) {
-      this.deleteUnPostedManga(manga);
-    }
+    this.confirmAction(
+      `Bạn có chắc chắn muốn xoá manga "${manga.name}"?`,
+      () => this.deleteUnPostedManga(manga),
+      () => console.log('Xóa manga chưa duyệt bị hủy') // Hoặc hành động khác khi hủy
+    );
   }
 
   async deleteUnPostedManga(manga: Manga) {
@@ -181,32 +191,56 @@ export class ManagerComponent implements OnInit {
       const categoriesToDelete = [manga.id_manga, ...categories.map(c => c.id_category)];
       await this.categoryDetailsService.deleteCategoriesDetails(categoriesToDelete).toPromise();
       this.removeFromList(manga.id_manga);
-      alert("Xoá thành công");
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Thành công',
+        detail: 'Xoá thành công'
+      });
     } catch (error) {
-      alert("Thất bại, vui lòng thử lại!");
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thất bại',
+        detail: 'Xoá thất bại, vui lòng thử lại!'
+      });
       console.error(error);
     }
   }
 
 // Ẩn manga
   hideManga(manga: Manga) {
-    const confirmed = confirm(`Bạn có chắc chắn muốn ẩn manga "${manga.name}"?`);
-    if (confirmed) {
-      this.mangaService.changeStatus(manga.id_manga).subscribe(() => {
-        alert("Ẩn thành công");
-        this.unPostedManga.push(manga);
-        this.allMangas = this.allMangas.filter(mg => mg.id_manga !== manga.id_manga);
-        this.myManga = this.myManga.filter(mg => mg.id_manga !== manga.id_manga);
-      }, (error) => {
-        alert("Thất bại, vui lòng thử lại!");
-        console.error(error);
-      });
-    }
+    this.confirmAction(
+      `Bạn có chắc chắn muốn ẩn manga "${manga.name}"?`,
+      () => {
+        this.mangaService.changeStatus(manga.id_manga).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Ẩn thành công'
+            });
+            this.unPostedManga.push(manga);
+            this.allMangas = this.allMangas.filter(mg => mg.id_manga !== manga.id_manga);
+            this.myManga = this.myManga.filter(mg => mg.id_manga !== manga.id_manga);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Thất bại',
+              detail: 'Ẩn manga thất bại, vui lòng thử lại!'
+            });
+            console.error(error);
+          }
+        });
+      },
+      () => {}
+    );
   }
 
+// Xóa manga khỏi danh sách
   removeFromList(id: number) {
     this.unPostedManga = this.unPostedManga.filter(manga => manga.id_manga !== id);
   }
+
 
 //add new manga
   onSubmit(addForm: any) {
@@ -715,58 +749,46 @@ export class ManagerComponent implements OnInit {
 
 //add notification
   addNotification(id_manga: any, text: any) {
-    this.mangaService.getMangas().subscribe({
-      next: (mangas: Manga[]) => {
-        this.listMangas = mangas;
-      },
-      error: (error) => {
-        console.error('Failed to fetch mangas:', error);
-      }
-    });
-    for (const manga of this.listMangas) {
-      if (manga.id_manga === id_manga) {
-        this.infoManga = manga;
-        break;
-      }
-    }
-    const nameManga: any = this.infoManga ? this.infoManga.name : null;
-    const textNotification: any = "Truyện vừa được thêm chương " + text;
-    const timestamp: number = Date.now();
-    const idMangaNumber: number = Number(id_manga);
-    const typeNoti: any = nameManga + " đã thêm 1 chương mới"
-    const time: Date = new Date(timestamp);
     const userId = localStorage.getItem('userId');
     const yourId = userId !== null ? parseInt(userId, 10) : 0;
-    const notification: ModelNotification = {
-      content: textNotification,
-      isRead: false,
-      time: time,
-      type_Noti: typeNoti
-    };
-    this.notificationService.addnotification(notification).subscribe(
-      (response) => {
-        this.returnNotification = response;
-        const infoNotification: ModelNotificationMangaAccount = {
-          id_Notification: this.returnNotification?.id_Notification,
-          id_manga: idMangaNumber,
-          id_account: yourId,
-          isGotNotification: false,
-          is_read: false
+    this.mangaService.getMangaById(id_manga).subscribe({
+      next: (manga: Manga) => {
+        this.infoManga=manga;
+        this.infoManga = manga;
+        const textNotification = "Truyện vừa được thêm chương " + text;
+        const timestamp = Date.now();
+        const typeNoti = "Đã thêm 1 chương mới";
+        const time = new Date(timestamp);
+        const notification: ModelNotification = {
+          content: textNotification,
+          isRead: false,
+          time: time,
+          type_Noti: typeNoti
         };
-        this.notificationMangaAccountService.addinfonotification(infoNotification).subscribe(
-          () => {
+        this.notificationService.addNotification(notification).subscribe({
+          next: (response) => {
+            this.returnNotification = response;
+            const infoNotification: ModelNotificationMangaAccount = {
+              id_Notification: this.returnNotification?.id_Notification,
+              id_manga: Number(id_manga),
+              id_account: yourId,
+              isGotNotification: true,
+              is_read: false,
+            };
+            this.notificationMangaAccountService.addInfoNotification(infoNotification).subscribe({
+              next: () => {
+              },
+              error: (error) => {
+                console.error('Error adding detailed notification:', error);
+              }
+            });
           },
-          (error) => {
+          error: (error) => {
             console.error('Error adding notification:', error);
-            alert('Thêm thông báo  thất bại:');
           }
-        )
-      },
-      (error) => {
-        console.error('Error adding notification:', error);
-        alert('Thêm thông báo  thất bại:');
+        });
       }
-    )
+    })
   }
 
   setupEventListeners() {

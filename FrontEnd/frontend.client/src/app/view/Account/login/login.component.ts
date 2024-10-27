@@ -5,6 +5,7 @@ import {AccountService} from "../../../service/Account/account.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
 import {Location} from '@angular/common';
+import {MessageService} from "primeng/api";
 
 
 @Component({
@@ -16,20 +17,19 @@ export class LoginComponent implements AfterViewInit {
   @ViewChild('container') container!: ElementRef;
   @ViewChild('register') registerBtn!: ElementRef;
   @ViewChild('login') loginBtn!: ElementRef;
-  accounts: ModelAccount[] = [];
+  accounts: ModelAccount |undefined;
 
   constructor(private router: Router,
               private InfoAccountService: InfoAccountService,
-              private accountService: AccountService, private location: Location) {
+              private accountService: AccountService,
+              private messageService: MessageService ) {
   }
 
   ngAfterViewInit() {
     this.registerBtn.nativeElement.addEventListener('click', () => {
-      console.log('Register button clicked');
       this.container.nativeElement.classList.add('active');
     });
     this.loginBtn.nativeElement.addEventListener('click', () => {
-      console.log('Login button clicked');
       this.container.nativeElement.classList.remove('active');
     });
   }
@@ -46,6 +46,10 @@ export class LoginComponent implements AfterViewInit {
   loginWeb() {
     const username = (document.getElementById('username') as HTMLInputElement).value;
     const password = (document.getElementById('password') as HTMLInputElement).value;
+    if (!username || !password) {
+      this.messageService.add({ severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập tên đăng nhập và mật khẩu' });
+      return;
+    }
     const data: ModelAccount = {
       id_account: 0,
       username: username,
@@ -59,15 +63,15 @@ export class LoginComponent implements AfterViewInit {
         this.TakeData(Number(response));
       },
       error: () => {
-        alert('Vui lòng nhập đúng tài khoản mật khẩu');
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Vui lòng nhập đúng tài khoản mật khẩu' });
       }
     });
   }
 
 // get data login
   TakeData(response: number) {
-    this.accountService.getAccount().subscribe(
-      (data: ModelAccount[]) => {
+    this.accountService.getAccountById(response).subscribe(
+      (data) => {
         this.accounts = data;
         this.checkAccount(response);
       },
@@ -79,22 +83,17 @@ export class LoginComponent implements AfterViewInit {
 
 // check data login
   checkAccount(response: number) {
-    for (let i = 0; i < this.accounts.length; i++) {
-      if (this.accounts[i].id_account === response) {
-        if (!this.accounts[i].role && !this.accounts[i].status) {
-          localStorage.setItem('userId', response.toString());
-          this.router.navigate(['/']).then(r => {
-            window.location.reload()
-          });
-        } else if (this.accounts[i].status) {
-          alert('Tài khoản đã bị khóa, liên hệ quản lý để hổ trợ');
-        } else if (this.accounts[i].role) {
-          let id = this.accounts[i].id_account;
-          // @ts-ignore
-          localStorage.setItem('userId', id.toString());
-          this.router.navigate(['/manager']);
-        }
-      }
+    if (!this.accounts?.role && !this.accounts?.status) {
+      localStorage.setItem('userId', response.toString());
+      this.router.navigate(['/']).then(r => {
+        window.location.reload()
+      });
+    } else if (this.accounts.status) {
+      this.messageService.add({ severity: 'warn', summary: 'Tài khoản bị khóa', detail: 'Tài khoản của bạn đã bị khóa, vui lòng liên hệ quản lý để được hỗ trợ.' });
+    } else if (this.accounts.role) {
+      // @ts-ignore
+      localStorage.setItem('userId', this.accounts.id_account);
+      this.router.navigate(['/manager']);
     }
   }
 
@@ -111,44 +110,43 @@ export class LoginComponent implements AfterViewInit {
       role: false,
       status: false
     };
-
     if (!username.value) {
-      alert("Tên người dùng không được để trống");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không được để trống' });
       return;
     }
     if (username.value.length > 12) {
-      alert("Tên người dùng không quá 12 ký tự");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không quá 12 ký tự' });
       return;
     }
     if (!email.value) {
-      alert("Email không được để trống");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email không được để trống' });
       return;
     }
     if (!password.value) {
-      alert("Mật khẩu không được để trống");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu không được để trống' });
       return;
     }
     if (password.value.length < 6) {
-      alert("Mật khẩu tối thiểu 6 ký tự");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu tối thiểu 6 ký tự' });
       return;
     }
     if (!passwordAccept.value) {
-      alert("Xác nhận mật khẩu không được để trống");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không được để trống' });
       return;
     }
     const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     if (!emailPattern.test(email.value)) {
-      alert("Email phải có định dạng: example@gmail.com");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email phải có định dạng: example@gmail.com' });
       return;
     }
     if (password.value !== passwordAccept.value) {
-      alert("Xác nhận mật khẩu khác với mật khẩu");
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không trùng khớp' });
       return;
     }
     this.accountService.addAccount(data).subscribe({
       next: (response) => {
         if (typeof response === 'number') {
-          alert('Login success');
+          this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công' });
           localStorage.setItem('userId', response);
 
           const infoAccount: ModelInfoAccount = {
@@ -161,16 +159,16 @@ export class LoginComponent implements AfterViewInit {
               this.router.navigate([`/index/User:${response}`]);
             },
             error: (error) => {
-              alert('Lỗi thêm thông tin');
+              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Lỗi thêm thông tin' });
               console.error('Error adding account info:', error);
             }
           });
         } else {
-          alert('Có vẽ tên đăng nhập đã được sử dụng');
+          this.messageService.add({ severity: 'warn', summary: 'Cảnh báo', detail: 'Tên đăng nhập đã được sử dụng' });
         }
       },
       error: (err) => {
-        alert('An error occurred during login. Please try again later.');
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra trong quá trình đăng ký, vui lòng thử lại.' });
         console.error('Login error:', err);
       }
     });

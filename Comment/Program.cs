@@ -38,6 +38,15 @@ app.MapGet("/api/comment", async (CommentDbContext dbContext) =>
     return Results.Ok(comments);
 });
 
+//get by id
+app.MapGet("/api/comment/{id_chapter}", async (CommentDbContext dbContext, int id_chapter) =>
+{
+    var comments =
+        await dbContext.Comment.Where(c => c.id_chapter == id_chapter).ToListAsync();
+
+    return comments.Count == 0 ? Results.NotFound() : Results.Ok(comments);
+});
+
 //add new comment
 app.MapPost("/api/comment", async (ModelComment comment, CommentDbContext dbContext) =>
 {

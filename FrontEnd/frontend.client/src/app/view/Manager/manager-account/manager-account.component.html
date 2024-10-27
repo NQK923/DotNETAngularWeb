@@ -115,4 +115,31 @@
     </div>
   </div>
 </div>
-
+<p-confirmDialog #cd>
+  <ng-template let-message pTemplate="headless">
+    <div class="flex flex-column align-items-center pb-4 border-round bg-gray-800 rounded">
+      <div class="w-full bg-gray-900 p-3 rounded-top">
+        <span class="font-bold text-3xl text-white mb-3">{{ message.header }}</span>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3 pt-2 mx-4">
+        <i class="pi pi-question text-red-500 text-2xl"></i>
+        <p class="text-lg text-gray-100 mb-0">{{ message.message }}</p>
+      </div>
+      <div class="flex justify-content-center gap-2 mt-4">
+        <button
+          (click)="cd.accept()"
+          class="w-20 rounded py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white"
+          label="Đồng ý"
+          pButton>
+        </button>
+        <button
+          (click)="cd.reject()"
+          class="p-button-outlined w-20 rounded py-1 px-2 border-1 border-gray-400 bg-transparent hover:bg-gray-800 text-gray-200"
+          label="Huỷ"
+          pButton>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
+<p-toast></p-toast>

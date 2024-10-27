@@ -44,6 +44,13 @@ app.MapGet("/api/Account/data", async (int idAccount, AccountDbContext dbContext
     return Results.Ok(account);
 });
 
+app.MapGet("/api/AccountById/{idAccount:int}", async ([FromServices] AccountDbContext dbContext, int idAccount) =>
+{
+    var account = await dbContext.Account.FindAsync(idAccount);
+    
+    return account == null ? Results.NotFound() : Results.Ok(account);
+});
+
 //add new account
 app.MapPost("/api/Account", async (ModelAccount account, [FromServices] AccountDbContext dbContext) =>
 {

@@ -9,6 +9,7 @@ import {MangaHistoryService} from "../../../service/MangaHistory/manga_history.s
 import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaViewHistory.service";
 import {AccountService} from "../../../service/Account/account.service";
 import {ModelAccount} from "../../../Model/ModelAccount";
+import {forkJoin, map} from "rxjs";
 
 interface Chapter {
   id_chapter: number;
@@ -167,15 +168,11 @@ export class ViewerComponent implements OnInit {
 
   loadAccount(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.accountService.getAccount().subscribe(
-        (data: ModelAccount[]) => {
-          this.listAccount = data;
-          for (let i = 0; i < this.listAccount.length; i++) {
-            if (this.listAccount[i].id_account === this.yourId) {
-              this.yourAc = this.listAccount[i];
-              resolve();
-              return;
-            }
+      this.accountService.getAccountById(Number(this.yourId)).subscribe(
+        (data: ModelAccount) => {
+          {
+            this.yourAc = data
+            resolve()
           }
           reject(new Error('Account not found'));
         },
@@ -248,42 +245,41 @@ export class ViewerComponent implements OnInit {
 
   takeData() {
     for (let i = 0; i < this.comments.length; i++) {
-      for (let k = 0; k < this.listDataComment.length; k++) {
-        if (this.listDataComment[k].Comment?.id_comment == this.comments[i].id_comment) {
-          return;
-        }
+      const comment = this.comments[i];
+      const existsInList = this.listDataComment.some(item => item.Comment?.id_comment === comment.id_comment);
+      if (existsInList) {
+        continue;
       }
-      if (this.comments[i].id_chapter === this.idChap) {
-        for (let j = 0; j < this.listInfoAccount.length; j++) {
-          if (this.comments[i].id_user === this.listInfoAccount[j].id_account && this.comments[i].id_user != this.yourId) {
-            this.listDataComment.push(new CommentData(
-              this.comments[i],
-              this.listInfoAccount[j]
-            ));
+      if (comment.id_chapter === this.idChap && comment.id_user !== this.yourId) {
+        this.infoAccountService.getInfoAccountById(Number(comment.id_user)).subscribe(
+          (data: ModelInfoAccount) => {
+            this.listDataComment.push(new CommentData(comment, data));
           }
-        }
+        );
       }
     }
   }
 
   takeYourData() {
-    for (var i = 0; i < this.comments.length; i++) {
-      for (var k = 0; k < this.listYourComment.length; k++) {
-        if (this.listYourComment[k].Comment?.id_comment == this.comments[i].id_comment) {
-          return;
-        }
+    const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.id_comment));
+    const relevantComments = this.comments.filter(comment =>
+      comment.id_chapter === this.idChap &&
+      comment.id_user === this.yourId &&
+      !existingCommentIds.has(comment.id_comment)
+    );
+    const accountRequests = relevantComments.map(comment =>
+      this.infoAccountService.getInfoAccountById(Number(comment.id_user)).pipe(
+        map((data: ModelInfoAccount) => new CommentData(comment, data))
+      )
+    );
+    forkJoin(accountRequests).subscribe(
+      (dataComments: CommentData[]) => {
+        this.listYourComment.push(...dataComments);
+      },
+      (error) => {
+        console.error('Error fetching account info:', error);
       }
-      if (this.comments[i].id_chapter === this.idChap) {
-        for (var j = 0; j < this.listInfoAccount.length; j++) {
-          if (this.comments[i].id_user === this.listInfoAccount[j].id_account && this.comments[i].id_user == this.yourId) {
-            this.listYourComment.push(new CommentData(
-              this.comments[i],
-              this.listInfoAccount[j]
-            ));
-          }
-        }
-      }
-    }
+    );
   }
 
   loadComment(): Promise<void> {
@@ -303,7 +299,7 @@ export class ViewerComponent implements OnInit {
 
   loadInfoAccount(): Promise<void> {
     return new Promise((resolve) => {
-      this.infoAccountService.getinfoaccount().subscribe(
+      this.infoAccountService.getInfoAccount().subscribe(
         (data: ModelInfoAccount[]) => {
           this.listInfoAccount = data;
           resolve();
@@ -338,5 +334,9 @@ export class ViewerComponent implements OnInit {
 
   trackByChapterIndex(index: number, chapter: Chapter): number {
     return chapter.index;
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

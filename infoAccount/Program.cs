@@ -41,6 +41,18 @@ app.MapGet("/api/InfoAccount", async (InfoAccountDbContext dbContext) =>
     return Results.Ok(accounts);
 });
 
+app.MapGet("/api/InfoAccountById/{idaccount}", async ( InfoAccountDbContext dbContext, int idaccount) =>
+{
+    var account = await dbContext.Account.FindAsync(idaccount);
+    
+    if (account == null)
+    {
+        return Results.NotFound();
+    }
+    
+    return Results.Ok(account);
+});
+
 //add new info account
 app.MapPost("/api/InfoAccount", async (ModelInfoAccount infoAccount, InfoAccountDbContext dbContext) =>
 {

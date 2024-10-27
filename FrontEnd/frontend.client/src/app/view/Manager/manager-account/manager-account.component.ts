@@ -1,10 +1,12 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ModelAccount} from "../../../Model/ModelAccount";
 import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
 import {AccountService} from "../../../service/Account/account.service";
 import {ModelDataAccount} from "../../../Model/DataAccount";
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-manager-account',
@@ -19,7 +21,13 @@ export class ManagerAccountComponent implements OnInit {
   commentUpdate: boolean | null = null;
 
 
-  constructor(private el: ElementRef, private router: Router, private accountService: AccountService, private snackBar: MatSnackBar) {
+  constructor(private InfoAccountService: InfoAccountService,
+              private el: ElementRef,
+              private router: Router,
+              private accountService: AccountService,
+              private snackBar: MatSnackBar,
+              private messageService: MessageService,
+              private confirmationService: ConfirmationService,) {
   }
 
   ngOnInit() {
@@ -37,26 +45,22 @@ export class ManagerAccountComponent implements OnInit {
     this.accountService.getAccount().subscribe(
       (data: ModelAccount[]) => {
         this.accounts = data;
-        this.accountService.getinfoAccount().subscribe(
-          (data: ModelInfoAccount[]) => {
-            this.infoAccounts = data;
-            for (let i = 0; i < this.accounts.length; i++) {
-              for (let j = 0; j < this.infoAccounts.length; j++) {
-                if (this.accounts[i].id_account == this.infoAccounts[j].id_account) {
-                  this.dataAccount.push(
-                    {
-                      Account: this.accounts[i],
-                      InfoAccount: this.infoAccounts[j]
-                    } as ModelDataAccount)
-                  break
-                }
+        for (let i = 0; i < this.accounts.length; i++) {
+          this.InfoAccountService.getInfoAccountById(Number(this.accounts[i].id_account)).subscribe(
+            (data: ModelInfoAccount) => {
+              {
+                this.dataAccount.push(
+                  {
+                    Account: this.accounts[i],
+                    InfoAccount: data
+                  } as ModelDataAccount)
               }
+            },
+            (error) => {
+              console.error('Error fetching account info:', error);
             }
-          },
-          (error) => {
-            console.error('Error fetching account info:', error);
-          }
-        );
+          );
+        }
       },
       (error) => {
         console.error('Error fetching accounts:', error);
@@ -66,88 +70,120 @@ export class ManagerAccountComponent implements OnInit {
 
 //Change Account status
   UpdateStatus(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
-    this.status = !status;
+    const newStatus = !status;
     const account: ModelAccount = {
       id_account: id,
       username: name,
       password: pass,
-      status: this.status,
+      status: newStatus,
       banComment: ban
     };
-    const title: string = "Thông báo tài khoản:"
-    const text: string = "Tài khoản bị vô hiệu "
-    this.accountService.updateAccount(account).subscribe(
-      (response) => {
-        this.snackBar.open('Cập nhật thành công!', 'Đóng', {
-          duration: 3000,
-          verticalPosition: 'top',
-          horizontalPosition: 'center',
-        });
-        if (this.status == true) {
-          this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
-            next: (response) => {
-              alert('Thành công gởi mail.');
-              this.ngOnInit()
-            },
-            error: (error) => {
-              alert('Có lỗi xảy ra khi gửi .');
+    const title: string = "Thông báo tài khoản:";
+    const text: string = "Tài khoản bị vô hiệu";
+    this.confirmAction(
+      `Bạn có chắc chắn muốn ${newStatus ? 'vô hiệu' : 'kích hoạt'} tài khoản "${name}"?`,
+      () => {
+        this.accountService.updateAccount(account).subscribe({
+          next: () => {
+            this.snackBar.open('Cập nhật thành công!', 'Đóng', {
+              duration: 3000,
+              verticalPosition: 'top',
+              horizontalPosition: 'center',
+            });
+
+            if (newStatus) {
+              this.accountService.postMail(gmail.toString(), title, text).subscribe({
+                next: () => {
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Thông báo',
+                    detail: 'Đã gửi thông báo vô hiệu tài khoản qua email'
+                  });
+                  this.ngOnInit();
+                },
+                error: (error) => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Lỗi',
+                    detail: 'Có lỗi xảy ra khi gửi email thông báo.'
+                  });
+                  console.error('Email error:', error);
+                }
+              });
+            } else {
+              this.ngOnInit();
             }
-          })
-        } else {
-          this.ngOnInit()
-        }
-      },
-      (error) => {
-        this.snackBar.open('Cập nhật thất bại!', 'Đóng', {
-          duration: 3000,
-          verticalPosition: 'top',
-          horizontalPosition: 'center',
+          },
+          error: (error) => {
+            this.snackBar.open('Cập nhật thất bại!', 'Đóng', {
+              duration: 3000,
+              verticalPosition: 'top',
+              horizontalPosition: 'center',
+            });
+            console.error('Update error:', error);
+          }
         });
-      }
+      },
+      () => console.log('Thao tác cập nhật tài khoản đã bị hủy')
     );
   }
 
-  //Update comment
+
   UpdateComment(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
-    this.commentUpdate = !ban;
+    const newCommentStatus = !ban;
     const account: ModelAccount = {
       id_account: id,
       username: name,
       password: pass,
       status: status,
-      banComment: this.commentUpdate
+      banComment: newCommentStatus
     };
-    const title: string = "Thông báo tài khoản:"
-    const text: string = "Tài khoản khóa bình luận "
-
-    this.accountService.updateAccount(account).subscribe(
-      (response) => {
-        this.snackBar.open('Cập nhật thành công!', 'Đóng', {
-          duration: 3000,
-          verticalPosition: 'top',
-          horizontalPosition: 'center',
-        });
-        if (this.commentUpdate == true) {
-          this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
-            next: (response) => {
-              alert('Thành công gởi mail.');
-              this.ngOnInit()
-            },
-            error: (error) => {
-              alert('Có lỗi xảy ra khi gửi .');
+    const title: string = "Thông báo tài khoản:";
+    const text: string = "Tài khoản đã bị khóa quyền bình luận";
+    this.confirmAction(
+      `Bạn có chắc chắn muốn ${newCommentStatus ? 'khóa' : 'mở'} quyền bình luận cho tài khoản "${name}"?`,
+      () => {
+        this.accountService.updateAccount(account).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Cập nhật quyền bình luận thành công!'
+            });
+            if (newCommentStatus) {
+              this.accountService.postMail(gmail.toString(), title, text).subscribe({
+                next: () => {
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Thông báo',
+                    detail: 'Đã gửi thông báo khóa quyền bình luận qua email'
+                  });
+                  this.ngOnInit();
+                },
+                error: (error) => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Lỗi',
+                    detail: 'Có lỗi xảy ra khi gửi email thông báo.'
+                  });
+                  console.error('Email error:', error);
+                }
+              });
+            } else {
+              this.ngOnInit();
             }
-          })
-        } else {
-          this.ngOnInit()
-        }
-      },
-      (error) => {
-        this.snackBar.open('Cập nhật thất bại!', 'Đóng', {
-          duration: 3000,
-          verticalPosition: 'top',
-          horizontalPosition: 'center',
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Thất bại',
+              detail: 'Cập nhật quyền bình luận thất bại!'
+            });
+            console.error('Update error:', error);
+          }
         });
-      }
+      },
+      () => console.log('Thao tác cập nhật quyền bình luận đã bị hủy')
     );
   }
 
@@ -202,6 +238,18 @@ export class ManagerAccountComponent implements OnInit {
         viewUpdate.classList.toggle('hidden');
       });
     }
+  }
+  confirmAction = (message: string, onConfirm: () => void, onCancel: () => void) => {
+    this.confirmationService.confirm({
+      message: message,
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: onConfirm,
+      reject: onCancel
+    });
   }
 
   applyTailwindClasses() {
