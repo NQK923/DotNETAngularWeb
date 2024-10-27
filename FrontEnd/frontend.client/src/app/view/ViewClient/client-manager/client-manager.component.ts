@@ -27,6 +27,7 @@ interface Manga {
   cover_img: string;
   describe: string;
   is_posted: boolean;
+  latestChapter: number;
 }
 
 interface Chapter {
@@ -79,6 +80,7 @@ export class ClientManagerComponent implements OnInit {
     author: '',
     describe: '',
     is_posted: false,
+    latestChapter: 0,
   };
   accounts: ModelAccount[] = [];
   listMangas: Manga[] = [];
@@ -344,8 +346,8 @@ export class ClientManagerComponent implements OnInit {
   finalizeAddChapter(formData: FormData) {
     this.isAddingChapter = false;
     const idManga = formData.get('id_manga');
-    const nameChap = formData.get('title');
-    this.addNotification(idManga, nameChap);
+    const index = formData.get('index');
+    this.addNotification(idManga, index);
     this.mangaService.updateTimeManga(Number(this.selectedIdManga)).subscribe();
     setTimeout(() => {
       window.location.reload();
@@ -803,19 +805,16 @@ export class ClientManagerComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Lỗi',
-        detail: 'Không tìm thấy User ID trong local storage'
+        detail: 'Không tìm thấy User'
       });
       return;
     }
-
     const emailElement = this.el.nativeElement.querySelector('#emailUser');
     const nameElement = this.el.nativeElement.querySelector('#nameUser');
-
     if (emailElement.value === "" && nameElement.value === "") {
       this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin'});
       return;
     }
-
     const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     if (!emailPattern.test(emailElement.value)) {
       this.messageService.add({
@@ -825,9 +824,8 @@ export class ClientManagerComponent implements OnInit {
       });
       return;
     }
-
     this.urlImg = '';
-    this.accountService.getinfoAccount().subscribe(
+    this.accountService.getInfoAccount().subscribe(
       (data: ModelInfoAccount[]) => {
         this.infoAccounts = data;
         if (this.idAccount !== null) {
@@ -839,26 +837,22 @@ export class ClientManagerComponent implements OnInit {
         console.error('Error fetching account info:', error);
       }
     );
-
     for (let i = 0; i < this.infoAccounts.length; i++) {
       if (this.infoAccounts[i].id_account === parseInt(userId, 10)) {
-        this.urlImg = this.infoAccounts[i].cover_img || '';  // Ensure it's a string
+        this.urlImg = this.infoAccounts[i].cover_img || '';
         break;
       }
     }
-
     if (!emailElement || !nameElement) {
       this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không tìm thấy trường Email hoặc Tên'});
       return;
     }
-
     const updateInfo: ModelInfoAccount = {
       id_account: parseInt(userId, 10),
       email: emailElement.value,
       cover_img: this.urlImg,
       name: nameElement.value
     };
-
     this.accountService.updateaccount(updateInfo).subscribe({
       next: () => {
         this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Cập nhật thành công'});
@@ -874,7 +868,6 @@ export class ClientManagerComponent implements OnInit {
       }
     });
   }
-
 
   takeData() {
     this.accounts = [];
@@ -893,7 +886,7 @@ export class ClientManagerComponent implements OnInit {
           console.error('Error fetching accounts:', error);
         }
       );
-      this.accountService.getinfoAccount().subscribe(
+      this.accountService.getInfoAccount().subscribe(
         (data: ModelInfoAccount[]) => {
           this.infoAccounts = data;
           if (this.idAccount !== null) {
@@ -936,58 +929,48 @@ export class ClientManagerComponent implements OnInit {
   }
 
   addNotification(id_manga: any, text: any) {
-    this.mangaService.getMangas().subscribe({
-      next: (mangas: Manga[]) => {
-        this.listMangas = mangas;
-      },
-      error: (error) => {
-        console.error('Failed to fetch mangas:', error);
-      }
-    });
-    for (const manga of this.listMangas) {
-      if (manga.id_account === id_manga) {
-        this.infoManga = manga;
-        break;
-      }
-    }
-    const textNotification: any = "Truyện vừa được thêm chương " + text;
-    const timestamp: number = Date.now();
-    const idMangaNumber: number = Number(id_manga);
-    const typeNoti: any = " Đã thêm 1 chương mới"
-    const time: Date = new Date(timestamp);
     const userId = localStorage.getItem('userId');
     const yourId = userId !== null ? parseInt(userId, 10) : 0;
-    const notification: ModelNotification = {
-      content: textNotification,
-      isRead: false,
-      time: time,
-      type_Noti: typeNoti
-    };
-    this.notificationService.addnotification(notification).subscribe(
-      (response) => {
-        this.returnNotification = response;
-        const infoNotification: ModelNotificationMangaAccount = {
-          id_Notification: this.returnNotification?.id_Notification,
-          id_manga: idMangaNumber,
-          id_account: yourId,
-          isGotNotification: true,
-          is_read: false,
+    this.mangaService.getMangaById(id_manga).subscribe({
+      next: (manga: Manga) => {
+        this.infoManga=manga;
+        this.infoManga = manga;
+        const textNotification = "Truyện vừa được thêm chương " + text;
+        const timestamp = Date.now();
+        const typeNoti = "Đã thêm 1 chương mới";
+        const time = new Date(timestamp);
+        const notification: ModelNotification = {
+          content: textNotification,
+          isRead: false,
+          time: time,
+          type_Noti: typeNoti
         };
-        this.notificationMangaAccountService.addinfonotification(infoNotification).subscribe(
-          () => {
+        this.notificationService.addNotification(notification).subscribe({
+          next: (response) => {
+            this.returnNotification = response;
+            const infoNotification: ModelNotificationMangaAccount = {
+              id_Notification: this.returnNotification?.id_Notification,
+              id_manga: Number(id_manga),
+              id_account: yourId,
+              isGotNotification: true,
+              is_read: false,
+            };
+            this.notificationMangaAccountService.addInfoNotification(infoNotification).subscribe({
+              next: () => {
+              },
+              error: (error) => {
+                console.error('Error adding detailed notification:', error);
+              }
+            });
           },
-          (error) => {
+          error: (error) => {
             console.error('Error adding notification:', error);
-            alert('Thêm thông báo  thất bại:');
           }
-        )
-      },
-      (error) => {
-        console.error('Error adding notification:', error);
-        alert('Thêm thông báo  thất bại:');
+        });
       }
-    )
+    })
   }
+
 
 //Pagination
   getPagedMangas(): Manga[] {
