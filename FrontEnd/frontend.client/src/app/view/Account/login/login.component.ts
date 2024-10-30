@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {ModelAccount} from "../../../Model/ModelAccount";
-import {Router} from "@angular/router";
-import {AccountService} from "../../../service/Account/account.service";
-import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
-import {Location} from '@angular/common';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { ModelAccount } from "../../../Model/ModelAccount";
+import { Router } from "@angular/router";
+import { AccountService } from "../../../service/Account/account.service";
+import { InfoAccountService } from "../../../service/InfoAccount/info-account.service";
+import { Location } from '@angular/common';
+import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
 
 
 @Component({
@@ -12,27 +12,30 @@ import {Location} from '@angular/common';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements AfterViewInit {
-  @ViewChild('container') container!: ElementRef;
-  @ViewChild('register') registerBtn!: ElementRef;
-  @ViewChild('login') loginBtn!: ElementRef;
+export class LoginComponent  {
   accounts: ModelAccount[] = [];
 
+  // Two way data binding
+  isActive: boolean = false;
+  username: string = '';
+  password: string = '';
+  confirmPassword: string = '';
+  email: string = '';
+  messageErrorUsername: string = '';
+  messageErrorPassword: string = '';
+
+  isInvalidUsername: boolean = false;
+  isInvalidPassword: boolean = false;
+  isInvalidEmail: boolean = false;
+  isInvalidConfirmPassword: boolean = false;
+  // Two way data binding
+
   constructor(private router: Router,
-              private InfoAccountService: InfoAccountService,
-              private accountService: AccountService, private location: Location) {
+    private InfoAccountService: InfoAccountService,
+    private accountService: AccountService, private location: Location) {
   }
 
-  ngAfterViewInit() {
-    this.registerBtn.nativeElement.addEventListener('click', () => {
-      console.log('Register button clicked');
-      this.container.nativeElement.classList.add('active');
-    });
-    this.loginBtn.nativeElement.addEventListener('click', () => {
-      console.log('Login button clicked');
-      this.container.nativeElement.classList.remove('active');
-    });
-  }
+
 
   goToForgotPassword() {
     this.router.navigate(['/update']);
@@ -43,136 +46,103 @@ export class LoginComponent implements AfterViewInit {
   }
 
   // check login
-  loginWeb() {
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
-    const data: ModelAccount = {
-      id_account: 0,
-      username: username,
-      password: password,
-      banDate: new Date("2024-10-06T07:15:58.989Z"),
-      role: true,
-      status: true
-    };
-    this.accountService.login(data).subscribe({
-      next: (response) => {
-        this.TakeData(Number(response));
-      },
-      error: () => {
-        alert('Vui lòng nhập đúng tài khoản mật khẩu');
-      }
-    });
+  async loginNormal(): Promise<void> {
+    this.resetError();
+    let loginRequest: LoginRegisterRequest = { username: this.username, password: this.password };
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.failCallback.bind(this));
+    if (!result) { console.log("NOT OK"); return; }
+    console.log(await this.accountService.getIdAccount());
+    console.log("OK");
   }
 
-// get data login
-  TakeData(response: number) {
-    this.accountService.getAccount().subscribe(
-      (data: ModelAccount[]) => {
-        this.accounts = data;
-        this.checkAccount(response);
-      },
-      (error) => {
-        console.error('Error fetching accounts:', error);
-      }
-    );
-  }
-
-// check data login
-  checkAccount(response: number) {
-    for (let i = 0; i < this.accounts.length; i++) {
-      if (this.accounts[i].id_account === response) {
-        if (!this.accounts[i].role && !this.accounts[i].status) {
-          localStorage.setItem('userId', response.toString());
-          this.router.navigate(['/']).then(r => {
-            window.location.reload()
-          });
-        } else if (this.accounts[i].status) {
-          alert('Tài khoản đã bị khóa, liên hệ quản lý để hổ trợ');
-        } else if (this.accounts[i].role) {
-          let id = this.accounts[i].id_account;
-          // @ts-ignore
-          localStorage.setItem('userId', id.toString());
-          this.router.navigate(['/manager']);
-        }
-      }
+  
+  failCallback(error: string): void {
+    console.log("lỗi:" + error);
+    switch (error) {
+      case "Tài khoản không tồn tại":
+        this.messageErrorUsername = error;
+        this.isInvalidUsername = true;
+        break;
+      case "Sai mật khẩu":
+        this.messageErrorPassword = error;
+        this.isInvalidPassword = true;
+        break;
+      default:
+        break;
     }
+  }
+
+  resetError(): void {
+    if (this.isInvalidConfirmPassword) this.isInvalidConfirmPassword = false;
+    if (this.isInvalidEmail) this.isInvalidEmail = false;
+    if (this.isInvalidUsername) this.isInvalidUsername = false;
+    if (this.isInvalidPassword) this.isInvalidPassword = false;
+  }
+
+  changeForm(): void {
+    this.resetError();
+    if (this.isActive == false) {
+      this.isActive = true;
+      return;
+    }
+    this.isActive = false;
   }
 
   // create new account
-  registerAccount(): void {
-    const username = document.getElementById('usernameSign') as HTMLInputElement;
-    const email = document.getElementById('email') as HTMLInputElement;
-    const password = document.getElementById('passwordSign') as HTMLInputElement;
-    const passwordAccept = document.getElementById('passwordAccept') as HTMLInputElement;
-    const data: ModelAccount = {
-      username: username.value,
-      password: password.value,
-      banComment: false,
-      role: false,
-      status: false
-    };
-
-    if (!username.value) {
-      alert("Tên người dùng không được để trống");
-      return;
-    }
-    if (username.value.length > 12) {
-      alert("Tên người dùng không quá 12 ký tự");
-      return;
-    }
-    if (!email.value) {
-      alert("Email không được để trống");
-      return;
-    }
-    if (!password.value) {
-      alert("Mật khẩu không được để trống");
-      return;
-    }
-    if (password.value.length < 6) {
-      alert("Mật khẩu tối thiểu 6 ký tự");
-      return;
-    }
-    if (!passwordAccept.value) {
-      alert("Xác nhận mật khẩu không được để trống");
-      return;
-    }
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailPattern.test(email.value)) {
-      alert("Email phải có định dạng: example@gmail.com");
-      return;
-    }
-    if (password.value !== passwordAccept.value) {
-      alert("Xác nhận mật khẩu khác với mật khẩu");
-      return;
-    }
-    this.accountService.addAccount(data).subscribe({
-      next: (response) => {
-        if (typeof response === 'number') {
-          alert('Login success');
-          localStorage.setItem('userId', response);
-
-          const infoAccount: ModelInfoAccount = {
-            id_account: response,
-            name: "Rỗng",
-            email: email.value || "null@gmail.com"
-          };
-          this.InfoAccountService.addInfoAccount(infoAccount).subscribe({
-            next: () => {
-              this.router.navigate([`/index/User:${response}`]);
-            },
-            error: (error) => {
-              alert('Lỗi thêm thông tin');
-              console.error('Error adding account info:', error);
-            }
-          });
-        } else {
-          alert('Có vẽ tên đăng nhập đã được sử dụng');
-        }
-      },
-      error: (err) => {
-        alert('An error occurred during login. Please try again later.');
-        console.error('Login error:', err);
-      }
-    });
+  async registerAccount(): Promise<void> {
+    if (!this.checkRegisterData()) return;
+    let result: boolean = await this.accountService.register(this.username, this.password)
+    if (!result) { console.log("NOT OK"); return; }
+    console.log("OK");
   }
+
+  private checkRegisterData(): boolean {
+    this.resetError();
+    let flag: boolean;
+    flag = this.checkValidUsername() || this.checkValidEmail() || this.checkValidPassword() || this.checkConfirmPassword();
+    return flag;
+  }
+
+  private checkValidUsername(): boolean {
+    if (!this.accountService.checkValidUsername(this.username)) {
+      this.messageErrorUsername = "Tên người dùng không được để trống và không quá 12 ký tự";
+      this.isInvalidUsername = true;
+      return false;
+    }
+    this.isInvalidUsername = false;
+    return true;
+  }
+
+  private checkValidEmail(): boolean {
+    if (!this.accountService.checkValidEmail(this.username)) { this.isInvalidEmail = true; return false; }
+    this.isInvalidEmail = false;
+    return true;
+  }
+
+  private checkConfirmPassword(): boolean {
+    if (!this.accountService.checkConfirmPassword(this.password, this.confirmPassword)) { this.isInvalidConfirmPassword = true; return false; }
+    this.isInvalidConfirmPassword = false;
+    return true;
+  }
+
+  private checkValidPassword(): boolean {
+    if (!this.accountService.checkValidPassword(this.password)) {
+      this.messageErrorPassword = "Mật khẩu không được để trống và tối thiểu 6 ký tự";
+      this.isInvalidPassword = true;
+      return false;
+    }
+    this.isInvalidPassword = false;
+    return true;
+  }
+
+  private checkValidCurrentPassword(): boolean {
+    if (!this.accountService.checkValidCurrentPassword(this.password)) {
+      this.messageErrorPassword = "Mật khẩu không đúng";
+      this.isInvalidPassword = true;
+      return false;
+    }
+    this.isInvalidPassword = false;
+    return true;
+  }
+
 }

@@ -1,6 +1,6 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Banners.Model;
+using infoAccount;
 using infoAccount.Dbconnect;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,27 +37,12 @@ app.UseCors("AllowAllOrigins");
 //get all info account
 app.MapGet("/api/InfoAccount", async (InfoAccountDbContext dbContext) =>
 {
-    var accounts = await dbContext.Account.ToListAsync();
+    var accounts = await dbContext.infoAccounts.ToListAsync();
     return Results.Ok(accounts);
 });
 
 //add new info account
-app.MapPost("/api/InfoAccount", async (ModelInfoAccount infoAccount, InfoAccountDbContext dbContext) =>
-{
-    try
-    {
-        var exists = await dbContext.Account
-            .AnyAsync(m => m.id_account == infoAccount.id_account);
-        if (exists) return Results.Ok(false);
-        dbContext.Account.Add(infoAccount);
-        await dbContext.SaveChangesAsync();
-        return Results.Ok(true);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem("An error occurred while saving the account: " + ex.Message);
-    }
-});
+
 
 //add user avatar
 app.MapPost("/api/InfoAccountavata", async (HttpRequest request, InfoAccountDbContext db) =>
@@ -89,30 +74,16 @@ app.MapPost("/api/InfoAccountavata", async (HttpRequest request, InfoAccountDbCo
     await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
 
     var coverImgUrl = blobClient.Uri.ToString();
-    var existingAccount = await db.Account.FindAsync(id);
+    var existingAccount = await db.infoAccounts.FindAsync(id);
 
     if (existingAccount == null) return Results.NotFound("Account not found");
 
     existingAccount.cover_img = coverImgUrl;
-    db.Account.Update(existingAccount);
+    db.infoAccounts.Update(existingAccount);
     await db.SaveChangesAsync();
 
     return Results.Ok(true);
 });
 
-//update account
-app.MapPut("/api/InfoAccountupdate", async (ModelInfoAccount infoAccount, InfoAccountDbContext db) =>
-{
-    try
-    {
-        db.Account.Update(infoAccount);
-        await db.SaveChangesAsync();
-        return Results.Ok(true);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem("An error occurred during account creation: " + ex.Message);
-    }
-});
-
+app.InitBasicInfoAccountApi();
 app.Run();
