@@ -12,7 +12,7 @@ import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterReques
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent  {
+export class LoginComponent {
   accounts: ModelAccount[] = [];
 
   // Two way data binding
@@ -47,15 +47,21 @@ export class LoginComponent  {
 
   // check login
   async loginNormal(): Promise<void> {
-    this.resetError();
-    let loginRequest: LoginRegisterRequest = { username: this.username, password: this.password };
+    if(!this.checkLoginData()) return;
     let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.failCallback.bind(this));
     if (!result) { console.log("NOT OK"); return; }
     console.log(await this.accountService.getIdAccount());
     console.log("OK");
   }
 
-  
+  private checkLoginData(): boolean {
+    this.resetError();
+    let flag: boolean;
+    flag = this.checkValidUsername() || this.checkValidPassword();
+    return flag;
+  }
+
+
   failCallback(error: string): void {
     console.log("lỗi:" + error);
     switch (error) {
