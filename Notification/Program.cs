@@ -38,16 +38,13 @@ app.MapGet("/api/notification", async ([FromServices] NotificationDbContext dbCo
 });
 
 // get by id 
-app.MapGet("/api/notificationById/{Id_Notification}", async ( NotificationDbContext dbContext, int Id_Notification) =>
+app.MapGet("/api/notificationById/{Id_Notification}", async (NotificationDbContext dbContext, int Id_Notification) =>
 {
     var notifications = await dbContext.Notifications
-        .Where(c => c.Id_Notification == Id_Notification) 
+        .Where(c => c.Id_Notification == Id_Notification)
         .ToListAsync();
 
-    if (notifications == null || !notifications.Any())
-    {
-        return Results.NotFound();
-    }
+    if (notifications == null || !notifications.Any()) return Results.NotFound();
 
     return Results.Ok(notifications);
 });

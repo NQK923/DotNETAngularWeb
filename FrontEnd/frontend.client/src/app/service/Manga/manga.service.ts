@@ -35,9 +35,8 @@ export class MangaService {
     return this.http.delete<any>(`${this.apiUrl}/delete/${id_manga}`);
   }
 
-  uploadManga(formData: FormData, id_account: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/upload/${id_account}`, formData, {
-      responseType: "arraybuffer",
+  uploadManga(formData: FormData, id_account: number): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/upload/${id_account}`, formData, {
       headers: new HttpHeaders({'Accept': 'application/json'})
     });
   }

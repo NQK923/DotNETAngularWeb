@@ -25,6 +25,7 @@ export class UpdateAccountComponent implements AfterViewInit {
               private accountService: AccountService,
               private messageService: MessageService,) {
   }
+
   ngAfterViewInit() {
     this.registerBtn.nativeElement.addEventListener('click', () => {
       this.container.nativeElement.classList.add('active');
@@ -43,11 +44,11 @@ export class UpdateAccountComponent implements AfterViewInit {
     this.code = localStorage.getItem('code');
 
     if (newPassword !== otherPass) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu xác nhận không khớp' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu xác nhận không khớp'});
       return;
     }
     if (!newPassword || !otherPass) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Vui lòng nhập đủ thông tin' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Vui lòng nhập đủ thông tin'});
       return;
     }
 
@@ -68,27 +69,39 @@ export class UpdateAccountComponent implements AfterViewInit {
               };
               this.accountService.updateAccount(updatedAccount).subscribe({
                 next: () => {
-                  this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Cập nhật tài khoản thành công' });
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Thành công',
+                    detail: 'Cập nhật tài khoản thành công'
+                  });
                   this.router.navigate(['/newLogin']);
                 },
                 error: (err) => {
                   console.error('Error updating account:', err);
-                  this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi cập nhật tài khoản' });
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Lỗi',
+                    detail: 'Có lỗi xảy ra khi cập nhật tài khoản'
+                  });
                 }
               });
               break;
             } else {
-              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Sai mã hoặc mật khẩu' });
+              this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Sai mã hoặc mật khẩu'});
             }
           }
         }
         if (!accountFound) {
-          this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tài khoản không tồn tại' });
+          this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Tài khoản không tồn tại'});
         }
       },
       (error) => {
         console.error('Error fetching accounts:', error);
-        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi lấy danh sách tài khoản' });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi lấy danh sách tài khoản'
+        });
       }
     );
   }
@@ -109,7 +122,7 @@ export class UpdateAccountComponent implements AfterViewInit {
             this.infoAccount = infoData;
             const emailExists = this.infoAccount.some(info => info.email === email);
             if (!emailExists) {
-              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email không đúng' });
+              this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Email không đúng'});
               return;
             }
             const account = this.accounts.find(acc => acc.username === username);
@@ -119,27 +132,43 @@ export class UpdateAccountComponent implements AfterViewInit {
               const text = "Mã xác nhận";
               this.accountService.postMail(email, text, randomNumbers.toString()).subscribe({
                 next: () => {
-                  this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Vui lòng kiểm tra email để lấy mã đổi mật khẩu' });
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Thành công',
+                    detail: 'Vui lòng kiểm tra email để lấy mã đổi mật khẩu'
+                  });
                   this.container.nativeElement.classList.remove('active');
                 },
                 error: (error) => {
                   console.error('Error sending email:', error);
-                  this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi gửi mã xác nhận' });
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Lỗi',
+                    detail: 'Có lỗi xảy ra khi gửi mã xác nhận'
+                  });
                 }
               });
             } else {
-              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không tồn tại' });
+              this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không tồn tại'});
             }
           },
           (error) => {
             console.error('Error fetching account info:', error);
-            this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi lấy thông tin tài khoản' });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Có lỗi xảy ra khi lấy thông tin tài khoản'
+            });
           }
         );
       },
       (error) => {
         console.error('Error fetching accounts:', error);
-        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi lấy danh sách tài khoản' });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi lấy danh sách tài khoản'
+        });
       }
     );
   }

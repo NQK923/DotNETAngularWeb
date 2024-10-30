@@ -3,8 +3,8 @@
 
     <div class=" col-2 bg-zinc-900">
       <div class="mt-4 ml-4">
-        <img (click)="goToIndex()" alt="Logo"
-             class="h-24 p-1 cursor-pointer" src="https://mangaimg.blob.core.windows.net/assets/logo4.png">
+        <img (click)="goToIndex()" alt="Logo" class="h-24 p-1 cursor-pointer"
+             loading="lazy" src="https://mangaimg.blob.core.windows.net/assets/logo4.png">
       </div>
       <ul class="pl-2">
         <ul class="flex mt-8 mx-1">
@@ -38,6 +38,13 @@
             Thống kê
           </h1>
         </ul>
+        <ul>
+          <h1 (click)="logOut()"
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
+              id="manageStories3">
+            Đăng xuất
+          </h1>
+        </ul>
       </ul>
     </div>
 
@@ -45,9 +52,10 @@
       <div class="p-2 border-b border-gray-500">
         <div class="flex row ">
           <p class=" col-5  font-bold text-xl text-gray-100"> Quản lý tài khoản </p>
-          <div class="col-7 hidden">
-            <input aria-label="Tìm kiếm truyện" class=" form-control me-2" placeholder="Tìm kiếm tài khoản..."
-                   type="search">
+          <div class="col-7 flex ">
+            <input  id="search" aria-label="Tìm kiếm truyện" class=" w-10/12 rounded-l-xl p-1" placeholder="Tìm kiếm tài khoản..."
+                    type="search">
+            <button (click)="search()" class="bg-gray-400 text-white rounded-r-2xl p-2">Tìm kiếm</button>
           </div>
         </div>
       </div>
@@ -59,15 +67,13 @@
             <div class="ml-1 w-1/5 text-gray-100"> Trạng thái tài khoản</div>
             <div class="ml-2 w-1/5 text-gray-100"> Trạng thái bình luận</div>
             <div class="ml-6 text-gray-100">Phân quyền tài khoản</div>
-
           </div>
-
           <div *ngFor="let dataAccount of dataAccount"
                class=" p-2 my-2 hover:bg-blue-100 flex items-center rounded-lg border-2 border-yellow-500 w-full">
             <div class="flex w-full items-center">
               <div class="flex w-1/6">
-                <img class="text-gray-100 bg-gray-200 rounded-full h-14 w-14"
-                     src="{{dataAccount.InfoAccount?.cover_img}}">
+                <img alt="" class="text-gray-100 bg-gray-200 rounded-full h-14 w-14"
+                     loading="lazy" src="{{dataAccount.InfoAccount?.cover_img}}">
                 <p class=" text-sm text-gray-100 ml-2 mt-3 ">{{ dataAccount.Account.username }}</p>
               </div>
               <p class="text-gray-100 m-2 text-sm w-25">Gmail: {{ dataAccount.InfoAccount?.email }}</p>

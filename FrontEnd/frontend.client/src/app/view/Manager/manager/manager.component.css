@@ -74,42 +74,25 @@
   margin-top: 0.5rem;
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+.browse-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
-.pagination button {
-  background-color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media (min-width: 768px) {
+  .browse-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.pagination button:hover {
-  background-color: #3B82F6;
-  transform: translateY(-2px);
+.browse-item {
+  background-color: #374151;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
 }
 
-.pagination button:disabled {
-  background-color: gray;
-  cursor: not-allowed;
-}
-
-.pagination span {
-  margin: 0 15px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
+.browse-item:hover {
+  background-color: #4b5563;
 }
 

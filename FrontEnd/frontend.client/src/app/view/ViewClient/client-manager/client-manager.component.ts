@@ -14,9 +14,11 @@ import {
 } from "../../../service/notificationMangaAccount/notification-manga-account.service";
 import {ModelNotificationMangaAccount} from "../../../Model/ModelNotificationMangaAccount";
 import {CategoryDetailsService} from "../../../service/Category_details/Category_details.service"
-import {forkJoin} from "rxjs";
+import {forkJoin, map} from "rxjs";
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {ConfirmationService, MessageService} from "primeng/api";
+import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaViewHistory.service";
+import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
 
 interface Manga {
   id_manga: number;
@@ -24,9 +26,11 @@ interface Manga {
   author: string;
   num_of_chapter: number;
   id_account: number;
+  is_posted: boolean;
   cover_img: string;
   describe: string;
-  is_posted: boolean;
+  totalViews: number
+  follower: number;
   latestChapter: number;
 }
 
@@ -65,11 +69,12 @@ export class ClientManagerComponent implements OnInit {
   chapterName: string = '';
   chapterIndex: string = '';
   isAddingChapter: boolean = false;
+  isAddingManga: boolean = false;
   categories: Category[] = [];
   selectedCategories: number[] = [];
   isHidden: boolean = true;
   selectedOption: string = 'option1';
-  currentPage: number = 1;
+  page: number = 1;
   itemsPerPage: number = 6;
   mangaDetails: Manga = {
     id_manga: 0,
@@ -80,10 +85,11 @@ export class ClientManagerComponent implements OnInit {
     author: '',
     describe: '',
     is_posted: false,
+    follower: 0,
+    totalViews: 0,
     latestChapter: 0,
   };
   accounts: ModelAccount[] = [];
-  listMangas: Manga[] = [];
   infoManga: Manga | null = null;
   returnNotification: ModelNotification | null = null;
   infoAccounts: ModelInfoAccount[] = [];
@@ -103,7 +109,9 @@ export class ClientManagerComponent implements OnInit {
               private categoryDetailsService: CategoryDetailsService,
               private router: Router,
               private confirmationService: ConfirmationService,
-              private messageService: MessageService
+              private messageService: MessageService,
+              private mangaViewHistoryService: MangaViewHistoryService,
+              private mangaFavoriteService: MangaFavoriteService,
   ) {
   }
 
@@ -114,16 +122,34 @@ export class ClientManagerComponent implements OnInit {
     ).subscribe(searchTerm => {
       this.filterMangas(searchTerm);
     });
-    const id = localStorage.getItem('userId');
-    if (id) {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
       forkJoin({
-        mangas: this.mangaService.getMangasByUser(Number(id)),
+        mangas: this.mangaService.getMangasByUser(Number(userId)),
         categories: this.categoriesService.getAllCategories()
       }).subscribe({
         next: ({mangas, categories}) => {
           this.mangas = mangas;
           this.filteredMangas = this.mangas;
           this.categories = categories;
+          const observables = this.mangas.map(manga =>
+            forkJoin({
+              totalViews: this.mangaViewHistoryService.getAllView(manga.id_manga),
+              followers: this.mangaFavoriteService.countFollower(manga.id_manga),
+              latestChapter: this.chapterService.getLastedChapter(manga.id_manga),
+            }).pipe(
+              map(({totalViews, followers, latestChapter}) => {
+                manga.totalViews = totalViews;
+                manga.follower = followers;
+                manga.latestChapter = latestChapter;
+                return manga;
+              })
+            )
+          );
+          forkJoin(observables).subscribe(updatedMangas => {
+            this.mangas = updatedMangas;
+            this.filteredMangas = updatedMangas;
+          });
           this.setupEventListeners();
           this.takeData();
         },
@@ -136,12 +162,13 @@ export class ClientManagerComponent implements OnInit {
     }
   }
 
+
   filterMangas(searchTerm: string): void {
     if (searchTerm) {
       this.filteredMangas = this.mangas.filter(manga =>
         manga.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      this.currentPage = 1;
+      this.page = 1;
     } else {
       this.filteredMangas = this.mangas;
     }
@@ -472,6 +499,7 @@ export class ClientManagerComponent implements OnInit {
 
   onSubmit(addForm: any) {
     if (this.selectedFile && addForm.controls.name.value && addForm.controls.author.value) {
+      this.isAddingManga = true;
       const formData = this.buildFormData(addForm.controls);
       this.uploadOrUpdateManga(formData, 'upload');
     } else {
@@ -483,7 +511,7 @@ export class ClientManagerComponent implements OnInit {
     if (!form.valid) {
       return;
     }
-    const formData = this.buildFormData(form.value);
+    const formData = this.buildFormData(form.controls);
     this.uploadOrUpdateManga(formData, 'update', Number(this.selectedIdManga));
     this.categoryDetailsService.updateCategoriesDetails(this.selectedCategories).subscribe();
   }
@@ -507,24 +535,31 @@ export class ClientManagerComponent implements OnInit {
     const mangaServiceMethod = action === 'upload'
       ? this.mangaService.uploadManga(formData, userId)
       : this.mangaService.updateManga(formData, mangaId!);
-
     mangaServiceMethod.subscribe(
-      () => this.handleSuccess(action),
+      (data) => this.handleSuccess(action, data),
       (error) => this.handleError(action, error)
     );
   }
 
-  handleSuccess(action: 'upload' | 'update') {
+  handleSuccess(action: 'upload' | 'update', data: number) {
     const message = action === 'upload' ? 'Thêm truyện thành công!' : 'Cập nhật thành công!';
+    if (action === 'upload') {
+      this.isAddingManga = false;
+      this.selectedCategories.unshift(data);
+      console.log(this.selectedCategories);
+      this.categoryDetailsService.addCategoriesDetails(this.selectedCategories).subscribe();
+    }
     this.messageService.add({severity: 'success', summary: 'Thành công', detail: message});
     setTimeout(() => {
       window.location.reload();
     }, 1000);
   }
 
+
   handleError(action: 'upload' | 'update', error: any) {
     const message = action === 'upload' ? 'Thêm truyện thất bại, vui lòng thử lại!' : 'Cập nhật thất bại, vui lòng thử lại!';
     this.messageService.add({severity: 'error', summary: 'Lỗi', detail: message});
+    this.isAddingManga = false;
     console.error(`${action === 'upload' ? 'Upload' : 'Update'} failed:`, error);
   }
 
@@ -566,7 +601,6 @@ export class ClientManagerComponent implements OnInit {
         this.mangaService.deleteMangaById(manga.id_manga).subscribe(
           () => {
             this.deleteRelatedData(manga.id_manga);
-            this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Xoá manga thành công!'});
           },
           (error) => {
             this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá thất bại, vui lòng thử lại!'});
@@ -624,7 +658,10 @@ export class ClientManagerComponent implements OnInit {
   }
 
   updateUIAfterDelete(id: number): void {
-    this.mangas = this.mangas.filter(m => m.id_manga !== id);
+    this.filteredMangas = this.filteredMangas.filter(m => m.id_manga !== id);
+    if ((this.page - 1) * this.itemsPerPage >= this.filteredMangas.length) {
+      this.page--;
+    }
   }
 
 
@@ -695,16 +732,17 @@ export class ClientManagerComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
+  outForm(form: any) {
+    form.resetForm();
+    const overlay = this.el.nativeElement.querySelector('#overlay');
+    overlay.classList.toggle('hidden');
+    this.selectedCategories = [];
+  }
+
   setupEventListeners() {
     const buttonAdd = this.el.nativeElement.querySelector('#buttonAdd');
     const overlay = this.el.nativeElement.querySelector('#overlay');
     const out = this.el.nativeElement.querySelector('#out');
-    if (out) {
-      out.addEventListener('click', () => {
-        overlay.classList.toggle('hidden');
-        this.selectedCategories = [];
-      });
-    }
     if (buttonAdd) {
       buttonAdd.addEventListener('click', () => {
         overlay.classList.toggle('hidden');
@@ -933,12 +971,13 @@ export class ClientManagerComponent implements OnInit {
     const yourId = userId !== null ? parseInt(userId, 10) : 0;
     this.mangaService.getMangaById(id_manga).subscribe({
       next: (manga: Manga) => {
-        this.infoManga=manga;
+        this.infoManga = manga;
         this.infoManga = manga;
         const textNotification = "Truyện vừa được thêm chương " + text;
         const timestamp = Date.now();
         const typeNoti = "Đã thêm 1 chương mới";
         const time = new Date(timestamp);
+        time.setHours(time.getHours() + 7);
         const notification: ModelNotification = {
           content: textNotification,
           isRead: false,
@@ -971,27 +1010,10 @@ export class ClientManagerComponent implements OnInit {
     })
   }
 
-
 //Pagination
-  getPagedMangas(): Manga[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredMangas.slice(startIndex, endIndex);
+  onPageChange(newPage: number): void {
+    this.page = newPage;
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages()) {
-      this.currentPage++;
-    }
-  }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  totalPages(): number {
-    return Math.ceil(this.filteredMangas.length / this.itemsPerPage);
-  }
 }

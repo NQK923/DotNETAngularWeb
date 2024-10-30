@@ -27,6 +27,7 @@ import {UpdateAccountComponent} from "./view/Account/update-account/update-accou
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
+import {NgxPaginationModule} from "ngx-pagination";
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import {ToastModule} from "primeng/toast";
     MatIcon,
     ConfirmDialogModule,
     ToastModule,
+    NgxPaginationModule
   ],
   providers: [ConfirmationService, MessageService],
   bootstrap: [AppComponent],

@@ -8,23 +8,20 @@ import {catchError, Observable, throwError} from 'rxjs';
 })
 export class NotificationMangaAccountService {
   private apiUrl = 'https://localhost:44305/api/notificationMangAccount';
-  private api= 'https://localhost:44305/api/notificationMangAccountById';
+  private api = 'https://localhost:44305/api/notificationMangAccountById';
 
   constructor(private http: HttpClient) {
   }
 
-  getNotificationMangaAccount(): Observable<ModelNotificationMangaAccount[]> {
-    return this.http.get<ModelNotificationMangaAccount[]>(this.apiUrl);
-  }
-
-  getNotificationMangaAcById( Id_manga: number): Observable<ModelNotificationMangaAccount[]> {
-    return this.http.get<ModelNotificationMangaAccount[]>(`${this.api}/?idManga=${Id_manga}`).pipe(
+  getByAccountId(idAccount: number): Observable<ModelNotificationMangaAccount[]> {
+    return this.http.get<ModelNotificationMangaAccount[]>(`${this.api}/idAccount?idAccount=${idAccount}`).pipe(
       catchError((error: any) => {
         console.error('Error fetching notification manga account', error);
         return throwError(error);
       })
     );
   }
+
   addInfoNotification(notification: ModelNotificationMangaAccount): Observable<ModelNotificationMangaAccount> {
     return this.http.post<ModelNotificationMangaAccount>(this.apiUrl, notification);
   }
@@ -33,7 +30,7 @@ export class NotificationMangaAccountService {
     return this.http.put<ModelNotificationMangaAccount>(this.apiUrl, data);
   }
 
-  toggleNotiStatus(idNoti: number|undefined): Observable<any> {
-    return this.http.put(`${this.apiUrl}/status?idNotification=${idNoti}`,[]);
+  toggleNotiStatus(idNoti: number | undefined): Observable<any> {
+    return this.http.put(`${this.apiUrl}/status?idNotification=${idNoti}`, []);
   }
 }

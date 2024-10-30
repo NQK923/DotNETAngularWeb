@@ -3,8 +3,8 @@
 
     <div class=" col-2 bg-zinc-900">
       <div class="mt-4 ml-4">
-        <img (click)="goToIndex()" alt="Logo"
-             class="h-24 p-1 cursor-pointer" src="https://mangaimg.blob.core.windows.net/assets/logo4.png">
+        <img (click)="goToIndex()" alt="Logo" class="h-24 p-1 cursor-pointer"
+             loading="lazy" src="https://mangaimg.blob.core.windows.net/assets/logo4.png">
       </div>
       <ul class="pl-2">
         <ul class="flex mt-8 mx-1">
@@ -36,6 +36,13 @@
               class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
               id="manageStories3">
             Thống kê
+          </h1>
+        </ul>
+        <ul>
+          <h1 (click)="logOut()"
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
+              id="manageStories3">
+            Đăng xuất
           </h1>
         </ul>
       </ul>
@@ -86,7 +93,7 @@
                   class="py-2 px-4 border-b font-bold text-5xl text-blue-500">
                   {{ i + 1 }}
                 <td class="text-gray-100 py-2 px-4 border-b">
-                  <img [src]="manga.cover_img" alt="Chapter Image" class="rounded-lg h-24 p-1">
+                  <img [src]="manga.cover_img" alt="Chapter Image" class="rounded-lg h-24 p-1" loading="lazy">
                 </td>
                 <td class="text-gray-100 py-2 px-4 border-b">{{ manga.name }}</td>
                 <td class="text-gray-100 py-2 px-4 border-b">{{ manga.totalViews }}</td>

@@ -220,6 +220,7 @@ export class ManagerCommentComponent implements OnInit {
       manageStories.classList.add('border-yellow-500', 'text-yellow-500');
     }
   }
+
   confirmAction = (message: string, onConfirm: () => void, onCancel: () => void) => {
     this.confirmationService.confirm({
       message: message,
@@ -231,5 +232,9 @@ export class ManagerCommentComponent implements OnInit {
       accept: onConfirm,
       reject: onCancel
     });
+  }
+  logOut() {
+    localStorage.setItem('userId', "-1");
+    this.router.navigate([`/`]);
   }
 }

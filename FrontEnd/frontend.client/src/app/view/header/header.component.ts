@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ModelAccount} from "../../Model/ModelAccount";
 import {AccountService} from "../../service/Account/account.service";
@@ -25,11 +25,11 @@ import {ConfirmationService, MessageService} from "primeng/api";
 })
 export class HeaderComponent implements OnInit {
   searchQuery: string = '';
-  accounts: ModelAccount |undefined;
-  infoAccounts: ModelInfoAccount |undefined;
+  account: ModelAccount | undefined;
+  infoAccounts: ModelInfoAccount | undefined;
   url: string | null = null;
   name: string | null = null;
-  idAccount: number | null = null;
+  idAccount: number = -1;
   infoAccount: ModelInfoAccount[] = [];
   mangas: ModelManga [] = [];
   mangaFavorite: ModelMangaFavorite[] = [];
@@ -39,6 +39,9 @@ export class HeaderComponent implements OnInit {
   numberNotification: number | null = null;
   notification: ModelNotification | undefined;
   info: ModelInfoAccount | undefined;
+  isAdmin: boolean = false;
+  menuOpen = false;
+
   constructor(private accountService: AccountService,
               private router: Router,
               private el: ElementRef,
@@ -53,15 +56,19 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.ListCombinedData= [];
-    this.ListCombinedDataIsRead= [];
+    this.ListCombinedData = [];
+    this.ListCombinedDataIsRead = [];
     this.allFunction()
   }
-  allFunction(){
-    this.TakeData();
-    this.takeNewData()
+
+  allFunction() {
+    this.takeUserData();
+    if (this.idAccount != -1) {
+      this.takeOtherNotification(this.idAccount);
+    }
   }
-  takeNewDataMangaFavorite(): Promise<void> {
+
+  takeMangaFavorite(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.mangaFavoriteService.getMangaFavByAccount(Number(this.idAccount)).subscribe(
         (data: ModelMangaFavorite[]) => {
@@ -76,73 +83,80 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  takeNewDataNotification(id: number): Observable<ModelNotification> {
+  takeDataNotification(id: number | undefined): Observable<ModelNotification> {
     return this.notificationService.getNotificationById(id);
   }
-  takeNewDataInfoAccount(id: number): Observable<ModelInfoAccount> {
+
+  takeDataInfoAccount(id: number): Observable<ModelInfoAccount> {
     return this.infoAccountService.getInfoAccountById(id);
   }
-  takeNewDataManga(id: number): Observable<ModelManga> {
+
+  takeDataManga(id: number): Observable<ModelManga> {
     return this.mangaService.getMangaById(id);
   }
-  takeNewData() {
-    this.takeNewDataMangaFavorite().then(() => {
-      const observables = [];
-      for (let i = 0; i < this.mangaFavorite.length; i++) {
-        if ( !this.mangaFavorite[i].is_notification){
-          continue;
-        }
-        observables.push(
-          this.notificationMangaAccountService.getNotificationMangaAcById(this.mangaFavorite[i].id_manga).pipe(
-            concatMap((notificationAcList: ModelNotificationMangaAccount[]) => {
-              return forkJoin(
-                notificationAcList.map((notificationAc) =>
-                  forkJoin({
-                    manga: this.takeNewDataManga(Number(notificationAc.id_manga)),
-                    notification: this.takeNewDataNotification(Number(notificationAc.id_Notification)).pipe(
-                      map((notification: ModelNotification | ModelNotification[]) => {
-                        return Array.isArray(notification) ? notification[0] : notification;
-                      })
-                    ),
-                    account: this.takeNewDataInfoAccount(Number(notificationAc.id_account))
-                  }).pipe(
-                    map((result) => ({
-                      ...result,
-                      notificationAc: notificationAc
-                    }))
-                  )
-                )
-              );
-            })
+
+  //get other notification
+  takeOtherNotification(idAccount: number) {
+    this.takeMangaFavorite().then(r => {
+      this.notificationMangaAccountService.getByAccountId(idAccount)
+        .pipe(
+          concatMap(notificationAcList =>
+            forkJoin(
+              notificationAcList.map(notificationAc =>
+                this.getCombinedData(notificationAc)
+              )
+            )
           )
+        )
+        .subscribe(
+          results => this.processCombinedData(results),
+          error => console.error('Error fetching data', error)
         );
-      }
-      forkJoin(observables).subscribe((results) => {
-        results.forEach((resultArray) => {
-          resultArray.forEach((result) => {
-            const combo: CombinedData = {
-              Notification: result.notification,
-              NotificationMangaAccounts: result.notificationAc,
-              InfoAccount: result.account,
-              Mangainfo: result.manga
-            };
-            if(combo.NotificationMangaAccounts?.is_read==false) {
-              this.ListCombinedData.push(combo);
-            }
-            else{
-              this.ListCombinedDataIsRead.push(combo);
-            }
-          });
-        });
-        console.log("Combined Data:", this.ListCombinedData);
-        this.numberNotification = this.ListCombinedData.length;
-      }, (error) => {
-        console.error('Error fetching data', error);
-      });
-    }).catch((error) => {
-      console.error('Error in takeNewData:', error);
     });
   }
+
+  getCombinedData(notificationAc: ModelNotificationMangaAccount) {
+    return forkJoin({
+      manga: this.takeDataManga(notificationAc.id_manga),
+      notification: this.takeDataNotification(notificationAc.id_Notification).pipe(
+        map(notification => Array.isArray(notification) ? notification[0] : notification)
+      ),
+      account: this.takeDataInfoAccount(notificationAc.id_account)
+    }).pipe(
+      map(result => ({...result, notificationAc}))
+    );
+  }
+
+  processCombinedData(results: any[]) {
+    results.flat().forEach(result => {
+      const combo: CombinedData = {
+        Notification: result.notification,
+        NotificationMangaAccounts: result.notificationAc,
+        InfoAccount: result.account,
+        Mangainfo: result.manga
+      };
+      // @ts-ignore
+      const isFavorite = this.mangaFavorite.some(fav => fav.id_manga === combo.Mangainfo.id_manga);
+      const isNotNewChapter = combo.Notification?.type_Noti !== "Đã thêm 1 chương mới";
+
+      if (isFavorite || isNotNewChapter) {
+        if (combo.NotificationMangaAccounts) {
+          if (!combo.NotificationMangaAccounts.is_read) {
+            this.ListCombinedData.push(combo);
+          } else {
+            this.ListCombinedDataIsRead.push(combo);
+          }
+        }
+      }
+    });
+    // @ts-ignore
+    this.ListCombinedData.sort((a, b) => new Date(b.Notification.time).getTime() - new Date(a.Notification.time).getTime());
+    // @ts-ignore
+    this.ListCombinedDataIsRead.sort((a, b) => new Date(b.Notification.time).getTime() - new Date(a.Notification.time).getTime());
+
+    this.numberNotification = this.ListCombinedData.length;
+  }
+
 
   //Search manga
   onSearch(): void {
@@ -152,34 +166,43 @@ export class HeaderComponent implements OnInit {
       } else {
         this.router.navigate(['/list-view'], {queryParams: {search: this.searchQuery}});
       }
+    } else {
+      this.router.navigate(['/list-view']);
     }
   }
+
   //get account info
-  TakeData() {
+  takeUserData() {
     const userId = localStorage.getItem('userId');
     if (userId) {
       this.idAccount = parseInt(userId, 10);
-      if(this.idAccount==-1) {
+      if (this.idAccount == -1) {
         const History = this.el.nativeElement.querySelector('#History');
         const Favorite = this.el.nativeElement.querySelector('#Favorite');
+        const HistoryMobile = this.el.nativeElement.querySelector('#HistoryMobile');
+        const FavoriteMobile = this.el.nativeElement.querySelector('#FavoriteMobile');
         const clientManager = this.el.nativeElement.querySelector('#clientManager');
         const iconNotification = this.el.nativeElement.querySelector('#iconNotification');
         History.classList.add('hidden');
         Favorite.classList.add('hidden');
         clientManager.classList.add('hidden');
         iconNotification.classList.add('hidden');
-      }
-      else{
+        HistoryMobile.classList.add('hidden');
+        FavoriteMobile.classList.add('hidden');
+      } else {
         const Login = this.el.nativeElement.querySelector('#Login');
         Login.classList.add('hidden');
       }
     }
-    if (userId) {
+    if (userId && Number(userId)!=-1) {
       this.idAccount = parseInt(userId, 10);
-      this.accountService.getAccountById( this.idAccount).subscribe(
+      this.accountService.getAccountById(this.idAccount).subscribe(
         (data: ModelAccount) => {
-          this.accounts = data;
-          this.name = this.accounts.username || null;
+          this.account = data;
+          this.name = this.account.username || null;
+          if (this.account.role) {
+            this.isAdmin = true;
+          }
         },
         (error) => {
           console.error('Error fetching accounts:', error);
@@ -201,10 +224,10 @@ export class HeaderComponent implements OnInit {
       console.error('No userId found in localStorage');
     }
   }
+
   // delete all notification
   deleteAllNotification() {
     const message = 'Bạn có chắc chắn muốn xóa hết thông báo?';
-
     this.confirmationService.confirm({
       message: message,
       header: 'Xác nhận',
@@ -215,7 +238,6 @@ export class HeaderComponent implements OnInit {
       accept: () => {
         const updateObservables: Observable<ModelNotificationMangaAccount>[] = [];
         const allData = [...this.ListCombinedData, ...this.ListCombinedDataIsRead];
-
         for (let i = 0; i < allData.length; i++) {
           const notificationData = {
             id_manga: allData[i].Mangainfo?.id_manga,
@@ -224,11 +246,9 @@ export class HeaderComponent implements OnInit {
             isGotNotification: false,
             is_read: true,
           } as ModelNotificationMangaAccount;
-
           const observable = this.notificationMangaAccountService.updateNotificationAccount(notificationData);
           updateObservables.push(observable);
         }
-
         forkJoin(updateObservables).subscribe({
           next: () => {
             this.messageService.add({
@@ -236,6 +256,7 @@ export class HeaderComponent implements OnInit {
               summary: 'Thành công',
               detail: 'Đã xóa hết thông báo'
             });
+            this.goToNotification();
             this.ngOnInit();
           },
           error: (error) => {
@@ -255,69 +276,72 @@ export class HeaderComponent implements OnInit {
 
 
   goToIndex(): void {
-    this.searchQuery=''
+    this.searchQuery = ''
     this.router.navigate(['/']);
   }
 
   goToListView() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.router.navigate(['/list-view']);
   }
 
   goToRank() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.router.navigate(['/rank']);
   }
 
   goToHistory() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.router.navigate(['/history']);
   }
 
   goToFavorite() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.router.navigate(['/favorite']);
   }
 
   goToLogin() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.router.navigate(['/login']);
   }
 
   goToNotification() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.isHidden = !this.isHidden;
   }
+
   toggleNotification() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.isHidden = !this.isHidden;
   }
+
   goToClientManager() {
-    this.searchQuery='';
+    this.searchQuery = '';
     this.router.navigate(['/client-manager']);
   }
-  goToContent(id: number | undefined, id_Notification: number | undefined) {
-    this.notificationMangaAccountService.toggleNotiStatus(id_Notification).subscribe({
-      next: () => {
-        this.toggleNotification();
-        this.ngOnInit();
-        this.router.navigate(['/titles', id]);
-      },
-      error: (err) => {
-        console.error('Có lỗi xảy ra khi thay đổi trạng thái thông báo:', err);
-      }
-    });
+
+  goToManager() {
+    this.router.navigate(['/manager']);
   }
-  confirmAction = (message: string, onConfirm: () => void, onCancel: () => void) => {
-    this.confirmationService.confirm({
-      message: message,
-      header: 'Xác nhận',
-      acceptLabel: 'Đồng ý',
-      rejectLabel: 'Hủy',
-      acceptButtonStyleClass: 'p-button-success',
-      rejectButtonStyleClass: 'p-button-secondary',
-      accept: onConfirm,
-      reject: onCancel
-    });
+
+  goToContent(data: CombinedData) {
+    if (data.NotificationMangaAccounts?.is_read == false) {
+      this.notificationMangaAccountService.toggleNotiStatus(data.NotificationMangaAccounts?.id_Notification).subscribe({
+        next: () => {
+        },
+        error: (err) => {
+          console.error('Có lỗi xảy ra khi thay đổi trạng thái thông báo:', err);
+        }
+      });
+    }
+    if (data.Notification?.type_Noti === "Đã thêm 1 chương mới") {
+      this.toggleNotification();
+      this.ngOnInit();
+      this.router.navigate(['/titles', data.Mangainfo?.id_manga]);
+    } else {
+
+    }
+    this.searchQuery = '';
+    this.router.navigate(['/client-manager']);
   }
 }

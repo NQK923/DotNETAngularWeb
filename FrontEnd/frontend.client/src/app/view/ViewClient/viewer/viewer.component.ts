@@ -49,9 +49,8 @@ export class ViewerComponent implements OnInit {
   listDataComment: CommentData[] = [];
   listYourComment: CommentData[] = [];
   yourId: number = -1;
-  idChap: number = -1;
-  listAccount: ModelAccount [] = [];
   yourAc: ModelAccount | null = null;
+  chapterId: number = -1;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,7 +75,11 @@ export class ViewerComponent implements OnInit {
       this.chapterService.getChaptersByMangaId(this.id_manga).subscribe(
         (data: Chapter[]) => {
           this.chapters = data;
-          this.loadAllComment();
+          this.chapterService.getIdChapter(this.id_manga, this.chapter_index).subscribe((chapter) => {
+            this.chapterId = chapter;
+            this.loadAllComment(this.chapterId);
+          })
+
         },
         (error) => {
           console.error('Error fetching chapters', error);
@@ -148,13 +151,11 @@ export class ViewerComponent implements OnInit {
     return !!(id_user && Number(id_user) != -1);
   }
 
-  loadAllComment() {
+  loadAllComment(chapterId: number) {
     this.listDataComment = []
     this.listYourComment = []
     const userId = localStorage.getItem('userId');
     this.yourId = userId !== null ? parseInt(userId, 10) : 0;
-    const idChapter = localStorage.getItem('id_chapter');
-    this.idChap = idChapter !== null ? parseInt(idChapter, 10) : 0;
     this.loadComment()
       .then(() => this.loadInfoAccount())
       .then(() => this.takeData())
@@ -186,8 +187,7 @@ export class ViewerComponent implements OnInit {
   deleteComment(id_cm: any) {
     this.commentService.deleteBanner(id_cm).subscribe(
       () => {
-        alert('Upload thành công:');
-        this.loadAllComment()
+        this.loadAllComment(this.chapterId)
       },
       (error) => {
         console.error(error);
@@ -199,10 +199,9 @@ export class ViewerComponent implements OnInit {
   updateComment(id_cm: any) {
     const textUpdate = this.el.nativeElement.querySelector(`#text${id_cm}`);
     const id = this.yourId;
-    const idChap = this.idChap;
     const comment: ModelComment = {
       id_comment: id_cm,
-      id_chapter: idChap,
+      id_chapter: this.chapterId,
       id_user: id,
       content: textUpdate.value,
       isReported: false,
@@ -210,8 +209,7 @@ export class ViewerComponent implements OnInit {
     }
     this.commentService.updateComment(comment).subscribe(
       () => {
-        alert('Upload thành công:');
-        this.loadAllComment()
+        this.loadAllComment(this.chapterId)
       },
       (error) => {
         console.error(error);
@@ -223,9 +221,8 @@ export class ViewerComponent implements OnInit {
   addComment() {
     const text = this.el.nativeElement.querySelector('#textComment');
     const id = this.yourId;
-    const idChap = this.idChap;
     const comment: ModelComment = {
-      id_chapter: idChap,
+      id_chapter: this.chapterId,
       id_user: id,
       content: text.value,
       isReported: false,
@@ -233,8 +230,7 @@ export class ViewerComponent implements OnInit {
     }
     this.commentService.addComment(comment).subscribe(
       () => {
-        alert('Upload thành công:');
-        this.loadAllComment()
+        this.loadAllComment(this.chapterId)
       },
       (error) => {
         console.error(error);
@@ -250,7 +246,7 @@ export class ViewerComponent implements OnInit {
       if (existsInList) {
         continue;
       }
-      if (comment.id_chapter === this.idChap && comment.id_user !== this.yourId) {
+      if (comment.id_chapter === this.chapterId && comment.id_user !== this.yourId) {
         this.infoAccountService.getInfoAccountById(Number(comment.id_user)).subscribe(
           (data: ModelInfoAccount) => {
             this.listDataComment.push(new CommentData(comment, data));
@@ -263,7 +259,7 @@ export class ViewerComponent implements OnInit {
   takeYourData() {
     const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.id_comment));
     const relevantComments = this.comments.filter(comment =>
-      comment.id_chapter === this.idChap &&
+      comment.id_chapter === this.chapterId &&
       comment.id_user === this.yourId &&
       !existingCommentIds.has(comment.id_comment)
     );
@@ -338,5 +334,10 @@ export class ViewerComponent implements OnInit {
 
   goToLogin() {
     this.router.navigate(['/login']);
+  }
+
+  onUpdate() {
+    const text = this.el.nativeElement.querySelector('#buttonUndate');
+    text.classList.remove('hidden');
   }
 }

@@ -1,82 +1,54 @@
-<div class="bg-gray-500">
+<div class="bg-gray-950 fullScreen">
   <div class="bg-gray-500">
     <div class="flex items-center justify-between bg-gradient-to-r from-gray-950 to-gray-600">
-      <div class=" p-2 flex">
+      <div class="p-2 flex">
         <div class="flex">
-          <img class="h-10 mt-1" src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
+          <img class="h-10 mt-1" loading="lazy" src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
           <p class="text-white font-bold text-2xl p-2">Truyện yêu thích</p>
         </div>
       </div>
     </div>
-    <div class="bg-gray-950 shadow-md">
+    <div class="bg-gray-950 shadow-md flex-grow">
       <div class="p-2 flex flex-wrap justify-center">
-        <div *ngFor="let manga of getPagedMangas()"
-             class="w-72 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden m-3 transition-transform transform hover:scale-105 cursor-pointer">
+        <div *ngFor="let manga of mangas | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
+             class="w-64 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden m-3 transition-transform transform hover:scale-105 cursor-pointer">
           <img (click)="viewMangaDetails(manga.id_manga)" [attr.title]="manga.name + ' \n' + manga.describe"
                [src]="manga.cover_img"
                alt="Image description"
-               class="w-full h-80 object-cover rounded-t-xl">
-          <div class="p-2">
-            <p class="text-white font-bold text-lg truncate">{{ manga.name }}</p>
-            <p class="text-white text-sm">{{ manga.author }}</p>
-          </div>
-          <div class="bg-gradient-to-r from-black-800 to-gray-600 p-2 mt-2 flex justify-between rounded-md">
-            <p (click)="removeFromFavorites(manga.id_manga)"
-               class="text-blue-500 font-bold text-sm m-1 hover:underline text-center">Bỏ yêu thích</p>
-          </div>
-          <div class="bg-gradient-to-r from-black-800 to-gray-600 p-2 mt-2 flex justify-between rounded-md">
-            <div class="flex items-center">
-              <img alt="Notification Icon" class="h-8 p-1"
-                   src="https://mangaimg.blob.core.windows.net/assets/icons8-bell-30.png">
-              <p class="text-blue-500 font-bold text-sm">Thông báo</p>
+               class="w-full h-5/6 object-cover rounded-t-xl"
+               loading="lazy">
+          <div class="p-1">
+            <div class="flex justify-between p-1">
+              <p class="text-white font-bold text-xl truncate mb-0 manga-name">{{ manga.name }}</p>
+              <div class="flex p-1">
+                <img (click)="removeFromFavorites(manga.id_manga)" [attr.title]="'Bỏ yêu thích'" alt="" class="h-7 px-1"
+                     loading="lazy"
+                     src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
+                <img (click)="toggleNotification(manga.id_manga)"
+                     [attr.title]="manga.is_notification ? 'Tắt thông báo' : 'Bật thông báo'"
+                     [ngClass]="{'active': !manga.is_notification}"
+                     alt="Notification Icon"
+                     class="h-7 px-1 cursor-pointer notification-icon"
+                     loading="lazy"
+                     src="https://mangaimg.blob.core.windows.net/assets/icons8-bell-30.png">
+              </div>
             </div>
-            <div (click)="toggleNotification(manga.id_manga)" class="flex items-center">
-              <p [ngClass]="{'text-yellow-500': manga.is_notification, 'text-white': !manga.is_notification}"
-                 class="text-sm">Bật</p>
-              <p class="text-white text-sm mx-1">/</p>
-              <p [ngClass]="{'text-yellow-500': !manga.is_notification, 'text-white': manga.is_notification}"
-                 class="text-sm">Tắt</p>
-            </div>
+            <p class="text-white text-sm mb-1 px-1">{{ manga.author }}</p>
           </div>
         </div>
       </div>
-      <div class="pagination p-2">
-        <button (click)="previousPage()" [disabled]="currentPage === 1" class="w-auto">
-          <img alt="" class="h-4" src="https://mangaimg.blob.core.windows.net/assets/arrow-left.png">
-        </button>
-        <span>Trang {{ currentPage }}</span>
-        <button (click)="nextPage()" [disabled]="currentPage >= totalPages()" class="w-auto">
-          <img alt="" class="h-4" src="https://mangaimg.blob.core.windows.net/assets/arrow-right.png">
-        </button>
+      <!--Pagination-->
+      <div *ngIf="mangas.length > itemsPerPage" class="flex justify-center mt-4">
+        <pagination-controls
+          (pageChange)="onPageChange($event)"
+          [autoHide]="false"
+          [directionLinks]="true"
+          [maxSize]="5"
+          class="pagination custom-pagination text-white font-semibold text-md space-x-2"
+          nextLabel=""
+          previousLabel="">
+        </pagination-controls>
       </div>
     </div>
   </div>
 </div>
-<p-confirmDialog #cd>
-  <ng-template let-message pTemplate="headless">
-    <div class="flex flex-column align-items-center pb-4 border-round bg-gray-800 rounded">
-      <div class="w-full bg-gray-900 p-3 rounded-top">
-        <span class="font-bold text-3xl text-white mb-3">{{ message.header }}</span>
-      </div>
-      <div class="flex align-items-center gap-3 mb-3 pt-2 mx-4">
-        <i class="pi pi-trash text-red-500 text-2xl"></i>
-        <p class="text-lg text-gray-100 mb-0">{{ message.message }}</p>
-      </div>
-      <div class="flex justify-content-center gap-2 mt-4">
-        <button
-          (click)="cd.accept()"
-          class="w-20 rounded py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white"
-          label="Đồng ý"
-          pButton>
-        </button>
-        <button
-          (click)="cd.reject()"
-          class="p-button-outlined w-20 rounded py-1 px-2 border-1 border-gray-400 bg-transparent hover:bg-gray-800 text-gray-200"
-          label="Huỷ"
-          pButton>
-        </button>
-      </div>
-    </div>
-  </ng-template>
-</p-confirmDialog>
-<p-toast></p-toast>

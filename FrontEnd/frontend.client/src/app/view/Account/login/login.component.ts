@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {AccountService} from "../../../service/Account/account.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
-import {Location} from '@angular/common';
 import {MessageService} from "primeng/api";
 
 
@@ -17,12 +16,12 @@ export class LoginComponent implements AfterViewInit {
   @ViewChild('container') container!: ElementRef;
   @ViewChild('register') registerBtn!: ElementRef;
   @ViewChild('login') loginBtn!: ElementRef;
-  accounts: ModelAccount |undefined;
+  accounts: ModelAccount | undefined;
 
   constructor(private router: Router,
               private InfoAccountService: InfoAccountService,
               private accountService: AccountService,
-              private messageService: MessageService ) {
+              private messageService: MessageService) {
   }
 
   ngAfterViewInit() {
@@ -47,7 +46,11 @@ export class LoginComponent implements AfterViewInit {
     const username = (document.getElementById('username') as HTMLInputElement).value;
     const password = (document.getElementById('password') as HTMLInputElement).value;
     if (!username || !password) {
-      this.messageService.add({ severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập tên đăng nhập và mật khẩu' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail: 'Vui lòng nhập tên đăng nhập và mật khẩu'
+      });
       return;
     }
     const data: ModelAccount = {
@@ -63,7 +66,7 @@ export class LoginComponent implements AfterViewInit {
         this.TakeData(Number(response));
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Vui lòng nhập đúng tài khoản mật khẩu' });
+        this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Vui lòng nhập đúng tài khoản mật khẩu'});
       }
     });
   }
@@ -89,7 +92,11 @@ export class LoginComponent implements AfterViewInit {
         window.location.reload()
       });
     } else if (this.accounts.status) {
-      this.messageService.add({ severity: 'warn', summary: 'Tài khoản bị khóa', detail: 'Tài khoản của bạn đã bị khóa, vui lòng liên hệ quản lý để được hỗ trợ.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Tài khoản bị khóa',
+        detail: 'Tài khoản của bạn đã bị khóa, vui lòng liên hệ quản lý để được hỗ trợ.'
+      });
     } else if (this.accounts.role) {
       // @ts-ignore
       localStorage.setItem('userId', this.accounts.id_account);
@@ -111,42 +118,46 @@ export class LoginComponent implements AfterViewInit {
       status: false
     };
     if (!username.value) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không được để trống' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không được để trống'});
       return;
     }
     if (username.value.length > 12) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không quá 12 ký tự' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không quá 12 ký tự'});
       return;
     }
     if (!email.value) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email không được để trống' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Email không được để trống'});
       return;
     }
     if (!password.value) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu không được để trống' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu không được để trống'});
       return;
     }
     if (password.value.length < 6) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu tối thiểu 6 ký tự' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu tối thiểu 6 ký tự'});
       return;
     }
     if (!passwordAccept.value) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không được để trống' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không được để trống'});
       return;
     }
     const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     if (!emailPattern.test(email.value)) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email phải có định dạng: example@gmail.com' });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Email phải có định dạng: example@gmail.com'
+      });
       return;
     }
     if (password.value !== passwordAccept.value) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không trùng khớp' });
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không trùng khớp'});
       return;
     }
     this.accountService.addAccount(data).subscribe({
       next: (response) => {
         if (typeof response === 'number') {
-          this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công' });
+          this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công'});
           localStorage.setItem('userId', response);
 
           const infoAccount: ModelInfoAccount = {
@@ -159,16 +170,20 @@ export class LoginComponent implements AfterViewInit {
               this.router.navigate([`/index/User:${response}`]);
             },
             error: (error) => {
-              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Lỗi thêm thông tin' });
+              this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Lỗi thêm thông tin'});
               console.error('Error adding account info:', error);
             }
           });
         } else {
-          this.messageService.add({ severity: 'warn', summary: 'Cảnh báo', detail: 'Tên đăng nhập đã được sử dụng' });
+          this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Tên đăng nhập đã được sử dụng'});
         }
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra trong quá trình đăng ký, vui lòng thử lại.' });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra trong quá trình đăng ký, vui lòng thử lại.'
+        });
         console.error('Login error:', err);
       }
     });

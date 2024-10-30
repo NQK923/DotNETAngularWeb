@@ -1,9 +1,7 @@
-using System.Text;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using MangaService.Data;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -81,7 +79,6 @@ app.MapPost("api/manga/upload/{idUser:int}", async (HttpRequest request, int idU
     var name = formCollection["name"];
     var author = formCollection["author"];
     var describe = formCollection["describe"];
-    var categoryIds = formCollection["categories"].ToString().Split(',').Select(int.Parse).ToList();
     if (file == null || file.Length == 0) return Results.BadRequest("No file uploaded");
     var manga = new Manga
     {
@@ -93,12 +90,6 @@ app.MapPost("api/manga/upload/{idUser:int}", async (HttpRequest request, int idU
     };
     db.Manga.Add(manga);
     await db.SaveChangesAsync();
-    categoryIds.Insert(0, manga.id_manga);
-    using (var httpClient = new HttpClient())
-    {
-        var content = new StringContent(JsonConvert.SerializeObject(categoryIds), Encoding.UTF8, "application/json");
-        await httpClient.PostAsync("https://localhost:44347/api/add_manga_category", content);
-    }
 
     await db.SaveChangesAsync();
     var folderName = manga.id_manga.ToString();
@@ -110,7 +101,7 @@ app.MapPost("api/manga/upload/{idUser:int}", async (HttpRequest request, int idU
     manga.cover_img = blobClient.Uri.ToString();
     db.Manga.Update(manga);
     await db.SaveChangesAsync();
-    return Results.Ok(new { manga.id_manga, manga.cover_img });
+    return Results.Ok(manga.id_manga);
 });
 
 //update manga by id
@@ -126,7 +117,6 @@ app.MapPut("/api/manga/update/{idManga:int}", async (int idManga, HttpRequest re
     manga.name = name;
     manga.author = author;
     manga.describe = describe;
-
     if (file is { Length: > 0 })
     {
         var folderName = manga.id_manga.ToString();
