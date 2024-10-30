@@ -153,7 +153,6 @@ export class HeaderComponent implements OnInit {
     this.ListCombinedData.sort((a, b) => new Date(b.Notification.time).getTime() - new Date(a.Notification.time).getTime());
     // @ts-ignore
     this.ListCombinedDataIsRead.sort((a, b) => new Date(b.Notification.time).getTime() - new Date(a.Notification.time).getTime());
-
     this.numberNotification = this.ListCombinedData.length;
   }
 
@@ -191,7 +190,9 @@ export class HeaderComponent implements OnInit {
         FavoriteMobile.classList.add('hidden');
       } else {
         const Login = this.el.nativeElement.querySelector('#Login');
+        const LoginMobile = this.el.nativeElement.querySelector('#LoginMobile');
         Login.classList.add('hidden');
+        LoginMobile.classList.add('hidden');
       }
     }
     if (userId && Number(userId)!=-1) {

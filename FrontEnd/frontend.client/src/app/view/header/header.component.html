@@ -45,7 +45,7 @@
       </div>
 
       <!-- Mobile Menu-->
-      <ul *ngIf="menuOpen" class="flex flex-col w-1/2 xl:hidden mt-3 space-y-2 p-2 bg-black text-gray-100">
+      <ul [class.hidden]="!menuOpen" class="flex flex-col w-1/2 xl:hidden mt-3 space-y-2 p-2 bg-black text-gray-100">
         <li (click)="goToIndex(); menuOpen = false" class="hover:text-yellow-500">Trang chủ</li>
         <li (click)="goToListView(); menuOpen = false" class="hover:text-yellow-500">Danh sách truyện</li>
         <li (click)="goToRank(); menuOpen = false" class="hover:text-yellow-500">Xếp hạng</li>
@@ -55,7 +55,7 @@
       </ul>
 
       <!-- Search & Profile Section (Right-aligned) -->
-      <div class="col-4 bg-opacity-80 p-2 flex items-center justify-end" *ngIf="!menuOpen">
+      <div class="col-4 bg-opacity-80 p-2 flex items-center justify-end " [class.hidden]="menuOpen">
         <input
           (keyup.enter)="onSearch()"
           [(ngModel)]="searchQuery"

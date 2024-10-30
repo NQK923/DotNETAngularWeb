@@ -5,6 +5,7 @@
       <div class="swiper-banner bg-black" id="Banner">
         <div *ngIf="isLoading" class="loading-spinner"></div>
         <swiper-container *ngIf="!isLoading"
+                          autoplay="true"
                           [autoplay]="{ delay: 2000, disableOnInteraction: false }"
                           [navigation]="true"
                           [pagination]="{ clickable: true }"
@@ -51,7 +52,7 @@
         <div class="text-4xl font-bold text-white m-10"
              style="top: -50%; transform: translateY(-50%);">Truyện phổ biến nhất
         </div>
-        <img (click)="goToRank()" class="h-14 white-icon cursor-pointer mb-4 mr-4" loading="lazy"
+        <img (click)="goToRank('follows')" class="h-14 white-icon cursor-pointer mb-4 mr-4" loading="lazy"
              src="https://mangaimg.blob.core.windows.net/assets/arrow-right-line.svg">
       </div>
       <div id="MainBody">
@@ -85,7 +86,7 @@
         <div class="text-4xl font-bold text-white m-10"
              style="top: -50%; transform: translateY(-50%);">Truyện có lượt xem cao nhất
         </div>
-        <img (click)="goToRank()" class="h-14 white-icon cursor-pointer mb-4 mr-4" loading="lazy"
+        <img (click)="goToListView()" class="h-14 white-icon cursor-pointer mb-4 mr-4" loading="lazy"
              src="https://mangaimg.blob.core.windows.net/assets/arrow-right-line.svg">
       </div>
       <div id="MainBody">
@@ -121,7 +122,7 @@
         <div class="text-4xl font-bold text-white m-10"
              style="top: -50%; transform: translateY(-50%);">Top Rating
         </div>
-        <img (click)="goToRank()" class="h-14 white-icon cursor-pointer mb-4 mr-4" loading="lazy"
+        <img (click)="goToRank('rating')" class="h-14 white-icon cursor-pointer mb-4 mr-4" loading="lazy"
              src="https://mangaimg.blob.core.windows.net/assets/arrow-right-line.svg">
       </div>
       <div id="MainBody">
@@ -202,7 +203,7 @@
           </div>
         </div>
         <div class="m-4" id="viewall">
-          <div (click)="goToRank()"
+          <div (click)="goToRank(selectedTab)"
                class="w-4/5 text-white font-bold border-2 border-blue-500 rounded-lg p-2 text-center mx-auto cursor-pointer
                   hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
             View All

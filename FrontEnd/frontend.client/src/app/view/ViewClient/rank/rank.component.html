@@ -8,6 +8,9 @@
       <p (click)="sortMangas('rating')"
          [ngClass]="{'text-yellow-500': selectedOption === 'rating', 'text-white': selectedOption!=='rating'}"
          class="font-bold text-xl p-2 cursor-pointer">Đánh giá cao |</p>
+      <p (click)="sortMangas('follows')"
+         [ngClass]="{'text-yellow-500': selectedOption === 'follows', 'text-white': selectedOption!=='follows'}"
+         class="font-bold text-xl p-2 cursor-pointer">Phổ biến nhất |</p>
       <p (click)="sortMangas('day')"
          [ngClass]="{'text-yellow-500': selectedOption === 'day', 'text-white': selectedOption!=='day'}"
          class="text-white font-bold text-xl p-2 cursor-pointer">Top Ngày |</p>
@@ -34,10 +37,14 @@
             class="bg-yellow-500 rounded-full w-6 h-6 flex items-center justify-center text-white m-1">{{ mangas.indexOf(manga) + 1 }}
           </div>
           <div class="flex items-center">
-            <img alt="Icon" class="h-6" loading="lazy"
+            <img *ngIf="selectedOption !== 'follows'" alt="Icon" class="h-6" loading="lazy"
                  src="https://mangaimg.blob.core.windows.net/assets/icons8-star-30.png">
+            <img *ngIf="selectedOption === 'follows'" alt="Icon" class="h-5" loading="lazy"
+                 src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
             <p *ngIf="selectedOption === 'rating'"
                class="text-white font-bold m-1">{{ manga.rating | number:'1.1-1' }}</p>
+            <p *ngIf="selectedOption === 'follows'"
+               class="text-white font-bold m-1">{{ manga.follows}}</p>
             <p *ngIf="selectedOption === 'day'" class="text-white font-bold m-1">{{ manga.viewsByDay }} lượt xem</p>
             <p *ngIf="selectedOption === 'week'" class="text-white font-bold m-1">{{ manga.viewsByWeek }} lượt xem</p>
             <p *ngIf="selectedOption === 'month'" class="text-white font-bold m-1">{{ manga.viewsByMonth }} lượt xem</p>

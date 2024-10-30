@@ -224,8 +224,12 @@ export class IndexComponent implements OnInit {
     this.router.navigate(['/titles', id_manga]);
   }
 
-  goToRank() {
-    this.router.navigate(['/rank']);
+  goToRank(option: string) {
+    this.router.navigate(['/rank'], { queryParams: { selectedOption: option } });
+  }
+
+  goToListView(){
+    this.router.navigate(['/list-view']);
   }
 
   click(temp: string): void {
