@@ -7,8 +7,11 @@ import {catchError, Observable, throwError} from 'rxjs';
   providedIn: 'root'
 })
 export class NotificationMangaAccountService {
-  private apiUrl = 'https://localhost:44305/api/notificationMangAccount';
-  private api = 'https://localhost:44305/api/notificationMangAccountById';
+  // private apiUrl = 'https://localhost:44305/api/notificationMangAccount';
+  // private api = 'https://localhost:44305/api/notificationMangAccountById';
+
+  private apiUrl = 'http://localhost:5010/api/notificationMangAccount';
+  private api = 'http://localhost:5010/api/notificationMangAccountById';
 
   constructor(private http: HttpClient) {
   }

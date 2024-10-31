@@ -8,8 +8,11 @@ import {ModelNotification} from '../../Model/ModelNotification';
 })
 export class NotificationService {
 
-  private apiUrl = 'https://localhost:44379/api/notification';
-  private api = 'https://localhost:44379/api/notificationById';
+  // private apiUrl = 'https://localhost:44379/api/notification';
+  // private api = 'https://localhost:44379/api/notificationById';
+
+  private apiUrl = 'http://localhost:5002/api/notification';
+  private api = 'http://localhost:5002/api/notificationById';
 
   constructor(private http: HttpClient) {
   }

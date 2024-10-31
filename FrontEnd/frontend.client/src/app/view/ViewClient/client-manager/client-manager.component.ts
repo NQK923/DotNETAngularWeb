@@ -235,9 +235,9 @@ export class ClientManagerComponent implements OnInit {
       }
       this.chapterService.uploadSingleImg(formData).subscribe(() => {
         this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Thêm hình ảnh thành công!'});
-        const timestamp = new Date().getTime();
-        const newUri = uri.replace(/\/(\d+(\.\d+)?)\.\w+$/, `/${this.selectedFile?.name}?timestamp=${timestamp}`);
-        this.chapterImages.splice(index, 0, newUri);
+        setTimeout(() => {
+          this.loadChapterImages(this.selectedChapter);
+        }, 2000);
         this.selectedOption = 'option1';
         this.isHidden = true;
       }, error => {
@@ -466,11 +466,13 @@ export class ClientManagerComponent implements OnInit {
     const index = this.chapterImages.indexOf(imageUri);
     if (index !== -1) {
       this.chapterImages.splice(index, 1);
+      this.resetSelection()
     }
   }
 
   handleDeleteError(error: any) {
     this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá hình ảnh thất bại, vui lòng thử lại!'});
+    this.resetSelection();
     console.error(error);
   }
 
@@ -967,11 +969,8 @@ export class ClientManagerComponent implements OnInit {
   }
 
   addNotification(id_manga: any, text: any) {
-    const userId = localStorage.getItem('userId');
-    const yourId = userId !== null ? parseInt(userId, 10) : 0;
     this.mangaService.getMangaById(id_manga).subscribe({
       next: (manga: Manga) => {
-        this.infoManga = manga;
         this.infoManga = manga;
         const textNotification = "Truyện vừa được thêm chương " + text;
         const timestamp = Date.now();
@@ -984,30 +983,42 @@ export class ClientManagerComponent implements OnInit {
           time: time,
           type_Noti: typeNoti
         };
-        this.notificationService.addNotification(notification).subscribe({
-          next: (response) => {
-            this.returnNotification = response;
-            const infoNotification: ModelNotificationMangaAccount = {
-              id_Notification: this.returnNotification?.id_Notification,
-              id_manga: Number(id_manga),
-              id_account: yourId,
-              isGotNotification: true,
-              is_read: false,
-            };
-            this.notificationMangaAccountService.addInfoNotification(infoNotification).subscribe({
-              next: () => {
-              },
-              error: (error) => {
-                console.error('Error adding detailed notification:', error);
-              }
+        this.mangaFavoriteService.isSendNoti(id_manga).subscribe({
+          next: (listId: any[]) => {
+            listId.forEach((id_account) => {
+              this.notificationService.addNotification(notification).subscribe({
+                next: (response) => {
+                  this.returnNotification = response;
+                  const infoNotification: ModelNotificationMangaAccount = {
+                    id_Notification: this.returnNotification?.id_Notification,
+                    id_manga: Number(id_manga),
+                    id_account: id_account,
+                    isGotNotification: true,
+                    is_read: false,
+                  };
+                  this.notificationMangaAccountService.addInfoNotification(infoNotification).subscribe({
+                    next: () => {
+                    },
+                    error: (error) => {
+                      console.error('Error adding detailed notification:', error);
+                    }
+                  });
+                },
+                error: (error) => {
+                  console.error('Error adding notification:', error);
+                }
+              });
             });
           },
           error: (error) => {
-            console.error('Error adding notification:', error);
+            console.error('Error retrieving listId:', error);
           }
         });
+      },
+      error: (error) => {
+        console.error('Error fetching manga:', error);
       }
-    })
+    });
   }
 
 //Pagination
@@ -1015,5 +1026,4 @@ export class ClientManagerComponent implements OnInit {
     this.page = newPage;
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
-
 }

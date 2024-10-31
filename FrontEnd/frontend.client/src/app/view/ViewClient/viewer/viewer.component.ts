@@ -10,6 +10,8 @@ import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaVi
 import {AccountService} from "../../../service/Account/account.service";
 import {ModelAccount} from "../../../Model/ModelAccount";
 import {forkJoin, map} from "rxjs";
+import {MangaService} from "../../../service/Manga/manga.service";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Chapter {
   id_chapter: number;
@@ -62,6 +64,8 @@ export class ViewerComponent implements OnInit {
     private mangaHistoryService: MangaHistoryService,
     private mangaViewHistoryService: MangaViewHistoryService,
     private accountService: AccountService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) {
   }
 
@@ -127,8 +131,6 @@ export class ViewerComponent implements OnInit {
               }
             );
           }
-        } else {
-          console.log("chapter or id_chapter is invalid");
         }
         this.chapter_index = numericIndex;
         this.router.navigate([`/manga/${this.id_manga}/chapter/${this.chapter_index}`]).then(() => {
@@ -185,38 +187,83 @@ export class ViewerComponent implements OnInit {
   }
 
   deleteComment(id_cm: any) {
-    this.commentService.deleteBanner(id_cm).subscribe(
-      () => {
-        this.loadAllComment(this.chapterId)
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn xóa bình luận này?',
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        this.commentService.deleteBanner(id_cm).subscribe(
+          () => {
+            this.loadAllComment(this.chapterId);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Xóa bình luận thành công!'
+            });
+          },
+          (error) => {
+            console.error(error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Xóa bình luận thất bại!'
+            });
+          }
+        );
       },
-      (error) => {
-        console.error(error);
-        alert('Upload thất bại:');
-      }
-    );
+    });
   }
+
 
   updateComment(id_cm: any) {
     const textUpdate = this.el.nativeElement.querySelector(`#text${id_cm}`);
     const id = this.yourId;
-    const comment: ModelComment = {
-      id_comment: id_cm,
-      id_chapter: this.chapterId,
-      id_user: id,
-      content: textUpdate.value,
-      isReported: false,
-      time: new Date()
+    if (!textUpdate.value.trim()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail: 'Vui lòng nhập nội dung bình luận trước khi cập nhật.'
+      });
+      return;
     }
-    this.commentService.updateComment(comment).subscribe(
-      () => {
-        this.loadAllComment(this.chapterId)
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn cập nhật bình luận này?',
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        const comment: ModelComment = {
+          id_comment: id_cm,
+          id_chapter: this.chapterId,
+          id_user: id,
+          content: textUpdate.value,
+          isReported: false,
+          time: new Date()
+        };
+
+        this.commentService.updateComment(comment).subscribe(
+          () => {
+            this.loadAllComment(this.chapterId);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Cập nhật bình luận thành công!'
+            });
+          },
+          (error) => {
+            console.error(error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Cập nhật bình luận thất bại!'
+            });
+          }
+        );
       },
-      (error) => {
-        console.error(error);
-        alert('Upload thất bại:');
-      }
-    );
+    });
   }
+
 
   addComment() {
     const text = this.el.nativeElement.querySelector('#textComment');
@@ -230,11 +277,12 @@ export class ViewerComponent implements OnInit {
     }
     this.commentService.addComment(comment).subscribe(
       () => {
-        this.loadAllComment(this.chapterId)
+        this.loadAllComment(this.chapterId);
+        this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Bình luận đã được thêm.' });
       },
       (error) => {
         console.error(error);
-        alert('Upload thất bại:');
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Thêm bình luận thất bại.' });
       }
     );
   }
@@ -315,15 +363,14 @@ export class ViewerComponent implements OnInit {
       content: text,
       isReported: true,
       time: new Date()
-    }
-    console.log(comment)
+    };
     this.commentService.updateComment(comment).subscribe(
       () => {
-        alert('Báo cáo thành công');
+        this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Báo cáo thành công.' });
       },
       (error) => {
         console.error(error);
-        alert('Thất bại:');
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Báo cáo thất bại.' });
       }
     );
   }

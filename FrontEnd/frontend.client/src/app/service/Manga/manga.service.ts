@@ -6,7 +6,8 @@ import {Observable} from "rxjs";
   providedIn: 'root'
 })
 export class MangaService {
-  private apiUrl = 'https://localhost:44355/api/manga'
+  // private apiUrl = 'https://localhost:44355/api/manga'
+  private apiUrl = 'http://localhost:5001/api/manga'
 
   constructor(private http: HttpClient) {
   }

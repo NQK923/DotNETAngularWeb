@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //get all chapter by manga id
 app.MapGet("/api/manga/{idManga:int}/chapters", async (int idManga, ChapterDbContext dbContext) =>

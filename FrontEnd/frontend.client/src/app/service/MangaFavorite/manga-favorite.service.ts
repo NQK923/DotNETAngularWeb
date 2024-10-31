@@ -8,13 +8,19 @@ import {ModelMangaFavorite} from "../../Model/MangaFavorite";
   providedIn: 'root'
 })
 export class MangaFavoriteService {
-  private apiUrl = 'https://localhost:44348/api/mangas';
+  //private apiUrl = 'https://localhost:44348/api/mangas';
+
+  private apiUrl = 'http://localhost:5007/api/mangas';
 
   constructor(private http: HttpClient) {
   }
 
   isFavorited(idAccount: number, idManga: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/isFavorite?idAccount=${idAccount}&idManga=${idManga}`)
+  }
+
+  isSendNoti(idManga: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/isSendNoti?idManga=${idManga}`)
   }
 
   countFollower(idManga: number): Observable<any> {

@@ -340,9 +340,8 @@ export class HeaderComponent implements OnInit {
       this.ngOnInit();
       this.router.navigate(['/titles', data.Mangainfo?.id_manga]);
     } else {
-
+      this.searchQuery = '';
+      this.router.navigate(['/client-manager']);
     }
-    this.searchQuery = '';
-    this.router.navigate(['/client-manager']);
   }
 }

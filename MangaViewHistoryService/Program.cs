@@ -24,7 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // get manga views by history
 app.MapGet("/api/manga/getAllView", async (int idManga, MangaViewHistoryDbContext mangaViewHistoryDbContext) =>

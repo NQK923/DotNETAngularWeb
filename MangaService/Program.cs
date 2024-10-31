@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //get all active manga
 app.MapGet("/api/manga", async (MangaDbContext dbContext) =>

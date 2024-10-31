@@ -100,7 +100,7 @@ app.MapDelete("api/mangas/delete/{idAccount:int}/{idManga:int}",
     });
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowAllOrigins");
 app.Run();
