@@ -37,7 +37,9 @@ export class HeaderComponent implements OnInit {
   isHidden: boolean = true;
   listMangaFavorite: ModelMangaFavorite [] = [];
   numberNotification: number | null = null;
-
+    // Two way data binding
+  isLoggedIn : boolean = false;
+    // Two way data binding
   constructor(private accountService: AccountService,
               private router: Router,
               private el: ElementRef,
@@ -49,7 +51,11 @@ export class HeaderComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+      console.log("change:" + this.isLoggedIn)
+    });
     this.allFunction()
   }
 

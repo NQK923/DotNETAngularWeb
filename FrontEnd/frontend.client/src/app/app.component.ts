@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { AccountService } from './service/Account/account.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ export class AppComponent implements OnInit {
   showHeaderFooter: boolean = true;
   title = "wweb";
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private accountService:AccountService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -19,15 +20,30 @@ export class AppComponent implements OnInit {
         && !currentUrl.includes('/manager-account')
         && !currentUrl.includes('/manager-statiscal')
         && !currentUrl.includes('/client-manager')
-      ;
+        ;
     });
   }
 
   ngOnInit(): void {
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
+        let currentUrl = this.router.url;
+        (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
+          if(loggedIn && currentUrl.includes("login"))
+            {
+              this.router.navigate(['/']);
+            }
+        });
         window.scrollTo(0, 0);
       }
     });
   }
+
+  private async checkLoggedIn():Promise<boolean>
+  {
+    let result = await this.accountService.isLoggedIn();
+    if(!result) return false;
+    return true;
+  }
+
 }

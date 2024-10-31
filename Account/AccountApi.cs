@@ -16,16 +16,19 @@
     {
         public static class AccountAPI
         {
-            public static void InitBasicAccountApi(this IEndpointRouteBuilder endpointRouteBuilde)
+            public static void InitBasicAccountApi(this IEndpointRouteBuilder endpointRouteBuilder)
             {
-                MapPutChangePassword(endpointRouteBuilde);
-                MapGetListAccount(endpointRouteBuilde);
-                MapGetAccountByID(endpointRouteBuilde);
-                MapPostRegister(endpointRouteBuilde);
-                MapPutChangeStatus(endpointRouteBuilde);
-                MapPostLogin(endpointRouteBuilde);
-                MapPostCheckOldPasswordAccountByID(endpointRouteBuilde);
-                MapGetIDAccount(endpointRouteBuilde);
+                MapPutChangePassword(endpointRouteBuilder);
+                MapGetListAccount(endpointRouteBuilder);
+                MapGetAccountByID(endpointRouteBuilder);
+                MapPostRegister(endpointRouteBuilder);
+                MapPutChangeStatus(endpointRouteBuilder);
+                MapPostLogin(endpointRouteBuilder);
+                MapPostCheckOldPasswordAccountByID(endpointRouteBuilder);
+                MapGetIDAccount(endpointRouteBuilder);
+                MapPostRegisterExternalAccount(endpointRouteBuilder);
+                MapPostCheckExistExternalAccount(endpointRouteBuilder);
+                MapGetIsLoggedIn(endpointRouteBuilder);
             }
 
             public static void MapPutChangePassword(this IEndpointRouteBuilder endpointRouteBuilder)
@@ -73,11 +76,44 @@
                 });
             }
 
+            // Trả về cookie
+            public static void MapPostCheckExistExternalAccount(this IEndpointRouteBuilder endpointRouteBuilder)
+            {
+                endpointRouteBuilder.MapPost("/account/checkExistExternalAccount", async (string username, HttpContext httpContext, AccountDbContext dBContext) =>
+                {
+                    var account = await dBContext.accounts.FirstOrDefaultAsync(account => account.username == username);
+                    if (account == null) return Results.Ok("Tài khoản chưa tồn tại");
+                    CreateCookie(httpContext, GenerateToken(account.id_account, account.role));
+                    return Results.Ok();
+                });
+            }
+
+            public static void MapPostRegisterExternalAccount(this IEndpointRouteBuilder endpointRouteBuilder)
+            {
+                endpointRouteBuilder.MapPost("/account/registerExternalAccount", async (string username, AccountDbContext dBContext) =>
+                {
+                    // Kiểm tra tài khoản có tồn tại
+
+                    var newAccount = new ModelAccount
+                    {
+                        username = username,
+                        role = false,
+                        status = true,
+                    };
+
+                    dBContext.accounts.Add(newAccount);
+                    await dBContext.SaveChangesAsync();
+                    return Results.Ok(newAccount.id_account);
+                });
+            }
+
+
+
             public static void MapGetIDAccount(this IEndpointRouteBuilder endpointRouteBuilder)
             {
                 endpointRouteBuilder.MapGet("/account/getIDAccount", async (HttpContext httpContext) =>
                 {
-                    httpContext.Request.Cookies.TryGetValue("jwtToken", out var jwtToken);
+                    httpContext.Request.Cookies.TryGetValue("loggedIn", out var jwtToken);
                     string token = jwtToken;
                     var info = DecodeToken(token);
                     var idAccount = info.GetType().GetProperty("IdAccount")?.GetValue(info, null);
@@ -85,6 +121,16 @@
                 });
             }
 
+            public static void MapGetIsLoggedIn(this IEndpointRouteBuilder endpointRouteBuilder)
+            {
+                endpointRouteBuilder.MapGet("/account/isLoggedIn", async (HttpContext httpContext) =>
+                {
+                    httpContext.Request.Cookies.TryGetValue("loggedIn", out var jwtToken);
+                    string token = jwtToken;
+                    if(token == null) return Results.Ok(false);
+                    return Results.Ok(true);          
+                });
+            }
 
             public static void MapPostRegister(this IEndpointRouteBuilder endpointRouteBuilder)
             {
@@ -113,6 +159,7 @@
                 });
             }
 
+            // Trả về cookie
             public static void MapPostLogin(this IEndpointRouteBuilder endpointRouteBuilder)
             {
                 endpointRouteBuilder.MapPost("/account/login", async (LoginRegisterRequest loginRegisterRequest, HttpContext httpContext, AccountDbContext dBContext) =>
@@ -229,13 +276,18 @@
 
             private static void CreateCookie(HttpContext httpContext, string token)
             {
-                httpContext.Response.Cookies.Append("jwtToken", token, new CookieOptions
+                httpContext.Response.Cookies.Append("loggedIn", token, new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = false,
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTimeOffset.UtcNow.AddMonths(1),
                 });
+            }
+
+            private static void DeleteCookie(HttpContext httpContext, string nameCookie)
+            {
+                httpContext.Response.Cookies.Delete(nameCookie);
             }
         }
     }

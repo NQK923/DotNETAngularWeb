@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ModelAccount } from "../../../Model/ModelAccount";
 import { Router } from "@angular/router";
 import { AccountService } from "../../../service/Account/account.service";
 import { InfoAccountService } from "../../../service/InfoAccount/info-account.service";
 import { Location } from '@angular/common';
 import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 
 @Component({
@@ -28,30 +29,45 @@ export class LoginComponent {
   isInvalidPassword: boolean = false;
   isInvalidEmail: boolean = false;
   isInvalidConfirmPassword: boolean = false;
+
+
   // Two way data binding
 
   constructor(private router: Router,
     private InfoAccountService: InfoAccountService,
-    private accountService: AccountService, private location: Location) {
+    private accountService: AccountService, private location: Location, private authService: SocialAuthService) {
+    this.accountService.checkExternalLogin(this.gotToIndex.bind(this));
   }
 
 
-
-  goToForgotPassword() {
+  goToForgotPassword(): void {
     this.router.navigate(['/update']);
   }
 
-  goToUpdatePassword() {
+  goToUpdatePassword(): void {
     this.router.navigate(['/update']);
   }
+
+  gotToIndex(): void {
+    console.log("GoToIndex");
+    this.router.navigate(['/']);
+  }
+
+  signInFB(): void {
+    this.accountService.signInWithFB();
+  }
+
 
   // check login
   async loginNormal(): Promise<void> {
-    if(!this.checkLoginData()) return;
-    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.failCallback.bind(this));
-    if (!result) { console.log("NOT OK"); return; }
-    console.log(await this.accountService.getIdAccount());
-    console.log("OK");
+    if (!this.checkLoginData()) return;
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this) ,this.failCallback.bind(this));
+    if (!result) {
+      // console.log("NOT OK");
+      return;
+    }
+    // console.log(await this.accountService.getIdAccount());
+    // console.log("OK");
   }
 
   private checkLoginData(): boolean {
@@ -60,7 +76,6 @@ export class LoginComponent {
     flag = this.checkValidUsername() || this.checkValidPassword();
     return flag;
   }
-
 
   failCallback(error: string): void {
     console.log("lỗi:" + error);

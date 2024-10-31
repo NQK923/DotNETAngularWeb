@@ -1,17 +1,17 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ModelAccount } from '../../Model/ModelAccount'
 import { ModelInfoAccount } from "../../Model/ModelInfoAccoutn";
 import { LoginRegisterRequest } from '../../Model/Account/LoginRegisterRequest';
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class AccountService implements OnInit {
+export class AccountService {
   private port = 7002;
   private apiUrl = `https://localhost:${this.port}/api/Account`;
   private apiLoginUrl: string = 'https://localhost:' + this.port + '/account/login';
@@ -22,22 +22,18 @@ export class AccountService implements OnInit {
   private apiPassword = `https://localhost:${this.port}/api/password`;
   private apiCheckOldPasswordUrl: string = 'https://localhost:' + this.port + '/account/checkOldPasswordAccountByID';
   private apiRegisterUrl: string = 'https://localhost:' + this.port + '/account/register';
-
-
+  private apiCheckExistExternalAccountUrl: string = 'https://localhost:' + this.port + '/account/checkExistExternalAccount';
+  private apiRegisterExternalAccount: string = 'https://localhost:' + this.port + '/account/registerExternalAccount';
+  private apiIsLoggedIn: string = 'https://localhost:' + this.port + '/account/isLoggedIn';
   user: SocialUser | undefined;
-  loggedIn: boolean | undefined;
 
-  constructor(private authService: SocialAuthService,private http: HttpClient) {
+  private loggedIn = new BehaviorSubject<boolean>(false);
+
+  constructor(private authService: SocialAuthService, private http: HttpClient) {
+
   }
 
-  ngOnInit() {
 
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.loggedIn = (user != null);
-      console.log(user.response)
-    });
-  }
   postMail(email: string, title: string, text: string): Observable<any> {
     const params = new HttpParams()
       .set('email', email)
@@ -59,10 +55,6 @@ export class AccountService implements OnInit {
     return this.http.get<ModelAccount[]>(this.apiUrl);
   }
 
-  addAccount(Account: ModelAccount): Observable<ModelAccount> {
-    return this.http.post<ModelAccount>(this.apiUrl, Account);
-  }
-
   updateAccount(Account: ModelAccount): Observable<ModelAccount> {
     return this.http.put<ModelAccount>(this.apiUrl, Account);
   }
@@ -71,9 +63,55 @@ export class AccountService implements OnInit {
     return this.http.get<ModelInfoAccount[]>(this.apiInfo);
   }
 
-  public getIdAccount() : Promise<number>{
+  signInWithFB(): void {
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+  }
+
+  public checkExternalLogin(successCallback: () => void): void {
+    this.authService.authState.subscribe((user) => {
+      this.LoginExternal(user, successCallback);
+    });
+  }
+
+  private async LoginExternal(user: SocialUser, successCallback: () => void) {
+    let result: string = await this.CheckExistExternalAccount(user.id.toString());
+    if (result == "Tài khoản chưa tồn tại") await this.RegisterExternalAccount(user.id.toString());
+    successCallback();
+
+  }
+
+  private RegisterExternalAccount(username: string): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.http.get<number>(this.apiGetIDAccountUrl, { withCredentials: true}).subscribe({
+      this.http.post<number>(`${this.apiRegisterExternalAccount}?username=${username}`, {}).subscribe({
+        next: (response) => {
+          // console.log("OK");
+          resolve(response);
+        },
+        error: (error) => {
+          console.log("Lỗi: " + error);
+          reject(0);
+        }
+      });
+    });
+  }
+  // Trả về cookie
+  private CheckExistExternalAccount(username: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.http.post<string>(`${this.apiCheckExistExternalAccountUrl}?username=${username}`, {}, { withCredentials: true }).subscribe({
+        next: (response) => {
+          resolve(response);
+        },
+        error: (error) => {
+          reject(false);
+        }
+      });
+    });
+  }
+
+
+  public getIdAccount(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.http.get<number>(this.apiGetIDAccountUrl, { withCredentials: true }).subscribe({
         next: (response) => {
           resolve(response);
         },
@@ -84,10 +122,28 @@ export class AccountService implements OnInit {
     });
   }
 
-  loginNormal(username: string, password: string, failCallback: (error: string) => void): Promise<boolean> {
+
+  public isLoggedIn(): Promise<Observable<boolean>> {
+    return new Promise((resolve, reject) => {
+      this.http.get<boolean>(this.apiIsLoggedIn, { withCredentials: true }).subscribe({
+        next: (response) => {
+          this.loggedIn.next(response);
+          resolve(this.loggedIn.asObservable());
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error)
+          reject(error);
+        }
+      });
+    });
+  }
+
+
+  // Trả về cookie
+  loginNormal(username: string, password: string, successCallback: () => void, failCallback: (error: string) => void): Promise<boolean> {
     let loginRequest: LoginRegisterRequest = { username: username, password: password };
     return new Promise((resolve, reject) => {
-      this.http.post<any>(this.apiLoginUrl, loginRequest, { withCredentials: true}).subscribe({
+      this.http.post<any>(this.apiLoginUrl, loginRequest, { withCredentials: true }).subscribe({
         next: (response) => {
           console.log(response);
           resolve(true);
