@@ -5,6 +5,9 @@ import {AccountService} from "../../../service/Account/account.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
 import {MessageService} from "primeng/api";
+import { Location } from '@angular/common';
+import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 
 @Component({
@@ -12,180 +15,157 @@ import {MessageService} from "primeng/api";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements AfterViewInit {
-  @ViewChild('container') container!: ElementRef;
-  @ViewChild('register') registerBtn!: ElementRef;
-  @ViewChild('login') loginBtn!: ElementRef;
+export class LoginComponent {
   accounts: ModelAccount | undefined;
 
+  // Two way data binding
+  isActive: boolean = false;
+  username: string = '';
+  password: string = '';
+  confirmPassword: string = '';
+  email: string = '';
+  messageErrorUsername: string = '';
+  messageErrorPassword: string = '';
+
+  isInvalidUsername: boolean = false;
+  isInvalidPassword: boolean = false;
+  isInvalidEmail: boolean = false;
+  isInvalidConfirmPassword: boolean = false;
+
+
+  // Two way data binding
+
   constructor(private router: Router,
-              private InfoAccountService: InfoAccountService,
-              private accountService: AccountService,
-              private messageService: MessageService) {
+    private InfoAccountService: InfoAccountService,
+    private accountService: AccountService, private location: Location, private authService: SocialAuthService,private messageService: MessageService) {
+    this.accountService.checkExternalLogin(this.gotToIndex.bind(this));
   }
 
-  ngAfterViewInit() {
-    this.registerBtn.nativeElement.addEventListener('click', () => {
-      this.container.nativeElement.classList.add('active');
-    });
-    this.loginBtn.nativeElement.addEventListener('click', () => {
-      this.container.nativeElement.classList.remove('active');
-    });
-  }
 
-  goToForgotPassword() {
+  goToForgotPassword(): void {
     this.router.navigate(['/update']);
   }
 
-  goToUpdatePassword() {
+  goToUpdatePassword(): void {
     this.router.navigate(['/update']);
   }
+
+  gotToIndex(): void {
+    console.log("GoToIndex");
+    this.router.navigate(['/']);
+  }
+
+  signInFB(): void {
+    this.accountService.signInWithFB();
+  }
+
 
   // check login
-  loginWeb() {
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
-    if (!username || !password) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Cảnh báo',
-        detail: 'Vui lòng nhập tên đăng nhập và mật khẩu'
-      });
+  async loginNormal(): Promise<void> {
+    if (!this.checkLoginData()) return;
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this) ,this.failCallback.bind(this));
+    if (!result) {
+      // console.log("NOT OK");
       return;
     }
-    const data: ModelAccount = {
-      id_account: 0,
-      username: username,
-      password: password,
-      banDate: new Date("2024-10-06T07:15:58.989Z"),
-      role: true,
-      status: true
-    };
-    this.accountService.login(data).subscribe({
-      next: (response) => {
-        this.TakeData(Number(response));
-      },
-      error: () => {
-        this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Vui lòng nhập đúng tài khoản mật khẩu'});
-      }
-    });
+    // console.log(await this.accountService.getIdAccount());
+    // console.log("OK");
   }
 
-// get data login
-  TakeData(response: number) {
-    this.accountService.getAccountById(response).subscribe(
-      (data) => {
-        this.accounts = data;
-        this.checkAccount(response);
-      },
-      (error) => {
-        console.error('Error fetching accounts:', error);
-      }
-    );
+  private checkLoginData(): boolean {
+    this.resetError();
+    let flag: boolean;
+    flag = this.checkValidUsername() || this.checkValidPassword();
+    return flag;
   }
 
-// check data login
-  checkAccount(response: number) {
-    if (!this.accounts?.role && !this.accounts?.status) {
-      localStorage.setItem('userId', response.toString());
-      this.router.navigate(['/']).then(r => {
-        window.location.reload()
-      });
-    } else if (this.accounts.status) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Tài khoản bị khóa',
-        detail: 'Tài khoản của bạn đã bị khóa, vui lòng liên hệ quản lý để được hỗ trợ.'
-      });
-    } else if (this.accounts.role) {
-      // @ts-ignore
-      localStorage.setItem('userId', this.accounts.id_account);
-      this.router.navigate(['/manager']);
+  failCallback(error: string): void {
+    console.log("lỗi:" + error);
+    switch (error) {
+      case "Tài khoản không tồn tại":
+        this.messageErrorUsername = error;
+        this.isInvalidUsername = true;
+        break;
+      case "Sai mật khẩu":
+        this.messageErrorPassword = error;
+        this.isInvalidPassword = true;
+        break;
+      default:
+        break;
     }
+  }
+
+  resetError(): void {
+    if (this.isInvalidConfirmPassword) this.isInvalidConfirmPassword = false;
+    if (this.isInvalidEmail) this.isInvalidEmail = false;
+    if (this.isInvalidUsername) this.isInvalidUsername = false;
+    if (this.isInvalidPassword) this.isInvalidPassword = false;
+  }
+
+  changeForm(): void {
+    this.resetError();
+    if (this.isActive == false) {
+      this.isActive = true;
+      return;
+    }
+    this.isActive = false;
   }
 
   // create new account
-  registerAccount(): void {
-    const username = document.getElementById('usernameSign') as HTMLInputElement;
-    const email = document.getElementById('email') as HTMLInputElement;
-    const password = document.getElementById('passwordSign') as HTMLInputElement;
-    const passwordAccept = document.getElementById('passwordAccept') as HTMLInputElement;
-    const data: ModelAccount = {
-      username: username.value,
-      password: password.value,
-      banComment: false,
-      role: false,
-      status: false
-    };
-    if (!username.value) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không được để trống'});
-      return;
-    }
-    if (username.value.length > 12) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Tên người dùng không quá 12 ký tự'});
-      return;
-    }
-    if (!email.value) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Email không được để trống'});
-      return;
-    }
-    if (!password.value) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu không được để trống'});
-      return;
-    }
-    if (password.value.length < 6) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu tối thiểu 6 ký tự'});
-      return;
-    }
-    if (!passwordAccept.value) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không được để trống'});
-      return;
-    }
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailPattern.test(email.value)) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Lỗi',
-        detail: 'Email phải có định dạng: example@gmail.com'
-      });
-      return;
-    }
-    if (password.value !== passwordAccept.value) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xác nhận mật khẩu không trùng khớp'});
-      return;
-    }
-    this.accountService.addAccount(data).subscribe({
-      next: (response) => {
-        if (typeof response === 'number') {
-          this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công'});
-          localStorage.setItem('userId', response);
-
-          const infoAccount: ModelInfoAccount = {
-            id_account: response,
-            name: "Rỗng",
-            email: email.value || "null@gmail.com"
-          };
-          this.InfoAccountService.addInfoAccount(infoAccount).subscribe({
-            next: () => {
-              this.router.navigate([`/index/User:${response}`]);
-            },
-            error: (error) => {
-              this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Lỗi thêm thông tin'});
-              console.error('Error adding account info:', error);
-            }
-          });
-        } else {
-          this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Tên đăng nhập đã được sử dụng'});
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Lỗi',
-          detail: 'Có lỗi xảy ra trong quá trình đăng ký, vui lòng thử lại.'
-        });
-        console.error('Login error:', err);
-      }
-    });
+  async registerAccount(): Promise<void> {
+    if (!this.checkRegisterData()) return;
+    let result: boolean = await this.accountService.register(this.username, this.password)
+    if (!result) { console.log("NOT OK"); return; }
+    console.log("OK");
   }
+
+  private checkRegisterData(): boolean {
+    this.resetError();
+    let flag: boolean;
+    flag = this.checkValidUsername() || this.checkValidEmail() || this.checkValidPassword() || this.checkConfirmPassword();
+    return flag;
+  }
+
+  private checkValidUsername(): boolean {
+    if (!this.accountService.checkValidUsername(this.username)) {
+      this.messageErrorUsername = "Tên người dùng không được để trống và không quá 12 ký tự";
+      this.isInvalidUsername = true;
+      return false;
+    }
+    this.isInvalidUsername = false;
+    return true;
+  }
+
+  private checkValidEmail(): boolean {
+    if (!this.accountService.checkValidEmail(this.username)) { this.isInvalidEmail = true; return false; }
+    this.isInvalidEmail = false;
+    return true;
+  }
+
+  private checkConfirmPassword(): boolean {
+    if (!this.accountService.checkConfirmPassword(this.password, this.confirmPassword)) { this.isInvalidConfirmPassword = true; return false; }
+    this.isInvalidConfirmPassword = false;
+    return true;
+  }
+
+  private checkValidPassword(): boolean {
+    if (!this.accountService.checkValidPassword(this.password)) {
+      this.messageErrorPassword = "Mật khẩu không được để trống và tối thiểu 6 ký tự";
+      this.isInvalidPassword = true;
+      return false;
+    }
+    this.isInvalidPassword = false;
+    return true;
+  }
+
+  private checkValidCurrentPassword(): boolean {
+    if (!this.accountService.checkValidCurrentPassword(this.password)) {
+      this.messageErrorPassword = "Mật khẩu không đúng";
+      this.isInvalidPassword = true;
+      return false;
+    }
+    this.isInvalidPassword = false;
+    return true;
+  }
+
 }

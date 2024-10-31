@@ -10,6 +10,6 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\service\Comment\"/>
+    <Folder Include="src\app\service\Comment\" />
   </ItemGroup>
 </Project>

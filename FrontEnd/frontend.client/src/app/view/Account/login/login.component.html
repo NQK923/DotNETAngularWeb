@@ -1,5 +1,5 @@
 <main>
-  <div #container class="container">
+  <div #container [ngClass]="{'active':isActive}" class="container">
     <div class="form-container sign-up">
       <form>
         <h1 class="font-bold">Create account</h1>
@@ -19,10 +19,16 @@
 
         </div>
         <span>Đăng ký với G-mail</span>
-        <input id="usernameSign" placeholder="User name" type="text">
-        <input id="email" placeholder="Enter G-mail" type="email">
-        <input id="passwordSign" placeholder="Enter Password" type="password">
-        <input id="passwordAccept" placeholder="Enter Confirm Password " type="password">
+        <input [(ngModel)]="username" placeholder="User name" type="text" [ngModelOptions]="{standalone: true}">
+        <p *ngIf="isInvalidUsername" class="text-danger">{{messageErrorUsername}}</p>
+        <input [(ngModel)]="email" placeholder="Enter G-mail" type="email" [ngModelOptions]="{standalone: true}">
+        <p *ngIf="isInvalidEmail" class="text-danger">Email không hợp lệ</p>
+        <input [(ngModel)]="password" placeholder="Enter Password" type="password"
+          [ngModelOptions]="{standalone: true}">
+        <p *ngIf="isInvalidPassword" class="text-danger">{{messageErrorPassword}}</p>
+        <input [(ngModel)]="confirmPassword" placeholder="Enter Confirm Password " type="password"
+          [ngModelOptions]="{standalone: true}">
+        <p *ngIf="isInvalidConfirmPassword" class="text-danger">Mật khẩu không khớp</p>
         <button (click)="registerAccount()">Sign up</button>
       </form>
     </div>
@@ -45,16 +51,25 @@
                                          src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/424.png?hash=sZTeD2UtSfMjYNqf0CmUiw&expires=2145884400"></a>
         </div>
         <span>Đăng nhập với tên tài khoản và mật khẩu</span>
-        <input id="username" placeholder="Enter UserName" type="text">
-        <input id="password" placeholder="Enter Password" type="password">
+        <input [(ngModel)]="username" placeholder="Enter UserName" type="text" [ngModelOptions]="{standalone: true}">
+        <p *ngIf="isInvalidUsername" class="text-danger">{{messageErrorUsername}}</p>
+        <input [(ngModel)]="password" placeholder="Enter Password" type="password"
+          [ngModelOptions]="{standalone: true}">
+        <p *ngIf="isInvalidPassword" class="text-danger">{{messageErrorPassword}}</p>
         <div class="flex">
           <div (click)=" goToForgotPassword()" class="underline text-sm">Quên mật khẩu</div>
           <div>/</div>
           <div (click)=" goToUpdatePassword()" class="underline text-sm">Đổi mật khẩu</div>
-
         </div>
-        <button (click)="loginWeb()">Sign in</button>
+        <button (click)="loginNormal()">Sign in</button>
+        <div style="margin-top: 20px;">
+          <asl-google-signin-button type='standard' theme="filled_blue" size='large'></asl-google-signin-button>
+        </div>
+        <button (click)="signInFB()" class="btn btn-primary w-full font-weight-bold flex items-center" style="background-color: rgba(26,115,232,255);">
+          <span class="flex-grow text-center">Đăng nhập với FaceBook</span>
+      </button>
       </form>
+
     </div>
 
     <div class="toggle-container">
@@ -62,12 +77,12 @@
         <div class="toggle-panel toggle-left">
           <h1 class="font-bold">Welcome to Manga .net core </h1>
           <p>Sign in With ID & Password</p>
-          <button #login>Sign In</button>
+          <button (click)="changeForm()">Sign In</button>
         </div>
         <div class="toggle-panel toggle-right">
           <h1 class="font-bold">Welcome to Manga .net core</h1>
           <p>Cùng thưởng thức manga chất lượng của chúng tôi</p>
-          <button #register>Sign up</button>
+          <button (click)="changeForm()">Sign up</button>
         </div>
       </div>
     </div>

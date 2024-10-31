@@ -1,4 +1,5 @@
 using Account.Email;
+using Account.WebApplication2;
 using Banners.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,14 @@ builder.Services.AddDbContext<AccountDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policyBuilder =>
-        policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    {
+        policyBuilder.WithOrigins("https://localhost:4200")
+                     .AllowAnyMethod()
+                     .AllowAnyHeader()
+                     .AllowCredentials();
+    });
 });
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -95,25 +102,5 @@ app.MapPost("/api/password", async (string email, string title, string text) =>
     return Results.Ok(result == "success");
 });
 
-//update account
-app.MapPut("/api/Account", async (ModelAccount updatedAccount, [FromServices] AccountDbContext dbContext) =>
-{
-    try
-    {
-        var existingAccount = await dbContext.Account
-            .FirstOrDefaultAsync(m => m.id_account == updatedAccount.id_account);
-
-        if (existingAccount == null) return Results.NotFound("Tài khoản không tồn tại.");
-        existingAccount.status = updatedAccount.status;
-        existingAccount.password = updatedAccount.password;
-        existingAccount.banComment = updatedAccount.banComment;
-        await dbContext.SaveChangesAsync();
-        return Results.Ok(existingAccount);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem("Đã xảy ra lỗi trong quá trình cập nhật tài khoản: " + ex.Message);
-    }
-});
-
+app.InitBasicAccountApi();
 app.Run();

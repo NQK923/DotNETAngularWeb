@@ -36,7 +36,7 @@
               id="Favorite">
             Yêu thích
           </li>
-          <li (click)="goToLogin()"
+          <li *ngIf="isLoggedIn === false" (click)="goToLogin()"
               class="text-lg font-bold items-center text-gray-100 mx-3 hover:text-yellow-500 cursor-pointer"
               id="Login">Đăng
             nhập

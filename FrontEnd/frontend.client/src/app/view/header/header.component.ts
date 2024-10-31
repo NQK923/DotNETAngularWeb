@@ -42,6 +42,9 @@ export class HeaderComponent implements OnInit {
   isAdmin: boolean = false;
   menuOpen = false;
 
+    // Two way data binding
+  isLoggedIn : boolean = false;
+    // Two way data binding
   constructor(private accountService: AccountService,
               private router: Router,
               private el: ElementRef,
@@ -55,9 +58,15 @@ export class HeaderComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+
+
+  async ngOnInit() {
     this.ListCombinedData = [];
     this.ListCombinedDataIsRead = [];
+    (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+      console.log("change:" + this.isLoggedIn)
+    });
     this.allFunction()
   }
 
