@@ -34,9 +34,66 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
+// get all account
+app.MapGet("/api/Account", async ([FromServices] AccountDbContext dbContext) =>
+{
+    var accounts = await dbContext.Account.ToListAsync();
+    return Results.Ok(accounts);
+});
+
+//get data by id
+app.MapGet("/api/Account/data", async (int idAccount, AccountDbContext dbContext) =>
+{
+    var account = await dbContext.Account.Where(ac => ac.id_account == idAccount).FirstOrDefaultAsync();
+    return Results.Ok(account);
+});
+
+app.MapGet("/api/AccountById/{idAccount:int}", async ([FromServices] AccountDbContext dbContext, int idAccount) =>
+{
+    var account = await dbContext.Account.FindAsync(idAccount);
+
+    return account == null ? Results.NotFound() : Results.Ok(account);
+});
+
+//add new account
+app.MapPost("/api/Account", async (ModelAccount account, [FromServices] AccountDbContext dbContext) =>
+{
+    try
+    {
+        var exists = await dbContext.Account
+            .AnyAsync(m => m.username == account.username);
+        if (exists) return Results.Ok(false);
+        dbContext.Account.Add(account);
+        await dbContext.SaveChangesAsync();
+        return Results.Ok(account.id_account);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem("An error occurred during account creation: " + ex.Message);
+    }
+});
+
+//login
+app.MapPost("/api/Login", async (ModelAccount account, [FromServices] AccountDbContext dbContext) =>
+{
+    try
+    {
+        var existingAccount = await dbContext.Account
+            .FirstOrDefaultAsync(a => a.username == account.username && a.password == account.password);
+
+        if (existingAccount != null)
+            return Results.Ok(existingAccount.id_account);
+
+        return Results.NotFound("Invalid username or password");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem("An error occurred during the login process: " + ex.Message);
+    }
+});
 
 //forgot password
 app.MapPost("/api/password", async (string email, string title, string text) =>

@@ -39,6 +39,17 @@ app.MapGet("/api/mangas/getAllFollower", async (int idManga, MangaFavoriteDbCont
         .CountAsync();
     return Results.Ok(totalViews);
 });
+
+app.MapGet("/api/mangas/isSendNoti", async (int idManga, MangaFavoriteDbContext dbContext) =>
+{
+    var accountIds = await dbContext.Manga_Favorite
+        .Where(mf => mf.id_manga == idManga && mf.is_favorite && mf.is_notification)
+        .Select(mf => mf.id_account)
+        .ToListAsync();
+    return Results.Ok(accountIds.Count == 0 ? [] : accountIds);
+});
+
+
 //check manga favorite status by id manga and id account
 app.MapGet("/api/mangas/isFavorite", async (int idAccount, int idManga, MangaFavoriteDbContext dbContext) =>
 {
@@ -123,7 +134,7 @@ app.MapPut("/api/mangafavorite", async (MangaFavorite comment, MangaFavoriteDbCo
     }
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
 

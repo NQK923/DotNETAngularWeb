@@ -9,7 +9,9 @@ import {ModelComment} from "../../Model/ModelComment";
 })
 export class CommentService {
 
-  private apiUrl = 'https://localhost:44372/api/comment';
+  //private apiUrl = 'https://localhost:44372/api/comment';
+
+  private apiUrl = 'https://localhost:5013/api/comment';
 
 
   constructor(private http: HttpClient) {

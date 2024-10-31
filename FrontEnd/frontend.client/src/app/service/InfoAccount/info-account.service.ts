@@ -8,14 +8,22 @@ import {ModelInfoAccount} from '../../Model/ModelInfoAccoutn';
 })
 export class InfoAccountService {
 
-  private apiUrl = 'https://localhost:44387/api/InfoAccount';
+  // private apiUrl = 'https://localhost:44387/api/InfoAccount';
+  // private api = 'https://localhost:44387/api/InfoAccountById';
+
+  private apiUrl = 'http://localhost:5011/api/InfoAccount';
+  private api = 'http://localhost:5011/api/InfoAccountById';
 
 
   constructor(private http: HttpClient) {
   }
 
-  getinfoaccount(): Observable<ModelInfoAccount[]> {
+  getInfoAccount(): Observable<ModelInfoAccount[]> {
     return this.http.get<ModelInfoAccount[]>(this.apiUrl);
+  }
+
+  getInfoAccountById(id_account: number): Observable<ModelInfoAccount> {
+    return this.http.get<ModelInfoAccount>(`${this.api}/${id_account}`);
   }
 
   addInfoAccount(InfoAccount: ModelInfoAccount): Observable<ModelInfoAccount> {

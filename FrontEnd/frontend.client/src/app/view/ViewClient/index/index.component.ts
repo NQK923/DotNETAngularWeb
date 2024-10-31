@@ -3,13 +3,12 @@ import {Router} from '@angular/router';
 import {MangaService} from '../../../service/Manga/manga.service';
 import {forkJoin, map, Observable} from 'rxjs';
 import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaViewHistory.service";
-import {register} from "swiper/element/bundle";
 import {CategoriesService} from "../../../service/Categories/Categories.service";
 import {CategoryDetailsService} from "../../../service/Category_details/Category_details.service";
 import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
 import {ChapterService} from "../../../service/Chapter/chapter.service";
+import {switchMap} from "rxjs/operators";
 
-register()
 
 interface Manga {
   id_manga: number;
@@ -32,6 +31,7 @@ interface Manga {
 interface Category {
   id_category: number;
   name: string;
+  description: string;
 }
 
 @Component({
@@ -48,6 +48,7 @@ export class IndexComponent implements OnInit {
   topRatedMangas: Manga[] = [];
   selectedTab: string = 'day';
   categories: Category[] = [];
+  isLoading: boolean = true;
 
   constructor(private router: Router,
               private mangaService: MangaService,
@@ -60,30 +61,44 @@ export class IndexComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mangaService.getMangas().subscribe(mangas => {
-      this.mangas = mangas;
-      const observables = this.mangas.map(manga =>
-        forkJoin({
-          totalViews: this.mangaViewHistoryService.getAllView(manga.id_manga),
-          followers: this.mangaFavoriteService.countFollower(manga.id_manga),
-          latestChapter: this.chapterService.getLastedChapter(manga.id_manga),
-        }).pipe(
-          map(({totalViews, followers, latestChapter}) => {
-            manga.totalViews = totalViews;
-            manga.follower = followers;
-            manga.latestChapter = latestChapter;
-            return manga;
-          })
-        )
-      );
-      forkJoin(observables).subscribe(updatedMangas => {
-        this.mangas = updatedMangas;
-        this.sortMangas(updatedMangas);
-      });
-      this.setTab('day');
+    this.isLoading = true;
+    forkJoin({
+      mangas: this.mangaService.getMangas(),
+      categories: this.categoriesService.getAllCategories()
+    }).pipe(
+      map(({mangas, categories}) => {
+        // @ts-ignore
+        this.mangas = mangas.map(manga => {
+          manga.totalViews = 0;
+          manga.follower = 0;
+          manga.latestChapter = 0;
+          manga.categories = [];
+          return manga;
+        });
+        this.categories = categories;
+        return this.mangas;
+      }),
+      switchMap(mangas => {
+        const mangaObservables = mangas.map(manga =>
+          forkJoin({
+            totalViews: this.mangaViewHistoryService.getAllView(manga.id_manga),
+            followers: this.mangaFavoriteService.countFollower(manga.id_manga),
+            latestChapter: this.chapterService.getLastedChapter(manga.id_manga)
+          }).pipe(
+            map(({totalViews, followers, latestChapter}) => {
+              manga.totalViews = totalViews;
+              manga.follower = followers;
+              manga.latestChapter = latestChapter;
+            })
+          )
+        );
+        return forkJoin(mangaObservables);
+      })
+    ).subscribe(() => {
+      this.sortMangas(this.mangas);
+      this.setTab("day");
     });
   }
-
 
   sortMangas(mangas: Manga[]) {
     const sortedByDate = [...mangas].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
@@ -98,15 +113,14 @@ export class IndexComponent implements OnInit {
     );
     forkJoin(categoryObservables).subscribe(results => {
       results.forEach(({manga, categories}) => {
-        console.log("Cate", categories);
         manga.categories = categories;
+        this.isLoading = false;
       });
     });
     this.popularMangas = sortedByFollowers.slice(0, 8);
     this.topMangas = sortedByViews.slice(0, 8);
     this.topRatedMangas = sortedByRating.slice(0, 8);
   }
-
 
   setTab(tab: string) {
     this.selectedTab = tab;
@@ -132,7 +146,6 @@ export class IndexComponent implements OnInit {
   getTopMangas(viewFunction: (id_manga: number) => Observable<number>) {
     const list = this.mangas.map(manga => ({...manga}));
     let completedRequests = 0;
-
     list.forEach(manga => {
       viewFunction(manga.id_manga).subscribe(
         (views) => {
@@ -164,7 +177,6 @@ export class IndexComponent implements OnInit {
   getTopMangasByMonth() {
     this.getTopMangas((id_manga: number) => this.mangaViewHistoryService.getViewByMonth(id_manga));
   }
-
 
   getTimeDifference(updatedTime: string | Date): string {
     const updatedDate = typeof updatedTime === 'string' ? new Date(updatedTime) : updatedTime;
@@ -212,11 +224,16 @@ export class IndexComponent implements OnInit {
     this.router.navigate(['/titles', id_manga]);
   }
 
-  goToRank() {
-    this.router.navigate(['/rank']);
+  goToRank(option: string) {
+    this.router.navigate(['/rank'], { queryParams: { selectedOption: option } });
+  }
+
+  goToListView(){
+    this.router.navigate(['/list-view']);
   }
 
   click(temp: string): void {
     window.open(temp);
   }
+
 }

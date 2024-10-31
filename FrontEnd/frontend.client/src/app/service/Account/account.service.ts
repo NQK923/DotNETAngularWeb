@@ -12,6 +12,22 @@ import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/
   providedIn: 'root'
 })
 export class AccountService {
+  private apiUrl = 'https://localhost:44385/api/Account';
+  private apiUrlLogin = 'https://localhost:44385/api/Login';
+  private apiInfo = 'https://localhost:44387/api/InfoAccount';
+  private apiAvatar = 'https://localhost:44387/api/InfoAccountavata';
+  private apiUpdateAccount = 'https://localhost:44387/api/InfoAccountupdate';
+  private apiPassword = "https://localhost:44385/api/password";
+
+  
+  private apiUrl = 'http://localhost:5004/api/Account';
+  private apiUrlLogin = 'http://localhost:5004/api/Login';
+  private apiInfo = 'http://localhost:5011/api/InfoAccount';
+  private apiAvatar = 'http://localhost:5011/api/InfoAccountavata';
+  private updateAcc = 'http://localhost:5011/api/InfoAccountupdate';
+  private apiPassword = "http://localhost:5004/api/password";
+  private apiAcc = "http://localhost:5004/api/AccountById";
+
   private port = 7002;
   private apiUrl = `https://localhost:${this.port}/api/Account`;
   private apiLoginUrl: string = 'https://localhost:' + this.port + '/account/login';
@@ -33,7 +49,6 @@ export class AccountService {
 
   }
 
-
   postMail(email: string, title: string, text: string): Observable<any> {
     const params = new HttpParams()
       .set('email', email)
@@ -43,9 +58,12 @@ export class AccountService {
   }
 
   updateaccount(account: ModelInfoAccount): Observable<ModelInfoAccount> {
-    return this.http.put<ModelInfoAccount>(this.apiUpdateAccount, account);
+    return this.http.put<ModelInfoAccount>(this.updateAcc, account);
   }
 
+  getAccountById(id_account: number): Observable<ModelAccount> {
+    return this.http.get<ModelAccount>(`${this.apiAcc}/${id_account}`);
+  }
 
   uploadavata(formData: FormData): Observable<any> {
     return this.http.post(this.apiAvatar, formData);
@@ -59,7 +77,7 @@ export class AccountService {
     return this.http.put<ModelAccount>(this.apiUrl, Account);
   }
 
-  getinfoAccount(): Observable<ModelInfoAccount[]> {
+  getInfoAccount(): Observable<ModelInfoAccount[]> {
     return this.http.get<ModelInfoAccount[]>(this.apiInfo);
   }
 

@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {MangaHistoryService} from "../../../service/MangaHistory/manga_history.service";
 import {MangaService} from "../../../service/Manga/manga.service";
 import {Router} from "@angular/router";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {catchError, forkJoin, map, of} from "rxjs";
 
 interface History {
   id_account: number;
@@ -35,10 +37,20 @@ export class HistoryComponent implements OnInit {
   histories: History[] = [];
   mangas: Manga[] = [];
   combinedHistories: { history: History, manga: Manga }[] = [];
-  currentPage: number = 1;
+  page = 1;
   itemsPerPage: number = 10;
 
-  constructor(private router: Router, private mangaHistoryService: MangaHistoryService, private mangaService: MangaService) {
+  constructor(private router: Router,
+              private mangaHistoryService: MangaHistoryService,
+              private mangaService: MangaService,
+              private confirmationService: ConfirmationService,
+              private messageService: MessageService,) {
+    this.updateItemsPerPage(window.innerWidth);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateItemsPerPage(event.target.innerWidth);
   }
 
   ngOnInit(): void {
@@ -54,32 +66,58 @@ export class HistoryComponent implements OnInit {
 
   getMangaDetails(): void {
     this.combinedHistories = [];
-    for (let history of this.histories) {
-      this.mangaService.getMangaById(history.id_manga).subscribe((manga: Manga) => {
-        if (manga.is_posted && !manga.is_deleted) {
-          this.combinedHistories.push({history, manga});
-        }
-      }, (error) => {
-        console.error(`Failed to load manga with id: ${history.id_manga}`, error);
-      });
-    }
+    const mangaRequests = this.histories.map(history =>
+      this.mangaService.getMangaById(history.id_manga).pipe(
+        map((manga: Manga) => {
+          if (manga.is_posted && !manga.is_deleted) {
+            return {history, manga};
+          } else {
+            return null;
+          }
+        }),
+        catchError((error) => {
+          console.error(`Failed to load manga with id: ${history.id_manga}`, error);
+          return of(null);
+        })
+      )
+    );
+
+    forkJoin(mangaRequests).subscribe(results => {
+      this.combinedHistories = results.filter(entry => entry !== null);
+      this.combinedHistories.sort((a, b) => +new Date(b.history.time) - +new Date(a.history.time)); // Sắp xếp theo time giảm dần
+    });
   }
 
-  confirmDelete(id_account: number, id_manga: number): void {
-    const confirmed = window.confirm("Bạn có chắc chắn muốn xóa lịch sử đọc này không?");
-    if (confirmed) {
-      this.deleteMangaHistory(id_account, id_manga);
-    }
+
+  confirmDelete(id_account: number, id_manga: number) {
+    this.confirmationService.confirm({
+      message: `Bạn có chắc chắn muốn xóa không?
+      Sau khi xoá không thể hoàn tác.`,
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.deleteMangaHistory(id_account, id_manga);
+      }
+    });
   }
 
   deleteMangaHistory(id_account: number, id_manga: number): void {
     this.mangaHistoryService.deleteMangaHistory(id_account, id_manga)
       .subscribe({
-        next: (response) => {
-          window.location.reload();
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Xoá thành công',
+            detail: 'Manga đã được xoá khỏi danh sách.'
+          });
+          this.combinedHistories = this.combinedHistories.filter(entry => entry.manga.id_manga !== id_manga);
         },
         error: (error) => {
           console.error("Failed to delete manga history:", error);
+          this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá manga không thành công.'});
         }
       });
   }
@@ -89,25 +127,16 @@ export class HistoryComponent implements OnInit {
   }
 
   //Pagination
-  getPagedMangas(): any {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.combinedHistories.slice(startIndex, endIndex);
+  onPageChange(newPage: number): void {
+    this.page = newPage;
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages()) {
-      this.currentPage++;
+  private updateItemsPerPage(width: number) {
+    if (width >= 1280) {
+      this.itemsPerPage = 10;
+    } else {
+      this.itemsPerPage = 9;
     }
-  }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  totalPages(): number {
-    return Math.ceil(this.combinedHistories.length / this.itemsPerPage);
   }
 }

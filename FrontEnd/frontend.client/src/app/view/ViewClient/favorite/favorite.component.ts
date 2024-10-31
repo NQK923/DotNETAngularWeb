@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
 import {MangaService} from "../../../service/Manga/manga.service";
 import {forkJoin, Observable} from 'rxjs';
+import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Manga {
   id_manga: number;
@@ -36,14 +37,23 @@ interface MangaFavorite {
 export class FavoriteComponent implements OnInit {
   favoriteMangas: MangaFavorite[] = [];
   mangas: Manga[] = [];
-  currentPage: number = 1;
-  itemsPerPage: number = 8;
+  page: number = 1;
+  itemsPerPage: number = 10;
+  private confirmationDialogOpen: boolean = false;
 
   constructor(
     private router: Router,
     private mangaFavoriteService: MangaFavoriteService,
-    private mangaService: MangaService
+    private mangaService: MangaService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
   ) {
+    this.updateItemsPerPage(window.innerWidth);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateItemsPerPage(event.target.innerWidth);
   }
 
   ngOnInit() {
@@ -59,9 +69,6 @@ export class FavoriteComponent implements OnInit {
           if (favorite) {
             manga.is_notification = favorite.is_notification;
           }
-          if (manga.is_deleted) {
-
-          }
           return manga;
         });
       });
@@ -69,20 +76,32 @@ export class FavoriteComponent implements OnInit {
   }
 
   removeFromFavorites(mangaId: number) {
-    const confirmDelete = window.confirm("Bạn có chắc chắn muốn bỏ yêu thích manga này?");
-    if (confirmDelete) {
+    if (this.confirmationDialogOpen) return;
+    this.confirmationDialogOpen = true;
+    this.confirmAction('Bạn có chắc chắn muốn bỏ yêu thích không?', () => {
       const idNumber = Number(localStorage.getItem('userId'));
       this.mangaFavoriteService.toggleFavorite(idNumber, mangaId).subscribe(() => {
         this.favoriteMangas = this.favoriteMangas.filter(manga => manga.id_manga !== mangaId);
         this.mangas = this.mangas.filter(manga => manga.id_manga !== mangaId);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Xoá thành công',
+          detail: 'Manga đã được xoá khỏi danh sách.'
+        });
+        this.confirmationDialogOpen = false;
+      }, (error) => {
+        this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá manga không thành công.'});
+        console.error('Error:', error);
+        this.confirmationDialogOpen = false;
       });
-    }
+    }, () => {
+      this.confirmationDialogOpen = false;
+    });
   }
 
   toggleNotification(idManga: number) {
     const idNumber = Number(localStorage.getItem('userId'));
     const mangaFavorite = this.favoriteMangas.find(fav => fav.id_manga === idManga);
-
     if (mangaFavorite) {
       this.mangaFavoriteService.toggleNotification(idNumber, mangaFavorite.id_manga).subscribe(() => {
         mangaFavorite.is_notification = !mangaFavorite.is_notification;
@@ -103,25 +122,29 @@ export class FavoriteComponent implements OnInit {
   }
 
   //Pagination
-  getPagedMangas(): Manga[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.mangas.slice(startIndex, endIndex);
+  onPageChange(newPage: number): void {
+    this.page = newPage;
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages()) {
-      this.currentPage++;
+  confirmAction = (message: string, onConfirm: () => void, onCancel: () => void) => {
+    this.confirmationService.confirm({
+      message: message,
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: onConfirm,
+      reject: onCancel
+    });
+  }
+
+  private updateItemsPerPage(width: number) {
+    if (width >= 1280) {
+      this.itemsPerPage = 10;
+    } else {
+      this.itemsPerPage = 9;
     }
-  }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  totalPages(): number {
-    return Math.ceil(this.mangas.length / this.itemsPerPage);
   }
 }

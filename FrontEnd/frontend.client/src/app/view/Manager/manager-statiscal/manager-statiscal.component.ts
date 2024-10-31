@@ -159,7 +159,8 @@ export class ManagerStatiscalComponent implements OnInit {
     this.router.navigate(['/manager-comment']);
   }
 
-  goToBanner() {
-    this.router.navigate(['/manager-banner']);
+  logOut() {
+    localStorage.setItem('userId', "-1");
+    this.router.navigate([`/`]);
   }
 }

@@ -31,7 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
 //get all info account
@@ -39,6 +39,15 @@ app.MapGet("/api/InfoAccount", async (InfoAccountDbContext dbContext) =>
 {
     var accounts = await dbContext.infoAccounts.ToListAsync();
     return Results.Ok(accounts);
+});
+
+app.MapGet("/api/InfoAccountById/{idaccount}", async (InfoAccountDbContext dbContext, int idaccount) =>
+{
+    var account = await dbContext.Account.FindAsync(idaccount);
+
+    if (account == null) return Results.NotFound();
+
+    return Results.Ok(account);
 });
 
 //add new info account

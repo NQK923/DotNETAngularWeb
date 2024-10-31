@@ -9,6 +9,9 @@ import {MangaHistoryService} from "../../../service/MangaHistory/manga_history.s
 import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaViewHistory.service";
 import {AccountService} from "../../../service/Account/account.service";
 import {ModelAccount} from "../../../Model/ModelAccount";
+import {forkJoin, map} from "rxjs";
+import {MangaService} from "../../../service/Manga/manga.service";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Chapter {
   id_chapter: number;
@@ -48,9 +51,8 @@ export class ViewerComponent implements OnInit {
   listDataComment: CommentData[] = [];
   listYourComment: CommentData[] = [];
   yourId: number = -1;
-  idChap: number = -1;
-  listAccount: ModelAccount [] = [];
   yourAc: ModelAccount | null = null;
+  chapterId: number = -1;
 
   constructor(
     private route: ActivatedRoute,
@@ -62,6 +64,8 @@ export class ViewerComponent implements OnInit {
     private mangaHistoryService: MangaHistoryService,
     private mangaViewHistoryService: MangaViewHistoryService,
     private accountService: AccountService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) {
   }
 
@@ -75,7 +79,11 @@ export class ViewerComponent implements OnInit {
       this.chapterService.getChaptersByMangaId(this.id_manga).subscribe(
         (data: Chapter[]) => {
           this.chapters = data;
-          this.loadAllComment();
+          this.chapterService.getIdChapter(this.id_manga, this.chapter_index).subscribe((chapter) => {
+            this.chapterId = chapter;
+            this.loadAllComment(this.chapterId);
+          })
+
         },
         (error) => {
           console.error('Error fetching chapters', error);
@@ -123,8 +131,6 @@ export class ViewerComponent implements OnInit {
               }
             );
           }
-        } else {
-          console.log("chapter or id_chapter is invalid");
         }
         this.chapter_index = numericIndex;
         this.router.navigate([`/manga/${this.id_manga}/chapter/${this.chapter_index}`]).then(() => {
@@ -147,13 +153,11 @@ export class ViewerComponent implements OnInit {
     return !!(id_user && Number(id_user) != -1);
   }
 
-  loadAllComment() {
+  loadAllComment(chapterId: number) {
     this.listDataComment = []
     this.listYourComment = []
     const userId = localStorage.getItem('userId');
     this.yourId = userId !== null ? parseInt(userId, 10) : 0;
-    const idChapter = localStorage.getItem('id_chapter');
-    this.idChap = idChapter !== null ? parseInt(idChapter, 10) : 0;
     this.loadComment()
       .then(() => this.loadInfoAccount())
       .then(() => this.takeData())
@@ -167,15 +171,11 @@ export class ViewerComponent implements OnInit {
 
   loadAccount(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.accountService.getAccount().subscribe(
-        (data: ModelAccount[]) => {
-          this.listAccount = data;
-          for (let i = 0; i < this.listAccount.length; i++) {
-            if (this.listAccount[i].id_account === this.yourId) {
-              this.yourAc = this.listAccount[i];
-              resolve();
-              return;
-            }
+      this.accountService.getAccountById(Number(this.yourId)).subscribe(
+        (data: ModelAccount) => {
+          {
+            this.yourAc = data
+            resolve()
           }
           reject(new Error('Account not found'));
         },
@@ -187,48 +187,89 @@ export class ViewerComponent implements OnInit {
   }
 
   deleteComment(id_cm: any) {
-    this.commentService.deleteBanner(id_cm).subscribe(
-      () => {
-        alert('Upload thành công:');
-        this.loadAllComment()
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn xóa bình luận này?',
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        this.commentService.deleteBanner(id_cm).subscribe(
+          () => {
+            this.loadAllComment(this.chapterId);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Xóa bình luận thành công!'
+            });
+          },
+          (error) => {
+            console.error(error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Xóa bình luận thất bại!'
+            });
+          }
+        );
       },
-      (error) => {
-        console.error(error);
-        alert('Upload thất bại:');
-      }
-    );
+    });
   }
+
 
   updateComment(id_cm: any) {
     const textUpdate = this.el.nativeElement.querySelector(`#text${id_cm}`);
     const id = this.yourId;
-    const idChap = this.idChap;
-    const comment: ModelComment = {
-      id_comment: id_cm,
-      id_chapter: idChap,
-      id_user: id,
-      content: textUpdate.value,
-      isReported: false,
-      time: new Date()
+    if (!textUpdate.value.trim()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail: 'Vui lòng nhập nội dung bình luận trước khi cập nhật.'
+      });
+      return;
     }
-    this.commentService.updateComment(comment).subscribe(
-      () => {
-        alert('Upload thành công:');
-        this.loadAllComment()
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn cập nhật bình luận này?',
+      header: 'Xác nhận',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        const comment: ModelComment = {
+          id_comment: id_cm,
+          id_chapter: this.chapterId,
+          id_user: id,
+          content: textUpdate.value,
+          isReported: false,
+          time: new Date()
+        };
+
+        this.commentService.updateComment(comment).subscribe(
+          () => {
+            this.loadAllComment(this.chapterId);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Cập nhật bình luận thành công!'
+            });
+          },
+          (error) => {
+            console.error(error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Cập nhật bình luận thất bại!'
+            });
+          }
+        );
       },
-      (error) => {
-        console.error(error);
-        alert('Upload thất bại:');
-      }
-    );
+    });
   }
+
 
   addComment() {
     const text = this.el.nativeElement.querySelector('#textComment');
     const id = this.yourId;
-    const idChap = this.idChap;
     const comment: ModelComment = {
-      id_chapter: idChap,
+      id_chapter: this.chapterId,
       id_user: id,
       content: text.value,
       isReported: false,
@@ -236,54 +277,53 @@ export class ViewerComponent implements OnInit {
     }
     this.commentService.addComment(comment).subscribe(
       () => {
-        alert('Upload thành công:');
-        this.loadAllComment()
+        this.loadAllComment(this.chapterId);
+        this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Bình luận đã được thêm.' });
       },
       (error) => {
         console.error(error);
-        alert('Upload thất bại:');
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Thêm bình luận thất bại.' });
       }
     );
   }
 
   takeData() {
     for (let i = 0; i < this.comments.length; i++) {
-      for (let k = 0; k < this.listDataComment.length; k++) {
-        if (this.listDataComment[k].Comment?.id_comment == this.comments[i].id_comment) {
-          return;
-        }
+      const comment = this.comments[i];
+      const existsInList = this.listDataComment.some(item => item.Comment?.id_comment === comment.id_comment);
+      if (existsInList) {
+        continue;
       }
-      if (this.comments[i].id_chapter === this.idChap) {
-        for (let j = 0; j < this.listInfoAccount.length; j++) {
-          if (this.comments[i].id_user === this.listInfoAccount[j].id_account && this.comments[i].id_user != this.yourId) {
-            this.listDataComment.push(new CommentData(
-              this.comments[i],
-              this.listInfoAccount[j]
-            ));
+      if (comment.id_chapter === this.chapterId && comment.id_user !== this.yourId) {
+        this.infoAccountService.getInfoAccountById(Number(comment.id_user)).subscribe(
+          (data: ModelInfoAccount) => {
+            this.listDataComment.push(new CommentData(comment, data));
           }
-        }
+        );
       }
     }
   }
 
   takeYourData() {
-    for (var i = 0; i < this.comments.length; i++) {
-      for (var k = 0; k < this.listYourComment.length; k++) {
-        if (this.listYourComment[k].Comment?.id_comment == this.comments[i].id_comment) {
-          return;
-        }
+    const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.id_comment));
+    const relevantComments = this.comments.filter(comment =>
+      comment.id_chapter === this.chapterId &&
+      comment.id_user === this.yourId &&
+      !existingCommentIds.has(comment.id_comment)
+    );
+    const accountRequests = relevantComments.map(comment =>
+      this.infoAccountService.getInfoAccountById(Number(comment.id_user)).pipe(
+        map((data: ModelInfoAccount) => new CommentData(comment, data))
+      )
+    );
+    forkJoin(accountRequests).subscribe(
+      (dataComments: CommentData[]) => {
+        this.listYourComment.push(...dataComments);
+      },
+      (error) => {
+        console.error('Error fetching account info:', error);
       }
-      if (this.comments[i].id_chapter === this.idChap) {
-        for (var j = 0; j < this.listInfoAccount.length; j++) {
-          if (this.comments[i].id_user === this.listInfoAccount[j].id_account && this.comments[i].id_user == this.yourId) {
-            this.listYourComment.push(new CommentData(
-              this.comments[i],
-              this.listInfoAccount[j]
-            ));
-          }
-        }
-      }
-    }
+    );
   }
 
   loadComment(): Promise<void> {
@@ -303,7 +343,7 @@ export class ViewerComponent implements OnInit {
 
   loadInfoAccount(): Promise<void> {
     return new Promise((resolve) => {
-      this.infoAccountService.getinfoaccount().subscribe(
+      this.infoAccountService.getInfoAccount().subscribe(
         (data: ModelInfoAccount[]) => {
           this.listInfoAccount = data;
           resolve();
@@ -323,20 +363,28 @@ export class ViewerComponent implements OnInit {
       content: text,
       isReported: true,
       time: new Date()
-    }
-    console.log(comment)
+    };
     this.commentService.updateComment(comment).subscribe(
       () => {
-        alert('Báo cáo thành công');
+        this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Báo cáo thành công.' });
       },
       (error) => {
         console.error(error);
-        alert('Thất bại:');
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Báo cáo thất bại.' });
       }
     );
   }
 
   trackByChapterIndex(index: number, chapter: Chapter): number {
     return chapter.index;
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  onUpdate() {
+    const text = this.el.nativeElement.querySelector('#buttonUndate');
+    text.classList.remove('hidden');
   }
 }

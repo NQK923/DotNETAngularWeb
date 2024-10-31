@@ -23,7 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //get all categories
 app.MapGet("/api/categories", async (CategoryDbContext dbContext) =>

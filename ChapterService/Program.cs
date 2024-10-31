@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //get all chapter by manga id
 app.MapGet("/api/manga/{idManga:int}/chapters", async (int idManga, ChapterDbContext dbContext) =>
@@ -46,6 +46,13 @@ app.MapGet("/api/manga/{idManga:int}/chapters", async (int idManga, ChapterDbCon
     return chapters.Count == 0 ? Results.NotFound("No chapters found for this manga.") : Results.Ok(chapters);
 });
 
+app.MapGet("/api/manga/getChapterId", async (int idManga, int index, ChapterDbContext dbContext) =>
+{
+    var chapter = await dbContext.Chapter.AsNoTracking().Where(c => c.id_manga == idManga && c.index == index)
+        .FirstOrDefaultAsync();
+    return chapter != null ? Results.Ok((object?)chapter.id_chapter) : null;
+});
+
 app.MapGet("/api/manga/{idManga:int}/latestChapter", async (int idManga, ChapterDbContext dbContext) =>
 {
     var latestChapterIndex = await dbContext.Chapter
@@ -54,9 +61,7 @@ app.MapGet("/api/manga/{idManga:int}/latestChapter", async (int idManga, Chapter
         .Select(c => c.index)
         .FirstOrDefaultAsync();
 
-    return latestChapterIndex == 0
-        ? Results.NotFound("No chapters found for this manga.")
-        : Results.Ok(latestChapterIndex);
+    return Results.Ok(latestChapterIndex);
 });
 
 

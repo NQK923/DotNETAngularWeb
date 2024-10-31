@@ -15,7 +15,9 @@ interface Chapter {
   providedIn: 'root'
 })
 export class ChapterService {
-  private apiUrl = 'https://localhost:44345/api/manga';
+  // private apiUrl = 'https://localhost:44345/api/manga';
+
+  private apiUrl = 'http://localhost:5003/api/manga';
 
   constructor(private http: HttpClient) {
   }
@@ -30,6 +32,10 @@ export class ChapterService {
 
   getLastedChapter(id_manga: number): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/${id_manga}/latestChapter`);
+  }
+
+  getIdChapter(id_manga: number, index: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/getChapterId?idManga=${id_manga}&index=${index}`);
   }
 
   deleteSelectedChapter(id_manga: number, index: number): Observable<any> {

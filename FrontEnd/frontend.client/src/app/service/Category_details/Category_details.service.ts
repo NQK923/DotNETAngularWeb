@@ -7,8 +7,11 @@ import {CategoryDetailModel} from "../../Model/Category_details";
   providedIn: 'root'
 })
 export class CategoryDetailsService {
-  private apiUrl = 'https://localhost:44347/api';
-  private Url = "https://localhost:44347/api/GetAll_category_details"
+  // private apiUrl = 'https://localhost:44347/api';
+  // private Url = "https://localhost:44347/api/GetAll_category_details"
+
+  private apiUrl = 'http://localhost:5006/api';
+  private Url = "http://localhost:5006/api/GetAll_category_details"
 
   constructor(private http: HttpClient) {
   }
@@ -19,6 +22,10 @@ export class CategoryDetailsService {
 
   getIdMangaByCategories(list: number[]): Observable<any[]> {
     return this.http.post<any[]>(`${this.apiUrl}/category_details/getIdManga`, list);
+  }
+
+  addCategoriesDetails(list: number[]): Observable<any[]> {
+    return this.http.post<any>(`${this.apiUrl}/add_manga_category`, list);
   }
 
   updateCategoriesDetails(list: number[]): Observable<any[]> {

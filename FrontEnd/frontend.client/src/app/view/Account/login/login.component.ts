@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ModelAccount } from "../../../Model/ModelAccount";
-import { Router } from "@angular/router";
-import { AccountService } from "../../../service/Account/account.service";
-import { InfoAccountService } from "../../../service/InfoAccount/info-account.service";
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {ModelAccount} from "../../../Model/ModelAccount";
+import {Router} from "@angular/router";
+import {AccountService} from "../../../service/Account/account.service";
+import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
+import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
+import {MessageService} from "primeng/api";
 import { Location } from '@angular/common';
 import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
@@ -14,7 +16,7 @@ import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  accounts: ModelAccount[] = [];
+  accounts: ModelAccount | undefined;
 
   // Two way data binding
   isActive: boolean = false;
@@ -35,7 +37,7 @@ export class LoginComponent {
 
   constructor(private router: Router,
     private InfoAccountService: InfoAccountService,
-    private accountService: AccountService, private location: Location, private authService: SocialAuthService) {
+    private accountService: AccountService, private location: Location, private authService: SocialAuthService,private messageService: MessageService) {
     this.accountService.checkExternalLogin(this.gotToIndex.bind(this));
   }
 
