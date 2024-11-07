@@ -90,8 +90,6 @@ app.MapPost("api/manga/upload/{idUser:int}", async (HttpRequest request, int idU
     };
     db.Manga.Add(manga);
     await db.SaveChangesAsync();
-
-    await db.SaveChangesAsync();
     var folderName = manga.id_manga.ToString();
     var blobServiceClient = new BlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]);
     var blobContainerClient = blobServiceClient.GetBlobContainerClient("mangas");

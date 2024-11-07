@@ -1,4 +1,5 @@
 using Account.Email;
+using Account.Model;
 using Account.WebApplication2;
 using Banners.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -40,20 +41,20 @@ app.UseCors("AllowAllOrigins");
 // get all account
 app.MapGet("/api/Account", async ([FromServices] AccountDbContext dbContext) =>
 {
-    var accounts = await dbContext.Account.ToListAsync();
+    var accounts = await dbContext.accounts.ToListAsync();
     return Results.Ok(accounts);
 });
 
 //get data by id
 app.MapGet("/api/Account/data", async (int idAccount, AccountDbContext dbContext) =>
 {
-    var account = await dbContext.Account.Where(ac => ac.id_account == idAccount).FirstOrDefaultAsync();
+    var account = await dbContext.accounts.Where(ac => ac.id_account == idAccount).FirstOrDefaultAsync();
     return Results.Ok(account);
 });
 
 app.MapGet("/api/AccountById/{idAccount:int}", async ([FromServices] AccountDbContext dbContext, int idAccount) =>
 {
-    var account = await dbContext.Account.FindAsync(idAccount);
+    var account = await dbContext.accounts.FindAsync(idAccount);
 
     return account == null ? Results.NotFound() : Results.Ok(account);
 });
@@ -63,10 +64,10 @@ app.MapPost("/api/Account", async (ModelAccount account, [FromServices] AccountD
 {
     try
     {
-        var exists = await dbContext.Account
+        var exists = await dbContext.accounts
             .AnyAsync(m => m.username == account.username);
         if (exists) return Results.Ok(false);
-        dbContext.Account.Add(account);
+        dbContext.accounts.Add(account);
         await dbContext.SaveChangesAsync();
         return Results.Ok(account.id_account);
     }
@@ -81,7 +82,7 @@ app.MapPost("/api/Login", async (ModelAccount account, [FromServices] AccountDbC
 {
     try
     {
-        var existingAccount = await dbContext.Account
+        var existingAccount = await dbContext.accounts
             .FirstOrDefaultAsync(a => a.username == account.username && a.password == account.password);
 
         if (existingAccount != null)
@@ -101,6 +102,6 @@ app.MapPost("/api/password", async (string email, string title, string text) =>
     var result = await AddMail.SendMail("manganctnqk@gmail.com", email, title, text);
     return Results.Ok(result == "success");
 });
-
+//"AzureSQL": "Server=LAPTOP-D2AJ1CKN\\SQLEXPRESS;Database=Test;User ID=sa;Password=06112002A@a;Encrypt=True;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true;Connection Timeout=10;"
 app.InitBasicAccountApi();
 app.Run();
