@@ -1,0 +1,48 @@
+<div class="bg-gray-950 fullScreen">
+  <!-- Header Section -->
+  <div class="flex bg-gradient-to-r from-gray-950 to-gray-600 p-3">
+    <img alt="" class="h-11 pt-1" loading="lazy"
+         src="https://mangaimg.blob.core.windows.net/assets/icons8-history-100.png">
+    <p class="text-white font-bold text-2xl p-1">Lịch sử đọc</p>
+  </div>
+  <!-- Recent Reads Section -->
+  <div class="bg-gray-950 p-4">
+    <div class="flex flex-wrap justify-center">
+      <div *ngFor="let entry of combinedHistories| paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
+           class="p-3 flex">
+        <div
+          class="w-64 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden transition-transform transform hover:scale-105">
+          <img (click)="viewMangaDetails(entry.manga.id_manga)"
+               [attr.title]="entry.manga.name + ' \n' + entry.manga.describe"
+               [src]="entry.manga.cover_img" alt="Image description"
+               class="w-full h-80 object-fit cursor-pointer"
+               loading="lazy">
+          <div class="p-1">
+            <p class="text-white font-bold text-lg truncate mb-1">{{ entry.manga.name }}</p>
+            <p class="text-white text-sm mb-1">Chương: {{ entry.history.index_chapter }}</p>
+            <p class="text-white text-sm mb-1">Lần đọc cuối: {{ entry.history.time | date:'short' }}</p>
+          </div>
+          <div class="bg-gradient-to-r from-black to-gray-500 p-1 flex justify-center">
+            <img alt="" class="h-8 white-icon mt-1" loading="lazy"
+                 src="https://mangaimg.blob.core.windows.net/assets/trash_icon.webp">
+            <p (click)="confirmDelete(entry.history.id_account, entry.manga.id_manga)"
+               class="text-blue-500 font-bold cursor-pointer hover:underline text-center my-2">
+              Xóa khỏi lịch sử đọc
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="combinedHistories.length > itemsPerPage" class="flex justify-center mt-4">
+      <pagination-controls
+        (pageChange)="onPageChange($event)"
+        [autoHide]="false"
+        [directionLinks]="true"
+        [maxSize]="5"
+        class="pagination custom-pagination text-white font-semibold text-md space-x-2"
+        nextLabel=""
+        previousLabel="">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

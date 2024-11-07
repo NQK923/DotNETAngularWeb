@@ -1,0 +1,71 @@
+<div class="bg-gradient-to-r from-gray-950 to-gray-600">
+  <div class="flex items-center justify-between">
+    <div class="bg-gradient-to-r from-gray-950 to-gray-850 p-3 flex">
+      <img alt="" class="h-8 white-icon" loading="lazy" src="https://mangaimg.blob.core.windows.net/assets/ranking.png">
+      <p class="text-white font-bold text-2xl p-1 ">Xếp hạng</p>
+    </div>
+    <div class=" flex">
+      <p (click)="sortMangas('rating')"
+         [ngClass]="{'text-yellow-500': selectedOption === 'rating', 'text-white': selectedOption!=='rating'}"
+         class="font-bold text-xl p-2 cursor-pointer">Đánh giá cao |</p>
+      <p (click)="sortMangas('follows')"
+         [ngClass]="{'text-yellow-500': selectedOption === 'follows', 'text-white': selectedOption!=='follows'}"
+         class="font-bold text-xl p-2 cursor-pointer">Phổ biến nhất |</p>
+      <p (click)="sortMangas('day')"
+         [ngClass]="{'text-yellow-500': selectedOption === 'day', 'text-white': selectedOption!=='day'}"
+         class="text-white font-bold text-xl p-2 cursor-pointer">Top Ngày |</p>
+      <p (click)="sortMangas('week')"
+         [ngClass]="{'text-yellow-500': selectedOption === 'week', 'text-white': selectedOption!=='week'}"
+         class="text-white font-bold text-xl p-2 cursor-pointer">Top Tuần |</p>
+      <p (click)="sortMangas('month')"
+         [ngClass]="{'text-yellow-500': selectedOption === 'month', 'text-white': selectedOption!=='month'}"
+         class="text-white font-bold text-xl p-2 cursor-pointer">Top Tháng</p>
+    </div>
+  </div>
+
+  <!-- Manga List -->
+  <div class="bg-gray-950">
+    <div *ngIf="!isLoading" class="p-6 flex flex-wrap items-center justify-center">
+      <div (click)="viewMangaDetails(manga.id_manga)"
+           *ngFor="let manga of mangas | paginate: { itemsPerPage: itemsPerPage, currentPage: page };trackBy: trackByMangaId"
+           [attr.title]="manga.name + ' \n' + manga.describe"
+           class="hover:bg-gray-800 rounded w-64 overflow-hidden m-2 transition-transform transform hover:scale-105 flex flex-col cursor-pointer">
+        <img [src]="manga.cover_img" alt="" class="w-full h-auto object-cover" loading="lazy"
+             style="aspect-ratio: 2 / 3;">
+        <div class="bg-black p-2 bg-gradient-to-r from-black to-gray-500 flex justify-between items-center">
+          <div
+            class="bg-yellow-500 rounded-full w-6 h-6 flex items-center justify-center text-white m-1">{{ mangas.indexOf(manga) + 1 }}
+          </div>
+          <div class="flex items-center">
+            <img *ngIf="selectedOption !== 'follows'" alt="Icon" class="h-6" loading="lazy"
+                 src="https://mangaimg.blob.core.windows.net/assets/icons8-star-30.png">
+            <img *ngIf="selectedOption === 'follows'" alt="Icon" class="h-5" loading="lazy"
+                 src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
+            <p *ngIf="selectedOption === 'rating'"
+               class="text-white font-bold m-1">{{ manga.rating | number:'1.1-1' }}</p>
+            <p *ngIf="selectedOption === 'follows'"
+               class="text-white font-bold m-1">{{ manga.follows}}</p>
+            <p *ngIf="selectedOption === 'day'" class="text-white font-bold m-1">{{ manga.viewsByDay }} lượt xem</p>
+            <p *ngIf="selectedOption === 'week'" class="text-white font-bold m-1">{{ manga.viewsByWeek }} lượt xem</p>
+            <p *ngIf="selectedOption === 'month'" class="text-white font-bold m-1">{{ manga.viewsByMonth }} lượt xem</p>
+          </div>
+        </div>
+        <div class="p-2 flex-grow">
+          <p class="text-white text-sm font-bold truncate">{{ manga.name }}</p>
+          <p class="text-white text-sm">{{ manga.author }}</p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="mangas.length > itemsPerPage" class="flex justify-center mt-4">
+      <pagination-controls
+        (pageChange)="onPageChange($event)"
+        [autoHide]="false"
+        [directionLinks]="true"
+        [maxSize]="5"
+        class="pagination custom-pagination text-white font-semibold text-md space-x-2"
+        nextLabel=""
+        previousLabel="">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

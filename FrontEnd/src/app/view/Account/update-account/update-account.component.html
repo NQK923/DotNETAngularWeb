@@ -1,0 +1,65 @@
+<main>
+  <div #container class="container">
+    <div class="form-container sign-up">
+      <form>
+        <h1 class="font-bold">Forgot PassWord</h1>
+        <div class="social-icons">
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/436.png?hash=hWSi-z_FfQquG902GF_KdA&expires=2145884400"></a>
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/38004.png?hash=NvALQnR4pRpsfk4Ul6QYdA&expires=2145884400"></a>
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/508.png?hash=AKSNNUJg2ttqhfWZ23dX6w&expires=2145884400"></a>
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/424.png?hash=sZTeD2UtSfMjYNqf0CmUiw&expires=2145884400"></a>
+
+        </div>
+        <span>Lấy mã để đổi mật khẩu của bạn </span>
+
+        <input id="usernameInput" placeholder="User name" type="text">
+        <input id="mailInput" placeholder="Enter G-mail" type="email">
+        <button (click)="takePassWord()" id="buttonGetCode"> get code</button>
+
+
+      </form>
+    </div>
+
+    <div class="form-container sign-in">
+      <form>
+        <h1 class="font-bold">Update</h1>
+        <div class="social-icons">
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/436.png?hash=hWSi-z_FfQquG902GF_KdA&expires=2145884400"></a>
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/38004.png?hash=NvALQnR4pRpsfk4Ul6QYdA&expires=2145884400"></a>
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/508.png?hash=AKSNNUJg2ttqhfWZ23dX6w&expires=2145884400"></a>
+          <a class="icons" href="#"><img
+            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/424.png?hash=sZTeD2UtSfMjYNqf0CmUiw&expires=2145884400"></a>
+        </div>
+        <span>Đổi mật khẩu</span>
+        <input id="userName" placeholder="Enter UserName" type="text">
+        <input id="currentPassword" placeholder="Enter Password" type="password">
+        <input id="newPassword" placeholder="Enter New Password" type="password">
+        <input id="confirmPassword" placeholder="Enter Confirm Password" type="password">
+        <button (click)="TakeData()">Update</button>
+      </form>
+    </div>
+
+    <div class="toggle-container">
+      <div class="toggle">
+        <div class="toggle-panel toggle-left">
+          <h1 class="font-bold">Welcome To <br>Code with Patel</h1>
+          <p>Sign in With ID & Password</p>
+          <button #login>Update PassWord</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1 class="font-bold">Wellcome to Manga .net core</h1>
+          <p>Cùng thưởng thức manga chất lượng của chúng tôi</p>
+          <button #register>Forgot Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<p-toast></p-toast>

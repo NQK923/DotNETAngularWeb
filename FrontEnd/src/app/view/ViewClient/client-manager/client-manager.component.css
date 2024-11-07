@@ -1,0 +1,110 @@
+
+.input-transition {
+  transition: width 0.3s ease;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-400 {
+  width: 410px;
+}
+
+.w-220 {
+  width: 220px;
+}
+
+.w-70 {
+  width: 70px;
+}
+
+.mrr {
+  margin-right: 20px;
+}
+
+.mll {
+  margin-left: 20px;
+}
+
+.p-20pt {
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.bg-main {
+  background-image: url(https://mangaimg.blob.core.windows.net/assets/banerhead.png);
+}
+
+
+.w-90 {
+  width: 90%;
+}
+
+.text-small {
+  font-size: 10px;
+}
+
+.h-30 {
+  height: 60px;
+}
+
+.h200 {
+
+  height: 200px;
+}
+
+.h225 {
+  height: 225px;
+}
+
+.w-500 {
+  width: 400px;
+}
+
+.w-1000 {
+  width: 1000px;
+}
+
+.h-50 {
+  height: 50px;
+}
+
+.h-main {
+  height: 630px;
+}
+
+.bg-main {
+  background-color: #033363;
+}
+
+
+.input-transition {
+  transition: width 0.3s ease;
+}
+
+.w-220 {
+  width: 290px;
+}
+
+.w-70 {
+  width: 70px;
+}
+
+.mrr {
+  margin-right: 20%
+}
+
+.mll {
+  margin-left: 20%
+}
+
+.w-50 {
+  height: 30px;
+
+}
+
+.hiddens {
+  display: none;
+}
+

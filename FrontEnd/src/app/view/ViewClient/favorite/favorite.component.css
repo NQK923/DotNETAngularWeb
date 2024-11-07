@@ -1,0 +1,33 @@
+.w-330 {
+  width: 220px;
+}
+
+.input-transition {
+  transition: width 0.3s ease;
+}
+
+.w-330 {
+  width: 220px;
+}
+
+.h-350 {
+  height: 300px;
+}
+
+.manga-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.notification-icon.active {
+  filter: brightness(0) invert(1);
+  transition: filter 0.3s ease;
+}
+
+@media (max-device-width: 480px) {
+  .fullScreen {
+    min-height: 83.2vh;
+  }
+}

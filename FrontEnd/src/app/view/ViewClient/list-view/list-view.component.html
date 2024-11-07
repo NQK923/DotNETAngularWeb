@@ -1,0 +1,76 @@
+<div class="bg-gray-900 h-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between bg-gradient-to-r from-gray-800 to-gray-600 p-2">
+    <p class="text-white font-bold text-3xl">Danh sách Manga</p>
+    <div class="flex items-center space-x-4">
+      <label class="text-white font-semibold" for="sort">Sắp xếp theo:</label>
+      <select [(ngModel)]="sortOption" class="text-sm bg-gray-700 text-white px-4 py-2 rounded-full" id="sort">
+        <option value="newest">Mới nhất</option>
+        <option value="oldest">Cũ nhất</option>
+        <option value="viewsHigh">Lượt xem cao nhất</option>
+        <option value="viewsLow">Lượt xem thấp nhất</option>
+      </select>
+    </div>
+  </div>
+  <!-- Categories and Search -->
+  <div class="flex flex-col bg-gradient-to-r from-gray-800 to-gray-600 px-4 py-2">
+    <div class="flex flex-wrap gap-3 mb-4">
+      <!-- Categories checkboxes -->
+      <div *ngFor="let category of categories" [attr.title]="category.name + ' \n' + category.description"
+           class="flex items-center">
+        <input (change)="toggleCategorySelection(category.id_category)" [id]="'cat_' + category.id_category"
+               [value]="category.id_category"
+               class="h-4 w-4 rounded focus:ring focus:ring-blue-300" type="checkbox">
+        <label [for]="'cat_' + category.id_category" class="text-white ml-2 text-sm">{{ category.name }}</label>
+      </div>
+    </div>
+    <div class="flex justify-center">
+      <button (click)="searchMangas()"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-3 py-2 rounded-lg transition ease-in-out duration-200">
+        Tìm kiếm
+      </button>
+    </div>
+  </div>
+  <div class="mt-4">
+    <!-- Danh sách Manga -->
+    <ul *ngIf="filteredMangas.length > 0"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-3 mb-0">
+      <li (click)="viewMangaDetails(manga.id_manga)"
+          *ngFor="let manga of filteredMangas | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; trackBy: trackByMangaId"
+          [attr.title]="manga.name + ' \n' + manga.describe"
+          class="hover:bg-gray-800 text-white rounded-lg transition-transform transform hover:scale-105 cursor-pointer w-60">
+        <img [src]="manga.cover_img" alt="Cover image" class="rounded-lg object-cover w-full h-75" loading="lazy">
+        <div class="absolute opacity-85 top-0 left-0 bg-yellow-500 text-black text-xs font-semibold p-1 rounded">
+          {{ getTimeDifference(manga.updated_at) }}
+        </div>
+        <div class="px-2 py-2">
+          <div class="text-white font-semibold text-base ml-2">{{ manga.name }}</div>
+          <div class="flex items-center space-x-1 ml-2">
+            <img alt="Views icon" class="h-4" loading="lazy"
+                 src="https://mangaimg.blob.core.windows.net/assets/iconeye.png">
+            <div class="text-sm">{{ manga.totalViews | number }} lượt xem</div>
+          </div>
+          <p class="text-gray-300 text-sm truncate ml-2">{{ manga.author }}</p>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Thông báo khi không tìm thấy kết quả -->
+    <div *ngIf="filteredMangas.length === 0" class="text-center text-white font-semibold text-2xl p-4">
+      Không tìm thấy truyện theo yêu cầu
+    </div>
+
+    <!-- Điều khiển phân trang -->
+    <div *ngIf="filteredMangas.length > itemsPerPage" class="flex justify-center mt-4">
+      <pagination-controls
+        (pageChange)="onPageChange($event)"
+        [autoHide]="false"
+        [directionLinks]="true"
+        [maxSize]="5"
+        class="pagination custom-pagination text-white font-semibold text-md space-x-2"
+        nextLabel=""
+        previousLabel="">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

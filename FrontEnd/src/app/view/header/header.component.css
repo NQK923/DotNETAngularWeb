@@ -1,0 +1,48 @@
+.input-transition {
+  transition: width 0.3s ease;
+}
+
+.bg-img {
+  background-image: url(https://mangaimg.blob.core.windows.net/assets/banerhead.png);
+}
+
+.isHidden {
+  display: none;
+}
+
+.img {
+  height: 60px;
+  width: 150px;
+}
+
+#head {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+
+.sticky-header {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.row {
+  max-width: 100%;
+  margin: auto;
+}
+
+@media (max-width: 768px) {
+  #head ul {
+    display: none;
+  }
+  #head .hamburger-menu {
+    display: inline-block;
+  }
+}
+@media (min-width: 769px) {
+  #head .hamburger-menu {
+    display: none;
+  }
+}
+
