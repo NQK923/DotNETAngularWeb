@@ -4,11 +4,11 @@ namespace MangaService.Models;
 
 public class Chapter
 {
-    [Key] public int id_chapter { get; set; }
+    [Key] public int IdChapter { get; set; }
 
-    public string title { get; set; }
-    public int id_manga { get; set; }
-    public int view { get; set; }
-    public DateTime created_at { get; set; }
-    public int index { get; set; }
+    public string Title { get; set; }
+    public int IdManga { get; set; }
+    public int View { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int Index { get; set; }
 }

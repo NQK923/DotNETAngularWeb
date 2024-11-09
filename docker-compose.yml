@@ -47,22 +47,6 @@
     ports:
       - "0.0.0.0:5006:8080"
 
-  mangafavoriteservice:
-    image: nqk090203/mangafavoriteservice:dev
-    build:
-      context: .
-      dockerfile: MangaFavoriteService/Dockerfile
-    ports:
-      - "0.0.0.0:5007:8080"
-
-  mangahistoryservice:
-    image: nqk090203/mangahistoryservice:dev
-    build:
-      context: .
-      dockerfile: MangaHistoryService/Dockerfile
-    ports:
-      - "0.0.0.0:5008:8080"
-
   infonotificationaccount:
     image: nqk090203/infonotificationaccount:dev
     build:
@@ -86,14 +70,6 @@
       dockerfile: infoAccount/Dockerfile
     ports:
       - "0.0.0.0:5011:8080"
-
-  mangaviewhistoryservice:
-    image: nqk090203/mangaviewhistoryservice:dev
-    build:
-      context: .
-      dockerfile: MangaViewHistoryService/Dockerfile
-    ports:
-      - "0.0.0.0:5012:8080"
   
   comment:
     image: nqk090203/comment:dev

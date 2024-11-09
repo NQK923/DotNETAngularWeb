@@ -40,7 +40,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/api/manga/{idManga:int}/chapters", async (int idManga, ChapterDbContext dbContext) =>
 {
     var chapters = await dbContext.Chapter
-        .AsNoTracking().Where(c => c.id_manga == idManga)
+        .AsNoTracking().Where(c => c.IdManga == idManga)
         .ToListAsync();
 
     return chapters.Count == 0 ? Results.NotFound("No chapters found for this manga.") : Results.Ok(chapters);
@@ -48,17 +48,17 @@ app.MapGet("/api/manga/{idManga:int}/chapters", async (int idManga, ChapterDbCon
 
 app.MapGet("/api/manga/getChapterId", async (int idManga, int index, ChapterDbContext dbContext) =>
 {
-    var chapter = await dbContext.Chapter.AsNoTracking().Where(c => c.id_manga == idManga && c.index == index)
+    var chapter = await dbContext.Chapter.AsNoTracking().Where(c => c.IdManga == idManga && c.Index == index)
         .FirstOrDefaultAsync();
-    return chapter != null ? Results.Ok((object?)chapter.id_chapter) : null;
+    return chapter != null ? Results.Ok((object?)chapter.IdChapter) : null;
 });
 
 app.MapGet("/api/manga/{idManga:int}/latestChapter", async (int idManga, ChapterDbContext dbContext) =>
 {
     var latestChapterIndex = await dbContext.Chapter
-        .AsNoTracking().Where(c => c.id_manga == idManga)
-        .OrderByDescending(c => c.created_at)
-        .Select(c => c.index)
+        .AsNoTracking().Where(c => c.IdManga == idManga)
+        .OrderByDescending(c => c.CreatedAt)
+        .Select(c => c.Index)
         .FirstOrDefaultAsync();
 
     return Results.Ok(latestChapterIndex);
@@ -95,7 +95,7 @@ app.MapGet("/api/manga/{idManga:int}/chapters/{index:int}/images", async (int id
 app.MapGet("/api/manga/{idManga}/chapter/{index}", async (int idManga, int index, ChapterDbContext dbContext) =>
 {
     var chapters = await dbContext.Chapter
-        .AsNoTracking().Where(c => c.id_manga == idManga && c.index == index)
+        .AsNoTracking().Where(c => c.IdManga == idManga && c.Index == index)
         .ToListAsync();
 
     return chapters.Count == 0 ? Results.NotFound("No chapters found.") : Results.Ok(chapters);
@@ -137,17 +137,17 @@ app.MapPost("/api/manga/upload/chapter",
         var mangaId = int.Parse(idManga);
 
         var existingChapter = await db.Chapter
-            .FirstOrDefaultAsync(c => c.id_manga == mangaId && c.index == chapterIndex);
+            .FirstOrDefaultAsync(c => c.IdManga == mangaId && c.Index == chapterIndex);
 
         if (existingChapter != null)
             return Results.Conflict(new { message = "Chapter index already exists", existingChapter });
 
         var chapter = new Chapter
         {
-            id_manga = mangaId,
-            title = title,
-            index = chapterIndex,
-            created_at = DateTime.Now
+            IdManga = mangaId,
+            Title = title,
+            Index = chapterIndex,
+            CreatedAt = DateTime.Now
         };
 
         db.Chapter.Add(chapter);
@@ -178,13 +178,13 @@ app.MapPut("/api/manga/update/chapter/{chapterId:int}",
         var files = formCollection.Files;
         var title = formCollection["title"];
 
-        chapter.title = title;
+        chapter.Title = title;
         await db.SaveChangesAsync();
 
         var blobServiceClient = new BlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]);
         var blobContainerClient = blobServiceClient.GetBlobContainerClient("mangas");
-        var folderName = chapter.id_manga.ToString();
-        var index = chapter.index;
+        var folderName = chapter.IdManga.ToString();
+        var index = chapter.Index;
 
         var oldImagesPrefix = $"{folderName}/Chapters/{index}/";
         await foreach (var blobItem in blobContainerClient.GetBlobsAsync(prefix: oldImagesPrefix))
@@ -200,7 +200,7 @@ app.MapPut("/api/manga/update/chapter/{chapterId:int}",
             await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
 
-        return Results.Ok(new { chapter.id_manga, chapter.index });
+        return Results.Ok(new { id_manga = chapter.IdManga, index = chapter.Index });
     });
 
 //delete chapter by id manga and chapter index
@@ -208,7 +208,7 @@ app.MapDelete("/api/manga/delete/{idManga:int}/chapter/{index:int}",
     async (int idManga, int index, ChapterDbContext db) =>
     {
         var chapter = await db.Chapter
-            .FirstOrDefaultAsync(c => c.id_manga == idManga && c.index == index);
+            .FirstOrDefaultAsync(c => c.IdManga == idManga && c.Index == index);
 
         if (chapter == null)
             return Results.NotFound("Chapter not found");
@@ -235,7 +235,7 @@ app.MapDelete("/api/manga/delete/chapters/{idManga:int}",
     async (int idManga, ChapterDbContext db) =>
     {
         var chapters = await db.Chapter
-            .Where(c => c.id_manga == idManga)
+            .Where(c => c.IdManga == idManga)
             .ToListAsync();
 
         if (chapters.Count == 0)
