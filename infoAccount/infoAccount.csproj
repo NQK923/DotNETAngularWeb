@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.22.1"/>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0-beta.2" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.2.24474.1"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>

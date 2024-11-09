@@ -45,9 +45,7 @@ app.MapGet("/api/InfoAccountById/{idaccount}", async (InfoAccountDbContext dbCon
 {
     var account = await dbContext.infoAccounts.FindAsync(idaccount);
 
-    if (account == null) return Results.NotFound();
-
-    return Results.Ok(account);
+    return account == null ? Results.NotFound() : Results.Ok(account);
 });
 
 //add new info account

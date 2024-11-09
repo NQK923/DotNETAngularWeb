@@ -85,10 +85,7 @@ app.MapPost("/api/Login", async (ModelAccount account, [FromServices] AccountDbC
         var existingAccount = await dbContext.accounts
             .FirstOrDefaultAsync(a => a.username == account.username && a.password == account.password);
 
-        if (existingAccount != null)
-            return Results.Ok(existingAccount.id_account);
-
-        return Results.NotFound("Invalid username or password");
+        return existingAccount != null ? Results.Ok(existingAccount.id_account) : Results.NotFound("Invalid username or password");
     }
     catch (Exception ex)
     {
