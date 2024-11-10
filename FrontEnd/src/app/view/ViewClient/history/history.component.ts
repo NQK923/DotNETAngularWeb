@@ -6,26 +6,26 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {catchError, forkJoin, map, of} from "rxjs";
 
 interface History {
-  id_account: number;
-  id_manga: number;
-  index_chapter: number;
-  time: Date;
+  IdAccount: number;
+  IdManga: number;
+  IndexChapter: number;
+  Time: Date;
 }
 
 interface Manga {
-  id_manga: number;
-  name: string;
-  author: string;
-  num_of_chapter: number;
-  rating: number;
-  id_account: number;
-  is_posted: boolean;
-  cover_img: string;
-  describe: string;
-  updated_at: Date;
-  totalViews: number
-  rated_num: number;
-  is_deleted: boolean;
+  IdManga: number;
+  Name: string;
+  Author: string;
+  NumOfChapter: number;
+  Rating: number;
+  IdAccount: number;
+  IsPosted: boolean;
+  CoverImg: string;
+  Describe: string;
+  UpdatedAt: Date;
+  TotalViews: number;
+  RatedNum: number;
+  IsDeleted: boolean;
 }
 
 @Component({
@@ -67,16 +67,16 @@ export class HistoryComponent implements OnInit {
   getMangaDetails(): void {
     this.combinedHistories = [];
     const mangaRequests = this.histories.map(history =>
-      this.mangaService.getMangaById(history.id_manga).pipe(
+      this.mangaService.getMangaById(history.IdManga).pipe(
         map((manga: Manga) => {
-          if (manga.is_posted && !manga.is_deleted) {
+          if (manga.IsPosted && !manga.IsDeleted) {
             return {history, manga};
           } else {
             return null;
           }
         }),
         catchError((error) => {
-          console.error(`Failed to load manga with id: ${history.id_manga}`, error);
+          console.error(`Failed to load manga with id: ${history.IdManga}`, error);
           return of(null);
         })
       )
@@ -84,7 +84,7 @@ export class HistoryComponent implements OnInit {
 
     forkJoin(mangaRequests).subscribe(results => {
       this.combinedHistories = results.filter(entry => entry !== null);
-      this.combinedHistories.sort((a, b) => +new Date(b.history.time) - +new Date(a.history.time)); // Sắp xếp theo time giảm dần
+      this.combinedHistories.sort((a, b) => +new Date(b.history.Time) - +new Date(a.history.Time));
     });
   }
 
@@ -113,7 +113,7 @@ export class HistoryComponent implements OnInit {
             summary: 'Xoá thành công',
             detail: 'Manga đã được xoá khỏi danh sách.'
           });
-          this.combinedHistories = this.combinedHistories.filter(entry => entry.manga.id_manga !== id_manga);
+          this.combinedHistories = this.combinedHistories.filter(entry => entry.manga.IdManga !== id_manga);
         },
         error: (error) => {
           console.error("Failed to delete manga history:", error);

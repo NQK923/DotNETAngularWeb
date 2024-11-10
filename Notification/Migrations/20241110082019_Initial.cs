@@ -19,7 +19,6 @@ namespace Notification.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
                     TypeNoti = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -34,7 +33,7 @@ namespace Notification.Migrations
                     IdNotification = table.Column<int>(type: "int", nullable: false),
                     IdManga = table.Column<int>(type: "int", nullable: false),
                     IdAccount = table.Column<int>(type: "int", nullable: false),
-                    IsGotNotification = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>

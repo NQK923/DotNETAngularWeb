@@ -1,10 +1,9 @@
 export interface ModelAccount {
-  id_account?: number;
-  username: string;
-  password: string;
-  banDate?: Date
-  role?: boolean;
-  status?: boolean;
-  banComment?: boolean;
-
+  IdAccount?: number;
+  Username: string;
+  Password: string;
+  BanDate?: Date
+  Role?: boolean;
+  Status?: boolean;
+  BanComment?: boolean;
 }

@@ -126,11 +126,11 @@ export class HeaderComponent implements OnInit {
 
   getCombinedData(notificationAc: ModelNotificationMangaAccount) {
     return forkJoin({
-      manga: this.takeDataManga(notificationAc.id_manga),
-      notification: this.takeDataNotification(notificationAc.id_Notification).pipe(
+      manga: this.takeDataManga(notificationAc.IdManga),
+      notification: this.takeDataNotification(notificationAc.IdNotification).pipe(
         map(notification => Array.isArray(notification) ? notification[0] : notification)
       ),
-      account: this.takeDataInfoAccount(notificationAc.id_account)
+      account: this.takeDataInfoAccount(notificationAc.IdAccount)
     }).pipe(
       map(result => ({...result, notificationAc}))
     );
@@ -146,11 +146,11 @@ export class HeaderComponent implements OnInit {
       };
       // @ts-ignore
       const isFavorite = this.mangaFavorite.some(fav => fav.id_manga === combo.Mangainfo.id_manga);
-      const isNotNewChapter = combo.Notification?.type_Noti !== "Đã thêm 1 chương mới";
+      const isNotNewChapter = combo.Notification?.TypeNoti !== "Đã thêm 1 chương mới";
 
       if (isFavorite || isNotNewChapter) {
         if (combo.NotificationMangaAccounts) {
-          if (!combo.NotificationMangaAccounts.is_read) {
+          if (!combo.NotificationMangaAccounts.IsRead) {
             this.ListCombinedData.push(combo);
           } else {
             this.ListCombinedDataIsRead.push(combo);
@@ -209,8 +209,8 @@ export class HeaderComponent implements OnInit {
       this.accountService.getAccountById(this.idAccount).subscribe(
         (data: ModelAccount) => {
           this.account = data;
-          this.name = this.account.username || null;
-          if (this.account.role) {
+          this.name = this.account.Username || null;
+          if (this.account.Role) {
             this.isAdmin = true;
           }
         },
@@ -222,7 +222,7 @@ export class HeaderComponent implements OnInit {
         (data: ModelInfoAccount) => {
           this.infoAccounts = data;
           if (this.idAccount !== null) {
-            this.url = this.infoAccounts.cover_img || null;
+            this.url = this.infoAccounts.CoverImg || null;
           }
         },
         (error) => {
@@ -250,11 +250,11 @@ export class HeaderComponent implements OnInit {
         const allData = [...this.ListCombinedData, ...this.ListCombinedDataIsRead];
         for (let i = 0; i < allData.length; i++) {
           const notificationData = {
-            id_manga: allData[i].Mangainfo?.id_manga,
-            id_account: allData[i].InfoAccount?.id_account,
-            id_Notification: allData[i].Notification?.id_Notification,
-            isGotNotification: false,
-            is_read: true,
+            IdManga: allData[i].Mangainfo?.IdManga,
+            IdAccount: allData[i].InfoAccount?.IdAccount,
+            IdNotification: allData[i].Notification?.IdNotification,
+            IsDeleted: true,
+            IsRead: true,
           } as ModelNotificationMangaAccount;
           const observable = this.notificationMangaAccountService.updateNotificationAccount(notificationData);
           updateObservables.push(observable);
@@ -335,8 +335,8 @@ export class HeaderComponent implements OnInit {
   }
 
   goToContent(data: CombinedData) {
-    if (data.NotificationMangaAccounts?.is_read == false) {
-      this.notificationMangaAccountService.toggleNotiStatus(data.NotificationMangaAccounts?.id_Notification).subscribe({
+    if (data.NotificationMangaAccounts?.IsRead == false) {
+      this.notificationMangaAccountService.toggleNotiStatus(data.NotificationMangaAccounts?.IdNotification).subscribe({
         next: () => {
         },
         error: (err) => {
@@ -344,10 +344,10 @@ export class HeaderComponent implements OnInit {
         }
       });
     }
-    if (data.Notification?.type_Noti === "Đã thêm 1 chương mới") {
+    if (data.Notification?.TypeNoti === "Đã thêm 1 chương mới") {
       this.toggleNotification();
       this.ngOnInit();
-      this.router.navigate(['/titles', data.Mangainfo?.id_manga]);
+      this.router.navigate(['/titles', data.Mangainfo?.IdManga]);
     } else {
       this.searchQuery = '';
       this.router.navigate(['/client-manager']);

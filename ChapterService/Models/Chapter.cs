@@ -10,7 +10,6 @@ public class Chapter
 
     public string Title { get; set; }
     public int IdManga { get; set; }
-    public int View { get; set; }
     public DateTime CreatedAt { get; set; }
     public int Index { get; set; }
 }

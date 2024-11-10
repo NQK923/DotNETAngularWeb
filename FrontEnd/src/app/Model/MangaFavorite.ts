@@ -1,6 +1,6 @@
 export interface ModelMangaFavorite {
-  id_manga: number;
-  id_account: number;
-  is_favorite: boolean;
-  is_notification: boolean;
+  IdManga: number;
+  IdAccount: number;
+  IsFavorite: boolean;
+  IsNotification: boolean;
 }

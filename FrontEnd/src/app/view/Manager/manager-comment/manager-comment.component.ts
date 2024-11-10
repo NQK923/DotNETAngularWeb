@@ -75,12 +75,12 @@ export class ManagerCommentComponent implements OnInit {
   //get comment data
   takeData() {
     this.listDataComment = [];
-    const existingCommentIds = new Set(this.listDataComment.map(comment => comment.Comment?.id_comment));
+    const existingCommentIds = new Set(this.listDataComment.map(comment => comment.Comment?.IdComment));
     const reportedComments = this.comments.filter(comment =>
-      comment.isReported && !existingCommentIds.has(comment.id_comment)
+      comment.IsReported && !existingCommentIds.has(comment.IdComment)
     );
     const accountRequests = reportedComments.map(comment =>
-      this.infoAccountService.getInfoAccountById(Number(comment.id_user)).pipe(
+      this.infoAccountService.getInfoAccountById(Number(comment.IdComment)).pipe(
         map((data: ModelInfoAccount) => new CommentData(comment, data))
       )
     );
@@ -129,14 +129,14 @@ export class ManagerCommentComponent implements OnInit {
       (data: ModelAccount[]) => {
         this.accounts = data;
         for (const account of this.accounts) {
-          if (account.id_account === id) {
+          if (account.IdAccount === id) {
             this.accountComment = account;
             const newAccount: ModelAccount = {
-              id_account: this.accountComment.id_account,
-              username: this.accountComment.username,
-              password: this.accountComment.password,
-              status: this.accountComment.status,
-              banComment: true
+              IdAccount: this.accountComment.IdAccount,
+              Username: this.accountComment.Username,
+              Password: this.accountComment.Password,
+              Status: this.accountComment.Status,
+              BanComment: true
             };
             this.updateComment(newAccount, gmail)
             return;

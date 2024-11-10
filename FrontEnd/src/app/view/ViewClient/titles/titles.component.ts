@@ -11,31 +11,30 @@ import {forkJoin} from "rxjs";
 import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Chapter {
-  id_chapter: number;
-  title: string;
-  id_manga: number;
-  view: number;
-  created_at: Date;
-  index: number;
-  isRead: boolean;
+  IdChapter: number;
+  Title: string;
+  IdManga: number;
+  CreatedAt: Date;
+  Index: number;
+  IsRead: boolean;
 }
 
 interface Category {
-  id_category: number;
-  name: string;
-  description: string;
+  IdCategory: number;
+  Name: string;
+  Description: string;
 }
 
 interface CategoryDetails {
-  id_category: number;
-  id_manga: number;
+  IdCategory: number;
+  IdManga: number;
 }
 
 interface History {
-  id_account: number;
-  id_manga: number;
-  index_chapter: number;
-  time: Date;
+  IdAccount: number;
+  IdManga: number;
+  IndexChapter: number;
+  Time: Date;
 }
 
 @Component({
@@ -98,7 +97,7 @@ export class TitlesComponent implements OnInit {
       this.categoryDetails = categoryDetails;
       this.categories = allCategories;
       this.filteredCategories = this.categories.filter(category =>
-        this.categoryDetails.some(detail => detail.id_category === category.id_category)
+        this.categoryDetails.some(detail => detail.IdCategory === category.IdCategory)
       );
       this.isLoading = false;
     });
@@ -144,7 +143,7 @@ export class TitlesComponent implements OnInit {
 
   updateChaptersWithHistory() {
     this.chapters.forEach(chapter => {
-      chapter.isRead = this.histories.some(history => history.index_chapter === chapter.index);
+      chapter.IsRead = this.histories.some(history => history.IndexChapter === chapter.Index);
     });
   }
 
@@ -276,7 +275,7 @@ export class TitlesComponent implements OnInit {
   sortChapter(ascending: boolean): void {
     this.ascending = !this.ascending;
     this.chapters.sort((a: Chapter, b: Chapter) => {
-      return ascending ? a.index - b.index : b.index - a.index;
+      return ascending ? a.Index - b.Index : b.Index - a.Index;
     });
   }
 

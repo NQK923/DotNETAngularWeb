@@ -22,7 +22,7 @@ namespace ChapterService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MangaService.Models.Chapter", b =>
+            modelBuilder.Entity("ChapterService.Models.Chapter", b =>
                 {
                     b.Property<int>("IdChapter")
                         .ValueGeneratedOnAdd()
@@ -42,9 +42,6 @@ namespace ChapterService.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("View")
-                        .HasColumnType("int");
 
                     b.HasKey("IdChapter");
 

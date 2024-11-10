@@ -65,7 +65,7 @@ export class ManagerStatiscalComponent implements OnInit {
     }
     const countDict: { [key: number]: number } = {};
     for (const item of this.category) {
-      const id_category = item.id_category;
+      const id_category = item.IdCategory;
       if (id_category in countDict) {
         countDict[id_category] += 1;
       } else {

@@ -19,7 +19,6 @@ namespace ChapterService.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdManga = table.Column<int>(type: "int", nullable: false),
-                    View = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Index = table.Column<int>(type: "int", nullable: false)
                 },

@@ -12,7 +12,7 @@ using Notification.Data;
 namespace Notification.Migrations
 {
     [DbContext(typeof(NotificationDbContext))]
-    [Migration("20241110071010_Initial")]
+    [Migration("20241110082019_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -37,9 +37,6 @@ namespace Notification.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
@@ -63,7 +60,7 @@ namespace Notification.Migrations
                     b.Property<int>("IdManga")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsGotNotification")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsRead")

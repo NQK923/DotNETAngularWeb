@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChapterService.Migrations
 {
     [DbContext(typeof(ChapterDbContext))]
-    [Migration("20241109103132_Initial")]
+    [Migration("20241110080527_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace ChapterService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MangaService.Models.Chapter", b =>
+            modelBuilder.Entity("ChapterService.Models.Chapter", b =>
                 {
                     b.Property<int>("IdChapter")
                         .ValueGeneratedOnAdd()
@@ -45,9 +45,6 @@ namespace ChapterService.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("View")
-                        .HasColumnType("int");
 
                     b.HasKey("IdChapter");
 

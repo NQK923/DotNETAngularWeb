@@ -67,10 +67,10 @@ export class ManagerAccountComponent implements OnInit {
     }
 
     for (let i = 0; i < this.tempData.length; i++) {
-      let temp = this.isSimilar(this.tempData[i].Account.username, text);
+      let temp = this.isSimilar(this.tempData[i].Account.Username, text);
       if (temp) {
         const exists = this.dataSearch.some(
-          account => account.Account.username === this.tempData[i].Account.username
+          account => account.Account.Username === this.tempData[i].Account.Username
         );
         if (!exists) {
           this.dataSearch.push(this.tempData[i]);
@@ -99,7 +99,7 @@ export class ManagerAccountComponent implements OnInit {
       (data: ModelAccount[]) => {
         this.accounts = data;
         for (let i = 0; i < this.accounts.length; i++) {
-          this.InfoAccountService.getInfoAccountById(Number(this.accounts[i].id_account)).subscribe(
+          this.InfoAccountService.getInfoAccountById(Number(this.accounts[i].IdAccount)).subscribe(
             (data: ModelInfoAccount) => {
               {
                 this.dataAccount.push(
@@ -130,11 +130,11 @@ export class ManagerAccountComponent implements OnInit {
   UpdateStatus(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
     const newStatus = !status;
     const account: ModelAccount = {
-      id_account: id,
-      username: name,
-      password: pass,
-      status: newStatus,
-      banComment: ban
+      IdAccount: id,
+      Username: name,
+      Password: pass,
+      Status: newStatus,
+      BanComment: ban
     };
     const title: string = "Thông báo tài khoản:";
     const text: string = "Tài khoản bị vô hiệu";
@@ -190,11 +190,11 @@ export class ManagerAccountComponent implements OnInit {
   UpdateComment(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
     const newCommentStatus = !ban;
     const account: ModelAccount = {
-      id_account: id,
-      username: name,
-      password: pass,
-      status: status,
-      banComment: newCommentStatus
+      IdAccount: id,
+      Username: name,
+      Password: pass,
+      Status: status,
+      BanComment: newCommentStatus
     };
     const title: string = "Thông báo tài khoản:";
     const text: string = "Tài khoản đã bị khóa quyền bình luận";

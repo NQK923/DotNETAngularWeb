@@ -14,12 +14,11 @@ import {MangaService} from "../../../service/Manga/manga.service";
 import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Chapter {
-  id_chapter: number;
-  title: string;
-  id_manga: number;
-  view: number;
-  created_at: Date;
-  index: number;
+  IdChapter: number;
+  Title: string;
+  IdManga: number;
+  CreatedAt: Date;
+  Index: number;
 }
 
 export class CommentData {
@@ -108,7 +107,7 @@ export class ViewerComponent implements OnInit {
     const numericIndex = +index;
     if (numericIndex >= 1 && numericIndex <= this.chapters.length) {
       this.images = [];
-      const selectedChapter = this.chapters.find(chapter => chapter.index === numericIndex);
+      const selectedChapter = this.chapters.find(chapter => chapter.Index === numericIndex);
       if (selectedChapter) {
         this.mangaViewHistoryService.createHistory(this.id_manga).subscribe(
           () => {
@@ -117,8 +116,8 @@ export class ViewerComponent implements OnInit {
             console.error('Error: ', error);
           }
         )
-        if (selectedChapter && selectedChapter.id_chapter !== undefined) {
-          localStorage.setItem('id_chapter', selectedChapter.id_chapter.toString());
+        if (selectedChapter && selectedChapter.IdChapter !== undefined) {
+          localStorage.setItem('id_chapter', selectedChapter.IdChapter.toString());
           if (this.isLoggedIn()) {
             const id_user = localStorage.getItem('userId');
             let numberId: number;
@@ -234,12 +233,12 @@ export class ViewerComponent implements OnInit {
       rejectLabel: 'Hủy',
       accept: () => {
         const comment: ModelComment = {
-          id_comment: id_cm,
-          id_chapter: this.chapterId,
-          id_user: id,
-          content: textUpdate.value,
-          isReported: false,
-          time: new Date()
+          IdComment: id_cm,
+          IdChapter: this.chapterId,
+          IdAccount: id,
+          Content: textUpdate.value,
+          IsReported: false,
+          Time: new Date()
         };
 
         this.commentService.updateComment(comment).subscribe(
@@ -269,11 +268,11 @@ export class ViewerComponent implements OnInit {
     const text = this.el.nativeElement.querySelector('#textComment');
     const id = this.yourId;
     const comment: ModelComment = {
-      id_chapter: this.chapterId,
-      id_user: id,
-      content: text.value,
-      isReported: false,
-      time: new Date()
+      IdChapter: this.chapterId,
+      IdAccount: id,
+      Content: text.value,
+      IsReported: false,
+      Time: new Date()
     }
     this.commentService.addComment(comment).subscribe(
       () => {
@@ -290,12 +289,12 @@ export class ViewerComponent implements OnInit {
   takeData() {
     for (let i = 0; i < this.comments.length; i++) {
       const comment = this.comments[i];
-      const existsInList = this.listDataComment.some(item => item.Comment?.id_comment === comment.id_comment);
+      const existsInList = this.listDataComment.some(item => item.Comment?.IdComment === comment.IdComment);
       if (existsInList) {
         continue;
       }
-      if (comment.id_chapter === this.chapterId && comment.id_user !== this.yourId) {
-        this.infoAccountService.getInfoAccountById(Number(comment.id_user)).subscribe(
+      if (comment.IdChapter === this.chapterId && comment.IdAccount !== this.yourId) {
+        this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).subscribe(
           (data: ModelInfoAccount) => {
             this.listDataComment.push(new CommentData(comment, data));
           }
@@ -305,14 +304,14 @@ export class ViewerComponent implements OnInit {
   }
 
   takeYourData() {
-    const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.id_comment));
+    const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.IdComment));
     const relevantComments = this.comments.filter(comment =>
-      comment.id_chapter === this.chapterId &&
-      comment.id_user === this.yourId &&
-      !existingCommentIds.has(comment.id_comment)
+      comment.IdChapter === this.chapterId &&
+      comment.IdAccount === this.yourId &&
+      !existingCommentIds.has(comment.IdComment)
     );
     const accountRequests = relevantComments.map(comment =>
-      this.infoAccountService.getInfoAccountById(Number(comment.id_user)).pipe(
+      this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).pipe(
         map((data: ModelInfoAccount) => new CommentData(comment, data))
       )
     );
@@ -357,12 +356,12 @@ export class ViewerComponent implements OnInit {
 
   addReport(idComment: any, idChap: any, id: any, text: any) {
     const comment: ModelComment = {
-      id_comment: idComment,
-      id_chapter: idChap,
-      id_user: id,
-      content: text,
-      isReported: true,
-      time: new Date()
+      IdComment: idComment,
+      IdChapter: idChap,
+      IdAccount: id,
+      Content: text,
+      IsReported: true,
+      Time: new Date()
     };
     this.commentService.updateComment(comment).subscribe(
       () => {
@@ -375,8 +374,8 @@ export class ViewerComponent implements OnInit {
     );
   }
 
-  trackByChapterIndex(index: number, chapter: Chapter): number {
-    return chapter.index;
+  trackByChapterIndex(chapter: Chapter): number {
+    return chapter.Index;
   }
 
   goToLogin() {

@@ -34,7 +34,7 @@ public static class NotificationMangaAccountApi
         try
         {
             var notifications = await dbContext.NotificationMangaAccounts
-                .Where(c => c.IdAccount == idAccount && c.IsGotNotification == true)
+                .Where(c => c.IdAccount == idAccount && c.IsDeleted == false)
                 .ToListAsync();
 
             return notifications.Count == 0

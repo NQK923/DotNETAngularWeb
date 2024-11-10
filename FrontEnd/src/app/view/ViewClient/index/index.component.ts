@@ -11,27 +11,27 @@ import {switchMap} from "rxjs/operators";
 
 
 interface Manga {
-  id_manga: number;
-  name: string;
-  author: string;
-  num_of_chapter: number;
-  rating: number;
-  id_account: number;
-  is_posted: boolean;
-  cover_img: string;
-  describe: string;
-  updated_at: Date;
-  totalViews: number
-  rated_num: number;
-  categories: string[];
-  follower: number;
-  latestChapter: number;
+  IdManga: number;
+  Name: string;
+  Author: string;
+  NumOfChapter: number;
+  Rating: number;
+  IdAccount: number;
+  IsPosted: boolean;
+  CoverImg: string;
+  Describe: string;
+  UpdatedAt: Date;
+  TotalViews: number
+  RatedNum: number;
+  Categories: string[];
+  Follower: number;
+  LatestChapter: number;
 }
 
 interface Category {
-  id_category: number;
-  name: string;
-  description: string;
+  IdCategory: number;
+  Name: string;
+  Description: string;
 }
 
 @Component({
@@ -81,14 +81,14 @@ export class IndexComponent implements OnInit {
       switchMap(mangas => {
         const mangaObservables = mangas.map(manga =>
           forkJoin({
-            totalViews: this.mangaViewHistoryService.getAllView(manga.id_manga),
-            followers: this.mangaFavoriteService.countFollower(manga.id_manga),
-            latestChapter: this.chapterService.getLastedChapter(manga.id_manga)
+            totalViews: this.mangaViewHistoryService.getAllView(manga.IdManga),
+            followers: this.mangaFavoriteService.countFollower(manga.IdManga),
+            latestChapter: this.chapterService.getLastedChapter(manga.IdManga)
           }).pipe(
             map(({totalViews, followers, latestChapter}) => {
-              manga.totalViews = totalViews;
-              manga.follower = followers;
-              manga.latestChapter = latestChapter;
+              manga.TotalViews = totalViews;
+              manga.Follower = followers;
+              manga.LatestChapter = latestChapter;
             })
           )
         );
@@ -101,19 +101,19 @@ export class IndexComponent implements OnInit {
   }
 
   sortMangas(mangas: Manga[]) {
-    const sortedByDate = [...mangas].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-    const sortedByFollowers = [...mangas].sort((a, b) => b.follower - a.follower);
-    const sortedByViews = [...mangas].sort((a, b) => b.totalViews - a.totalViews);
-    const sortedByRating = [...mangas].sort((a, b) => b.rating - a.rating);
+    const sortedByDate = [...mangas].sort((a, b) => new Date(b.UpdatedAt).getTime() - new Date(a.UpdatedAt).getTime());
+    const sortedByFollowers = [...mangas].sort((a, b) => b.Follower - a.Follower);
+    const sortedByViews = [...mangas].sort((a, b) => b.TotalViews - a.TotalViews);
+    const sortedByRating = [...mangas].sort((a, b) => b.Rating - a.Rating);
     this.recentMangas = sortedByDate.slice(0, 10);
     const categoryObservables = this.recentMangas.map(manga =>
-      this.getCategoriesForManga(manga.id_manga).pipe(
+      this.getCategoriesForManga(manga.IdManga).pipe(
         map(categories => ({manga, categories}))
       )
     );
     forkJoin(categoryObservables).subscribe(results => {
       results.forEach(({manga, categories}) => {
-        manga.categories = categories;
+        manga.Categories = categories;
         this.isLoading = false;
       });
     });
@@ -139,7 +139,7 @@ export class IndexComponent implements OnInit {
 
   processTopMangas(list: Manga[]) {
     this.topViewMangas = list
-      .sort((a, b) => b.totalViews - a.totalViews)
+      .sort((a, b) => b.TotalViews - a.TotalViews)
       .slice(0, 8);
   }
 
@@ -147,16 +147,16 @@ export class IndexComponent implements OnInit {
     const list = this.mangas.map(manga => ({...manga}));
     let completedRequests = 0;
     list.forEach(manga => {
-      viewFunction(manga.id_manga).subscribe(
+      viewFunction(manga.IdManga).subscribe(
         (views) => {
-          manga.totalViews = views;
+          manga.TotalViews = views;
           completedRequests++;
           if (completedRequests === list.length) {
             this.processTopMangas(list);
           }
         },
         (error) => {
-          console.error("Error fetching views for manga with id: " + manga.id_manga, error);
+          console.error("Error fetching views for manga with id: " + manga.IdManga, error);
           completedRequests++;
           if (completedRequests === list.length) {
             this.processTopMangas(list);
@@ -217,7 +217,7 @@ export class IndexComponent implements OnInit {
   }
 
   trackByMangaId(index: number, manga: Manga): number {
-    return manga.id_manga;
+    return manga.IdManga;
   }
 
   viewMangaDetails(id_manga: number) {

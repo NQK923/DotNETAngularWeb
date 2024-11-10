@@ -57,15 +57,15 @@ export class UpdateAccountComponent implements AfterViewInit {
         this.accounts = data;
         let accountFound = false;
         for (let account of this.accounts) {
-          if (account.username === username) {
+          if (account.Username === username) {
             accountFound = true;
-            if (account.password === password || this.code === password) {
+            if (account.Password === password || this.code === password) {
               const updatedAccount: ModelAccount = {
-                id_account: account.id_account,
-                username: account.username,
-                password: newPassword,
-                status: false,
-                banComment: false,
+                IdAccount: account.IdAccount,
+                Username: account.Username,
+                Password: newPassword,
+                Status: false,
+                BanComment: false,
               };
               this.accountService.updateAccount(updatedAccount).subscribe({
                 next: () => {
@@ -120,12 +120,12 @@ export class UpdateAccountComponent implements AfterViewInit {
         this.InfoAccountService.getInfoAccount().subscribe(
           (infoData: ModelInfoAccount[]) => {
             this.infoAccount = infoData;
-            const emailExists = this.infoAccount.some(info => info.email === email);
+            const emailExists = this.infoAccount.some(info => info.Email === email);
             if (!emailExists) {
               this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Email không đúng'});
               return;
             }
-            const account = this.accounts.find(acc => acc.username === username);
+            const account = this.accounts.find(acc => acc.Username === username);
             if (account) {
               const randomNumbers = this.generateRandomNumbers();
               localStorage.setItem('code', randomNumbers.toString());

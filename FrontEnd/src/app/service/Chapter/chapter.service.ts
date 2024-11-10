@@ -3,12 +3,11 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
 interface Chapter {
-  id_chapter: number;
-  title: string;
-  id_manga: number;
-  view: number;
-  created_at: Date;
-  index: number;
+  IdChapter: number;
+  Title: string;
+  IdManga: number;
+  CreatedAt: Date;
+  Index: number;
 }
 
 @Injectable({

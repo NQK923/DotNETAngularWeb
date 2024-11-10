@@ -7,7 +7,6 @@ public class Notification
     public int IdNotification { get; set; }
     public string Content { get; set; }
     public DateTime Time { get; set; }
-    public bool IsRead { get; set; }
     public string TypeNoti { get; set; }
 }
 
@@ -17,6 +16,6 @@ public class NotificationMangaAccount
     [ForeignKey("IdNotification")] public Notification Notification { get; init; }
     public int IdManga { get; set; }
     public int IdAccount { get; set; }
-    public bool IsGotNotification { get; set; }
+    public bool IsDeleted { get; set; }
     public bool IsRead { get; set; }
 }

@@ -7,24 +7,24 @@ import {CategoriesService} from "../../../service/Categories/Categories.service"
 import {CategoryDetailsService} from "../../../service/Category_details/Category_details.service";
 
 interface Manga {
-  id_manga: number;
-  name: string;
-  author: string;
-  num_of_chapter: number;
-  rating: number;
-  id_account: number;
-  is_posted: boolean;
-  cover_img: string;
-  describe: string;
-  updated_at: Date;
-  totalViews: number
-  rated_num: number
+  IdManga: number;
+  Name: string;
+  Author: string;
+  NumOfChapter: number;
+  Rating: number;
+  IdAccount: number;
+  IsPosted: boolean;
+  CoverImg: string;
+  Describe: string;
+  UpdatedAt: Date;
+  TotalViews: number
+  RatedNum: number;
 }
 
 interface Category {
-  id_category: number;
-  name: string;
-  description: string;
+  IdCategory: number;
+  Name: string;
+  Description: string;
 }
 
 @Component({
@@ -63,15 +63,15 @@ export class ListViewComponent implements OnInit {
       this.mangas = mangas;
       this.categories = categories;
       const observables = this.mangas.map(manga =>
-        this.mangaViewHistoryService.getAllView(manga.id_manga).pipe(
-          map(totalViews => ({id_manga: manga.id_manga, totalViews}))
+        this.mangaViewHistoryService.getAllView(manga.IdManga).pipe(
+          map(totalViews => ({id_manga: manga.IdManga, totalViews}))
         )
       );
       forkJoin(observables).subscribe(results => {
         results.forEach(result => {
-          const manga = this.mangas.find(m => m.id_manga === result.id_manga);
+          const manga = this.mangas.find(m => m.IdManga === result.id_manga);
           if (manga) {
-            manga.totalViews = result.totalViews;
+            manga.TotalViews = result.totalViews;
           }
         });
         this.filteredMangas = [...this.mangas];
@@ -99,13 +99,13 @@ export class ListViewComponent implements OnInit {
     });
     let filteredByQuery = this.searchQuery.trim()
       ? this.mangas.filter(manga =>
-        manga.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        manga.Name.toLowerCase().includes(this.searchQuery.toLowerCase())
       )
       : [...this.mangas];
     this.filteredMangas = filteredByQuery;
     if (this.selectedCategories.length > 0) {
       this.categoryDetailsService.getIdMangaByCategories(this.selectedCategories).subscribe(id_manga => {
-        this.filteredMangas = filteredByQuery.filter(manga => id_manga.includes(manga.id_manga));
+        this.filteredMangas = filteredByQuery.filter(manga => id_manga.includes(manga.IdManga));
         this.applySorting();
       });
     } else {
@@ -121,16 +121,16 @@ export class ListViewComponent implements OnInit {
   applySorting() {
     switch (this.sortOption) {
       case 'newest':
-        this.filteredMangas.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+        this.filteredMangas.sort((a, b) => new Date(b.UpdatedAt).getTime() - new Date(a.UpdatedAt).getTime());
         break;
       case 'oldest':
-        this.filteredMangas.sort((a, b) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime());
+        this.filteredMangas.sort((a, b) => new Date(a.UpdatedAt).getTime() - new Date(b.UpdatedAt).getTime());
         break;
       case 'viewsHigh':
-        this.filteredMangas.sort((a, b) => b.totalViews - a.totalViews);
+        this.filteredMangas.sort((a, b) => b.TotalViews - a.TotalViews);
         break;
       case 'viewsLow':
-        this.filteredMangas.sort((a, b) => a.totalViews - b.totalViews);
+        this.filteredMangas.sort((a, b) => a.TotalViews - b.TotalViews);
         break;
     }
   }
@@ -140,7 +140,7 @@ export class ListViewComponent implements OnInit {
   }
 
   trackByMangaId(index: number, manga: Manga): number {
-    return manga.id_manga;
+    return manga.IdManga;
   }
 
   onPageChange(newPage: number): void {

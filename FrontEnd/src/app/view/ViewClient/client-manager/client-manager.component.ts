@@ -21,32 +21,31 @@ import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaVi
 import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
 
 interface Manga {
-  id_manga: number;
-  name: string;
-  author: string;
-  num_of_chapter: number;
-  id_account: number;
-  is_posted: boolean;
-  cover_img: string;
-  describe: string;
-  totalViews: number
-  follower: number;
-  latestChapter: number;
+  IdManga: number;
+  Name: string;
+  Author: string;
+  NumOfChapter: number;
+  IdAccount: number;
+  IsPosted: boolean;
+  CoverImg: string;
+  Describe: string;
+  TotalViews: number
+  Follower: number;
+  LatestChapter: number;
 }
 
 interface Chapter {
-  id_chapter: number;
-  title: string;
-  id_manga: number;
-  view: number;
-  created_at: Date;
-  index: number;
+  IdChapter: number;
+  Title: string;
+  IdManga: number;
+  CreatedAt: Date;
+  Index: number;
 }
 
 interface Category {
-  id_category: number;
-  name: string;
-  description: string;
+  IdCategory: number;
+  Name: string;
+  Description: string;
 }
 
 @Component({
@@ -77,17 +76,17 @@ export class ClientManagerComponent implements OnInit {
   page: number = 1;
   itemsPerPage: number = 6;
   mangaDetails: Manga = {
-    id_manga: 0,
-    id_account: 0,
-    num_of_chapter: 0,
-    cover_img: '',
-    name: '',
-    author: '',
-    describe: '',
-    is_posted: false,
-    follower: 0,
-    totalViews: 0,
-    latestChapter: 0,
+    IdManga: 0,
+    IdAccount: 0,
+    NumOfChapter: 0,
+    CoverImg: '',
+    Name: '',
+    Author: '',
+    Describe: '',
+    IsPosted: false,
+    Follower: 0,
+    TotalViews: 0,
+    LatestChapter: 0,
   };
   accounts: ModelAccount[] = [];
   infoManga: Manga | null = null;
@@ -134,14 +133,14 @@ export class ClientManagerComponent implements OnInit {
           this.categories = categories;
           const observables = this.mangas.map(manga =>
             forkJoin({
-              totalViews: this.mangaViewHistoryService.getAllView(manga.id_manga),
-              followers: this.mangaFavoriteService.countFollower(manga.id_manga),
-              latestChapter: this.chapterService.getLastedChapter(manga.id_manga),
+              totalViews: this.mangaViewHistoryService.getAllView(manga.IdManga),
+              followers: this.mangaFavoriteService.countFollower(manga.IdManga),
+              latestChapter: this.chapterService.getLastedChapter(manga.IdManga),
             }).pipe(
               map(({totalViews, followers, latestChapter}) => {
-                manga.totalViews = totalViews;
-                manga.follower = followers;
-                manga.latestChapter = latestChapter;
+                manga.TotalViews = totalViews;
+                manga.Follower = followers;
+                manga.LatestChapter = latestChapter;
                 return manga;
               })
             )
@@ -166,7 +165,7 @@ export class ClientManagerComponent implements OnInit {
   filterMangas(searchTerm: string): void {
     if (searchTerm) {
       this.filteredMangas = this.mangas.filter(manga =>
-        manga.name.toLowerCase().includes(searchTerm.toLowerCase())
+        manga.Name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       this.page = 1;
     } else {
@@ -484,7 +483,7 @@ export class ClientManagerComponent implements OnInit {
   loadChapters(): void {
     this.chapterService.getChaptersByMangaId(Number(this.selectedIdManga)).subscribe(chapters => {
       this.chapters = chapters;
-      this.selectedChapter = this.chapters[0]?.index || 1;
+      this.selectedChapter = this.chapters[0]?.Index || 1;
       this.loadChapterImages(this.selectedChapter);
     });
   }
@@ -598,11 +597,11 @@ export class ClientManagerComponent implements OnInit {
 
   deleteManga(manga: Manga): void {
     this.confirmAction(
-      `Bạn có chắc chắn muốn xoá manga: ${manga.name} không? Sau khi xoá không thể hoàn tác!`,
+      `Bạn có chắc chắn muốn xoá manga: ${manga.Name} không? Sau khi xoá không thể hoàn tác!`,
       () => {
-        this.mangaService.deleteMangaById(manga.id_manga).subscribe(
+        this.mangaService.deleteMangaById(manga.IdManga).subscribe(
           () => {
-            this.deleteRelatedData(manga.id_manga);
+            this.deleteRelatedData(manga.IdManga);
           },
           (error) => {
             this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Xoá thất bại, vui lòng thử lại!'});
@@ -660,7 +659,7 @@ export class ClientManagerComponent implements OnInit {
   }
 
   updateUIAfterDelete(id: number): void {
-    this.filteredMangas = this.filteredMangas.filter(m => m.id_manga !== id);
+    this.filteredMangas = this.filteredMangas.filter(m => m.IdManga !== id);
     if ((this.page - 1) * this.itemsPerPage >= this.filteredMangas.length) {
       this.page--;
     }
@@ -878,8 +877,8 @@ export class ClientManagerComponent implements OnInit {
       }
     );
     for (let i = 0; i < this.infoAccounts.length; i++) {
-      if (this.infoAccounts[i].id_account === parseInt(userId, 10)) {
-        this.urlImg = this.infoAccounts[i].cover_img || '';
+      if (this.infoAccounts[i].IdAccount === parseInt(userId, 10)) {
+        this.urlImg = this.infoAccounts[i].CoverImg || '';
         break;
       }
     }
@@ -888,10 +887,10 @@ export class ClientManagerComponent implements OnInit {
       return;
     }
     const updateInfo: ModelInfoAccount = {
-      id_account: parseInt(userId, 10),
-      email: emailElement.value,
-      cover_img: this.urlImg,
-      name: nameElement.value
+      IdAccount: parseInt(userId, 10),
+      Email: emailElement.value,
+      CoverImg: this.urlImg,
+      Name: nameElement.value
     };
     this.accountService.updateaccount(updateInfo).subscribe({
       next: () => {
@@ -945,8 +944,8 @@ export class ClientManagerComponent implements OnInit {
   findUser(userId: number) {
     for (let i = 0; i < this.accounts.length; i++) {
 
-      if (this.accounts[i].id_account === userId) {
-        this.name = this.accounts[i].username || null;
+      if (this.accounts[i].IdAccount === userId) {
+        this.name = this.accounts[i].Username || null;
         break;
       }
     }
@@ -954,10 +953,10 @@ export class ClientManagerComponent implements OnInit {
 
   findUrl(userId: number) {
     for (let i = 0; i < this.infoAccounts.length; i++) {
-      if (this.infoAccounts[i].id_account === userId) {
-        this.url = this.infoAccounts[i].cover_img || null;
-        this.nameUser = this.infoAccounts[i].name || null;
-        this.email = this.infoAccounts[i].email || null;
+      if (this.infoAccounts[i].IdAccount === userId) {
+        this.url = this.infoAccounts[i].CoverImg || null;
+        this.nameUser = this.infoAccounts[i].Name || null;
+        this.email = this.infoAccounts[i].Email || null;
         break;
       }
     }
@@ -978,10 +977,9 @@ export class ClientManagerComponent implements OnInit {
         const time = new Date(timestamp);
         time.setHours(time.getHours() + 7);
         const notification: ModelNotification = {
-          content: textNotification,
-          isRead: false,
-          time: time,
-          type_Noti: typeNoti
+          Content: textNotification,
+          Time: time,
+          TypeNoti: typeNoti
         };
         this.mangaFavoriteService.isSendNoti(id_manga).subscribe({
           next: (listId: any[]) => {
@@ -990,11 +988,11 @@ export class ClientManagerComponent implements OnInit {
                 next: (response) => {
                   this.returnNotification = response;
                   const infoNotification: ModelNotificationMangaAccount = {
-                    id_Notification: this.returnNotification?.id_Notification,
-                    id_manga: Number(id_manga),
-                    id_account: id_account,
-                    isGotNotification: true,
-                    is_read: false,
+                    IdNotification: this.returnNotification?.IdNotification,
+                    IdManga: Number(id_manga),
+                    IdAccount: id_account,
+                    IsDeleted: false,
+                    IsRead: false,
                   };
                   this.notificationMangaAccountService.addInfoNotification(infoNotification).subscribe({
                     next: () => {

@@ -1,8 +1,8 @@
 ﻿export interface ModelComment {
-  id_comment?: number;
-  id_chapter: number;
-  id_user: number;
-  content: string;
-  isReported: boolean;
-  time: Date;
+  IdComment?: number;
+  IdChapter: number;
+  IdAccount: number;
+  Content: string;
+  IsReported: boolean;
+  Time: Date;
 }
