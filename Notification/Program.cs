@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Notification.Dbconnect;
-using Notification.Model;
+using Notification.Api;
+using Notification.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,31 +29,6 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
-//get all notification
-app.MapGet("/api/notification", async ([FromServices] NotificationDbContext dbContext) =>
-{
-    var notifications = await dbContext.Notifications.ToListAsync();
-    return Results.Ok(notifications);
-});
-
-// get by id 
-app.MapGet("/api/notificationById/{Id_Notification}", async (NotificationDbContext dbContext, int Id_Notification) =>
-{
-    var notifications = await dbContext.Notifications
-        .Where(c => c.Id_Notification == Id_Notification)
-        .ToListAsync();
-
-    if (notifications == null || !notifications.Any()) return Results.NotFound();
-
-    return Results.Ok(notifications);
-});
-
-//add new notification
-app.MapPost("/api/notification",
-    async (ModelNotification notification, [FromServices] NotificationDbContext dbContext) =>
-    {
-        dbContext.Notifications.Add(notification);
-        await dbContext.SaveChangesAsync();
-        return Results.Created($"/api/notification/{notification.Id_Notification}", notification);
-    });
+app.MapNotificationEndpoints();
+app.MapNotificationMangaAccountEndpoints();
 app.Run();

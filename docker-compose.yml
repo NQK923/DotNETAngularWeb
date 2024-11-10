@@ -39,14 +39,6 @@
     ports:
       - "0.0.0.0:5005:8080"
 
-  notificationmangaaccount:
-    image: nqk090203/notificationmangaaccount:dev
-    build:
-      context: .
-      dockerfile: notificationMangaAccount/Dockerfile
-    ports:
-      - "0.0.0.0:5010:8080"
-
   infoaccount:
     image: nqk090203/infoaccount:dev
     build:
