@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using ChapterService.Data;
-using MangaService.Models;
+using ChapterService.Models;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 

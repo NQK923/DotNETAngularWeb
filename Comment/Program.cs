@@ -1,5 +1,4 @@
-using Comment.Dbconnect;
-using Comment.Model;
+using Comment.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,16 +38,16 @@ app.MapGet("/api/comment", async (CommentDbContext dbContext) =>
 });
 
 //get by id
-app.MapGet("/api/comment/{id_chapter}", async (CommentDbContext dbContext, int id_chapter) =>
+app.MapGet("/api/comment/{idChapter}", async (CommentDbContext dbContext, int idChapter) =>
 {
     var comments =
-        await dbContext.Comment.Where(c => c.id_chapter == id_chapter).ToListAsync();
+        await dbContext.Comment.Where(c => c.IdChapter == idChapter).ToListAsync();
 
     return comments.Count == 0 ? Results.NotFound() : Results.Ok(comments);
 });
 
 //add new comment
-app.MapPost("/api/comment", async (ModelComment comment, CommentDbContext dbContext) =>
+app.MapPost("/api/comment", async (Comment.Model.Comment comment, CommentDbContext dbContext) =>
 {
     try
     {
@@ -63,7 +62,7 @@ app.MapPost("/api/comment", async (ModelComment comment, CommentDbContext dbCont
 });
 
 //update comment
-app.MapPut("/api/comment", async (ModelComment comment, CommentDbContext dbContext) =>
+app.MapPut("/api/comment", async (Comment.Model.Comment comment, CommentDbContext dbContext) =>
 {
     try
     {
@@ -78,7 +77,7 @@ app.MapPut("/api/comment", async (ModelComment comment, CommentDbContext dbConte
 });
 
 //delete comment
-app.MapDelete("/api/comment/{id}", async (int id, CommentDbContext dbContext) =>
+app.MapDelete("/api/comment/{id:int}", async (int id, CommentDbContext dbContext) =>
 {
     var comment = await dbContext.Comment.FindAsync(id);
     if (comment == null) return Results.NotFound();

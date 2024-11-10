@@ -5,7 +5,8 @@ namespace MangaService.Models;
 
 public class Manga
 {
-    [Key] public int IdManga { get; init; }
+    [Key] 
+    public int IdManga { get; init; }
 
     public string Name { get; set; }
     public string Author { get; set; }

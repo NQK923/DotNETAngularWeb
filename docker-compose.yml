@@ -39,22 +39,6 @@
     ports:
       - "0.0.0.0:5005:8080"
 
-  categorydetailsservice:
-    image: nqk090203/categorydetailsservice:dev
-    build:
-      context: .
-      dockerfile: CategoryDetailsService/Dockerfile
-    ports:
-      - "0.0.0.0:5006:8080"
-
-  infonotificationaccount:
-    image: nqk090203/infonotificationaccount:dev
-    build:
-      context: .
-      dockerfile: infoNotificationAccount/Dockerfile
-    ports:
-      - "0.0.0.0:5009:8080"
-
   notificationmangaaccount:
     image: nqk090203/notificationmangaaccount:dev
     build:

@@ -16,7 +16,7 @@ namespace MangaService.Migrations
                 columns: table => new
                 {
                     IdManga = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:Identity", "100000, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumOfChapter = table.Column<int>(type: "int", nullable: false),

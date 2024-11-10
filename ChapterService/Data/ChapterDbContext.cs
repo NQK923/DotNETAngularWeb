@@ -1,4 +1,4 @@
-﻿using MangaService.Models;
+﻿using ChapterService.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChapterService.Data;

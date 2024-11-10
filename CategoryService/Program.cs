@@ -1,3 +1,4 @@
+using CategoryService.Api;
 using CategoryService.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,15 +26,7 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-//get all categories
-app.MapGet("/api/categories", async (CategoryDbContext dbContext) =>
-{
-    var categories = await dbContext.Categories
-        .OrderBy(c => c.name)
-        .ToListAsync();
-
-    return Results.Ok(categories);
-});
-
 app.UseCors("AllowAllOrigins");
+app.MapCategoryEndpoints();
+app.MapCategoryDetailsEndpoints();
 app.Run();

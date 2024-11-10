@@ -12,20 +12,20 @@ import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/
   providedIn: 'root'
 })
 export class AccountService {
-  private apiUrl = 'https://localhost:44385/api/Account';
-  private apiUrlLogin = 'https://localhost:44385/api/Login';
-  private apiInfo = 'https://localhost:44387/api/InfoAccount';
-  private apiAvatar = 'https://localhost:44387/api/InfoAccountavata';
-  private apiUpdateAccount = 'https://localhost:44387/api/InfoAccountupdate';
-  private apiPassword = "https://localhost:44385/api/password";
-
-  
-  private apiUrl = 'http://localhost:5004/api/Account';
-  private apiUrlLogin = 'http://localhost:5004/api/Login';
-  private apiInfo = 'http://localhost:5011/api/InfoAccount';
-  private apiAvatar = 'http://localhost:5011/api/InfoAccountavata';
+  // private apiUrl = 'https://localhost:44385/api/Account';
+  // private apiUrlLogin = 'https://localhost:44385/api/Login';
+  // private apiInfo = 'https://localhost:44387/api/InfoAccount';
+  // private apiAvatar = 'https://localhost:44387/api/InfoAccountavata';
+  // private apiUpdateAccount = 'https://localhost:44387/api/InfoAccountupdate';
+  // private apiPassword = "https://localhost:44385/api/password";
+  //
+  //
+  // private apiUrl = 'http://localhost:5004/api/Account';
+  // private apiUrlLogin = 'http://localhost:5004/api/Login';
+  // private apiInfo = 'http://localhost:5011/api/InfoAccount';
+  // private apiAvatar = 'http://localhost:5011/api/InfoAccountavata';
   private updateAcc = 'http://localhost:5011/api/InfoAccountupdate';
-  private apiPassword = "http://localhost:5004/api/password";
+  // private apiPassword = "http://localhost:5004/api/password";
   private apiAcc = "http://localhost:5004/api/AccountById";
 
   private port = 7002;

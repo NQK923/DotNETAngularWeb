@@ -11,7 +11,6 @@ export class CategoryDetailsService {
   // private Url = "https://localhost:44347/api/GetAll_category_details"
 
   private apiUrl = 'http://localhost:5006/api';
-  private Url = "http://localhost:5006/api/GetAll_category_details"
 
   constructor(private http: HttpClient) {
   }
@@ -37,6 +36,6 @@ export class CategoryDetailsService {
   }
 
   getCategories(): Observable<CategoryDetailModel[]> {
-    return this.http.get<CategoryDetailModel[]>(this.Url);
+    return this.http.get<any>(`${this.apiUrl}/category_details/get_all`);
   }
 }
