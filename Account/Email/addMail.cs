@@ -21,7 +21,7 @@ public class AddMail
         using var smtp = new SmtpClient("smtp.gmail.com");
         smtp.Port = 587;
         smtp.EnableSsl = true;
-        smtp.Credentials = new NetworkCredential("manganctnqk@gmail.com", "pnhd ifwc hzox lfdh");
+        smtp.Credentials = new NetworkCredential("manganctnqk@gmail.com", "djgn iqlq inil eeuk");
 
         try
         {
