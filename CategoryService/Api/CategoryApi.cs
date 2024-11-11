@@ -12,10 +12,17 @@ public static class CategoryApi
 
     private static async Task<IResult> GetAllCategories(CategoryDbContext dbContext)
     {
-        var categories = await dbContext.Category
-            .OrderBy(c => c.Name)
-            .ToListAsync();
+        try
+        {
+            var categories = await dbContext.Category
+                .OrderBy(c => c.Name)
+                .ToListAsync();
 
-        return Results.Ok(categories);
+            return Results.Ok(categories);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem("An error occurred while retrieving categories. " + ex.Message + "\n" + ex.StackTrace);
+        }
     }
 }
