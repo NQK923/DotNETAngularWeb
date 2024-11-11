@@ -48,7 +48,8 @@ public static class MangaHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving the latest history. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving the latest history. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -85,11 +86,13 @@ public static class MangaHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while creating or updating history. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while creating or updating history. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
-    private static async Task<IResult> DeleteHistoryByAccountAndManga(int idAccount, int idManga, MangaDbContext dbContext)
+    private static async Task<IResult> DeleteHistoryByAccountAndManga(int idAccount, int idManga,
+        MangaDbContext dbContext)
     {
         try
         {
@@ -105,7 +108,8 @@ public static class MangaHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while deleting the history record. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while deleting the history record. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 }

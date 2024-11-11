@@ -63,7 +63,8 @@ app.MapGet("/api/manga/getChapterId", async (int idManga, int index, ChapterDbCo
     }
     catch (Exception ex)
     {
-        return Results.Problem("An error occurred while retrieving the chapter ID. " + ex.Message + "\n" + ex.StackTrace);
+        return Results.Problem(
+            "An error occurred while retrieving the chapter ID. " + ex.Message + "\n" + ex.StackTrace);
     }
 });
 
@@ -81,7 +82,8 @@ app.MapGet("/api/manga/{idManga:int}/latestChapter", async (int idManga, Chapter
     }
     catch (Exception ex)
     {
-        return Results.Problem("An error occurred while retrieving the latest chapter index. " + ex.Message + "\n" + ex.StackTrace);
+        return Results.Problem("An error occurred while retrieving the latest chapter index. " + ex.Message + "\n" +
+                               ex.StackTrace);
     }
 });
 
@@ -101,7 +103,8 @@ app.MapGet("/api/manga/{idManga:int}/chapters/{index:int}/images", async (int id
 
         await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: prefix))
         {
-            var imageUrl = $"https://{blobServiceClient.AccountName}.blob.core.windows.net/{containerName}/{blobItem.Name}";
+            var imageUrl =
+                $"https://{blobServiceClient.AccountName}.blob.core.windows.net/{containerName}/{blobItem.Name}";
             imageUrls.Add(imageUrl);
         }
 

@@ -28,7 +28,7 @@ public static class MangaFavoriteApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving favorites."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving favorites." + ex.Message + "\n" + ex.StackTrace);
         }
     }
 
@@ -44,7 +44,7 @@ public static class MangaFavoriteApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving followers."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving followers." + ex.Message + "\n" + ex.StackTrace);
         }
     }
 
@@ -60,7 +60,8 @@ public static class MangaFavoriteApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving accounts to notify."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving accounts to notify." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -76,7 +77,8 @@ public static class MangaFavoriteApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while checking favorite status. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while checking favorite status. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -95,7 +97,8 @@ public static class MangaFavoriteApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while toggling notification status. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while toggling notification status. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -133,8 +136,8 @@ public static class MangaFavoriteApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while toggling favorite status. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while toggling favorite status. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
-
 }

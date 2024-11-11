@@ -28,7 +28,8 @@ public static class CategoryDetailsApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving category details. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving category details. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -44,7 +45,8 @@ public static class CategoryDetailsApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving category details by manga ID. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving category details by manga ID. " + ex.Message +
+                                   "\n" + ex.StackTrace);
         }
     }
 
@@ -65,7 +67,8 @@ public static class CategoryDetailsApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving manga IDs by categories. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving manga IDs by categories. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -90,7 +93,8 @@ public static class CategoryDetailsApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while adding category details. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while adding category details. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -122,7 +126,8 @@ public static class CategoryDetailsApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while updating category details. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while updating category details. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -150,7 +155,8 @@ public static class CategoryDetailsApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while deleting category details. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while deleting category details. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 }

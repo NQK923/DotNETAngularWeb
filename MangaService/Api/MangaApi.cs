@@ -34,7 +34,8 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving active manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving active manga." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -49,7 +50,8 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving posted manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving posted manga." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -64,7 +66,8 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving unPosted manga." + ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving unPosted manga." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -78,7 +81,7 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving the manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving the manga." + ex.Message + "\n" + ex.StackTrace);
         }
     }
 
@@ -93,12 +96,14 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving user manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving user manga." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
 
-    private static async Task<IResult> UploadManga(MangaDbContext db, int idUser, HttpRequest request, IConfiguration configuration)
+    private static async Task<IResult> UploadManga(MangaDbContext db, int idUser, HttpRequest request,
+        IConfiguration configuration)
     {
         try
         {
@@ -140,12 +145,13 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while uploading the manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while uploading the manga." + ex.Message + "\n" + ex.StackTrace);
         }
     }
 
 
-    private static async Task<IResult> UpdateManga(MangaDbContext dbContext, int idManga, HttpRequest request, IConfiguration configuration)
+    private static async Task<IResult> UpdateManga(MangaDbContext dbContext, int idManga, HttpRequest request,
+        IConfiguration configuration)
     {
         try
         {
@@ -188,7 +194,7 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while updating the manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while updating the manga." + ex.Message + "\n" + ex.StackTrace);
         }
     }
 
@@ -212,7 +218,7 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while updating the rating."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while updating the rating." + ex.Message + "\n" + ex.StackTrace);
         }
     }
 
@@ -234,7 +240,8 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while updating the manga time."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while updating the manga time." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -253,7 +260,8 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while toggling the manga status."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while toggling the manga status." + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -284,8 +292,7 @@ public static class MangaApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while deleting the manga."+ex.Message+"\n"+ex.StackTrace);
+            return Results.Problem("An error occurred while deleting the manga." + ex.Message + "\n" + ex.StackTrace);
         }
     }
-
 }

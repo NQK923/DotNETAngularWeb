@@ -28,7 +28,8 @@ public static class MangaViewHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving all views. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving all views. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -46,7 +47,8 @@ public static class MangaViewHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving views by day. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving views by day. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -66,7 +68,8 @@ public static class MangaViewHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving views by week. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving views by week. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
 
@@ -86,9 +89,11 @@ public static class MangaViewHistoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving views by month. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem("An error occurred while retrieving views by month. " + ex.Message + "\n" +
+                                   ex.StackTrace);
         }
     }
+
     private static async Task<IResult> CreateHistory(int idManga, MangaDbContext dbContext)
     {
         try

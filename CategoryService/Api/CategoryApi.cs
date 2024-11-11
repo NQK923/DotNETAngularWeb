@@ -22,7 +22,8 @@ public static class CategoryApi
         }
         catch (Exception ex)
         {
-            return Results.Problem("An error occurred while retrieving categories. " + ex.Message + "\n" + ex.StackTrace);
+            return Results.Problem(
+                "An error occurred while retrieving categories. " + ex.Message + "\n" + ex.StackTrace);
         }
     }
 }
