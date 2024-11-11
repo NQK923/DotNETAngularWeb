@@ -14,34 +14,32 @@
         <ul>
           <h1 (click)="goToManager()"
               class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories">
+              >
             Quản lý truyện</h1>
 
         </ul>
         <ul>
           <h1 (click)="goToAccount()"
               class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories1">
+              >
             Quản lý tài khoản</h1>
         </ul>
         <ul>
           <h1 (click)="goToComment()"
               class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories2">
+              >
             Quản lý bình luận</h1>
 
         </ul>
         <ul>
           <h1 (click)="goToStatiscal()"
-              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories3">
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200">
             Thống kê
           </h1>
         </ul>
         <ul>
           <h1 (click)="logOut()"
-              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories3">
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200">
             Đăng xuất
           </h1>
         </ul>
@@ -73,23 +71,23 @@
             <div class="flex w-full items-center">
               <div class="flex w-1/6">
                 <img alt="" class="text-gray-100 bg-gray-200 rounded-full h-14 w-14"
-                     loading="lazy" src="{{dataAccount.InfoAccount?.cover_img}}">
-                <p class=" text-sm text-gray-100 ml-2 mt-3 ">{{ dataAccount.Account.username }}</p>
+                     loading="lazy" src="{{dataAccount.InfoAccount?.CoverImg}}">
+                <p class=" text-sm text-gray-100 ml-2 mt-3 ">{{ dataAccount.Account.Username }}</p>
               </div>
-              <p class="text-gray-100 m-2 text-sm w-25">Gmail: {{ dataAccount.InfoAccount?.email }}</p>
+              <p class="text-gray-100 m-2 text-sm w-25">Gmail: {{ dataAccount.InfoAccount?.Email }}</p>
 
               <div class="text-gray-100 w-1/5 flex justify-between ">
                 <div>
                   Trạng thái:
-                  <span *ngIf="dataAccount.Account.status; else inactive">Vô hiệu</span>
+                  <span *ngIf="dataAccount.Account.Status; else inactive">Vô hiệu</span>
                   <ng-template #inactive>Kích hoạt</ng-template>
                 </div>
-                <button (click)="UpdateStatus(dataAccount.Account.id_account, dataAccount.Account.username,
-              dataAccount.Account.password, dataAccount.Account.status,
-              dataAccount.InfoAccount?.email, dataAccount.Account.banComment)"
-                        [ngClass]="dataAccount.Account.status ? 'bg-green-500' : 'bg-red-500'"
+                <button (click)="UpdateStatus(dataAccount.Account.IdAccount, dataAccount.Account.Username,
+              dataAccount.Account.Password, dataAccount.Account.Status,
+              dataAccount.InfoAccount?.Email, dataAccount.Account.BanComment)"
+                        [ngClass]="dataAccount.Account.Status ? 'bg-green-500' : 'bg-red-500'"
                         class=" text-sm border text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
-                  <span *ngIf="dataAccount.Account.status; else inactives">Kích hoạt</span>
+                  <span *ngIf="dataAccount.Account.Status; else inactives">Kích hoạt</span>
                   <ng-template #inactives>Vô hiệu</ng-template>
                 </button>
               </div>
@@ -97,21 +95,21 @@
               <div class=" text-sm text-gray-100 ml-4 w-1/5 flex justify-between">
                 <div class="flex">
                   Bình luận:
-                  <span *ngIf="dataAccount.Account.banComment; else inactive">Vô hiệu</span>
+                  <span *ngIf="dataAccount.Account.BanComment; else inactive">Vô hiệu</span>
                   <ng-template #inactive>Kích hoạt</ng-template>
                 </div>
-                <button (click)="UpdateComment(dataAccount.Account.id_account, dataAccount.Account.username,
-              dataAccount.Account.password, dataAccount.Account.status,
-              dataAccount.InfoAccount?.email, dataAccount.Account.banComment)"
-                        [ngClass]="dataAccount.Account.banComment ? 'bg-green-500' : 'bg-red-500'"
+                <button (click)="UpdateComment(dataAccount.Account.IdAccount, dataAccount.Account.Username,
+              dataAccount.Account.Password, dataAccount.Account.Status,
+              dataAccount.InfoAccount?.Email, dataAccount.Account.BanComment)"
+                        [ngClass]="dataAccount.Account.BanComment ? 'bg-green-500' : 'bg-red-500'"
                         class="border text-sm text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
-                  <span *ngIf="dataAccount.Account.banComment; else inactives">Kích hoạt</span>
+                  <span *ngIf="dataAccount.Account.BanComment; else inactives">Kích hoạt</span>
                   <ng-template #inactives>Vô hiệu</ng-template>
                 </button>
               </div>
               <p class=" my-2 mx-6 text-gray-100 text-sm ">
                 Phân quyền:
-                <span *ngIf="dataAccount.Account.role; else inactive">Quản lý</span>
+                <span *ngIf="dataAccount.Account.Role; else inactive">Quản lý</span>
                 <ng-template #inactive>Người dùng</ng-template>
               </p>
             </div>

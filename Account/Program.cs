@@ -1,7 +1,6 @@
 using Account.Email;
 using Account.Model;
 using Account.WebApplication2;
-using Banners.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +15,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins", policyBuilder =>
     {
         policyBuilder.WithOrigins("https://localhost:4200")
-                     .AllowAnyMethod()
-                     .AllowAnyHeader()
-                     .AllowCredentials();
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
@@ -85,7 +84,9 @@ app.MapPost("/api/Login", async (ModelAccount account, [FromServices] AccountDbC
         var existingAccount = await dbContext.accounts
             .FirstOrDefaultAsync(a => a.username == account.username && a.password == account.password);
 
-        return existingAccount != null ? Results.Ok(existingAccount.id_account) : Results.NotFound("Invalid username or password");
+        return existingAccount != null
+            ? Results.Ok(existingAccount.id_account)
+            : Results.NotFound("Invalid username or password");
     }
     catch (Exception ex)
     {

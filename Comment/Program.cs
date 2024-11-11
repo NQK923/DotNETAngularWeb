@@ -81,7 +81,6 @@ app.MapDelete("/api/comment/{id:int}", async (int id, CommentDbContext dbContext
 {
     var comment = await dbContext.Comment.FindAsync(id);
     if (comment == null) return Results.NotFound();
-
     dbContext.Comment.Remove(comment);
     await dbContext.SaveChangesAsync();
     return Results.Ok(true);

@@ -61,7 +61,8 @@ public static class MangaApi
         return Results.Ok(mangas);
     }
 
-    private static async Task<IResult> UploadManga(MangaDbContext db, int idUser, HttpRequest request, IConfiguration configuration)
+    private static async Task<IResult> UploadManga(MangaDbContext db, int idUser, HttpRequest request,
+        IConfiguration configuration)
     {
         var formCollection = await request.ReadFormAsync();
         var file = formCollection.Files.FirstOrDefault();
@@ -91,8 +92,9 @@ public static class MangaApi
         await db.SaveChangesAsync();
         return Results.Ok(manga.IdManga);
     }
-    
-    private static async Task<IResult> UpdateManga(MangaDbContext dbContext, int idManga, HttpRequest request, IConfiguration configuration)
+
+    private static async Task<IResult> UpdateManga(MangaDbContext dbContext, int idManga, HttpRequest request,
+        IConfiguration configuration)
     {
         var manga = await dbContext.Manga.FindAsync(idManga);
         if (manga == null) return Results.NotFound("Manga not found");
@@ -124,7 +126,7 @@ public static class MangaApi
 
         return Results.Ok(manga.IdManga);
     }
-    
+
     private static async Task<IResult> ChangeRating(MangaDbContext dbContext, int idManga, int ratedScore)
     {
         var manga = await dbContext.Manga.FindAsync(idManga);
@@ -137,7 +139,7 @@ public static class MangaApi
         await dbContext.SaveChangesAsync();
         return Results.Ok(new { manga.IdManga, manga.Rating });
     }
-    
+
     private static async Task<IResult> UpdateMangaTime(MangaDbContext dbContext, int idManga)
     {
         var manga = await dbContext.Manga.FindAsync(idManga);
@@ -148,7 +150,7 @@ public static class MangaApi
         await dbContext.SaveChangesAsync();
         return Results.Ok(new { manga.IdManga, manga.UpdatedAt });
     }
-    
+
     private static async Task<IResult> ToggleMangaStatus(MangaDbContext dbContext, int idManga)
     {
         var manga = await dbContext.Manga.FindAsync(idManga);
@@ -157,7 +159,7 @@ public static class MangaApi
         await dbContext.SaveChangesAsync();
         return Results.Ok(new { manga.IdManga, manga.IsPosted });
     }
-    
+
     private static async Task<IResult> DeleteManga(MangaDbContext dbContext, int idManga, IConfiguration configuration)
     {
         var manga = await dbContext.Manga.FindAsync(idManga);

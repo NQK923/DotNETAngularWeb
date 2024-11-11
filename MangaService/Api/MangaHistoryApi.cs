@@ -67,7 +67,8 @@ public static class MangaHistoryApi
         return Results.Ok();
     }
 
-    private static async Task<IResult> DeleteHistoryByAccountAndManga(int idAccount, int idManga, MangaDbContext dbContext)
+    private static async Task<IResult> DeleteHistoryByAccountAndManga(int idAccount, int idManga,
+        MangaDbContext dbContext)
     {
         var existingHistory = await dbContext.MangaHistory
             .FirstOrDefaultAsync(h => h.IdAccount == idAccount && h.IdManga == idManga);

@@ -83,10 +83,7 @@ public static class NotificationMangaAccountApi
         try
         {
             var notification = await dbContext.NotificationMangaAccounts.FindAsync(idNotification);
-            if (notification == null)
-            {
-                return Results.NotFound(new { Message = "Notification not found" });
-            }
+            if (notification == null) return Results.NotFound(new { Message = "Notification not found" });
 
             notification.IsRead = true;
             await dbContext.SaveChangesAsync();

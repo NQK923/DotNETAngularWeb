@@ -33,15 +33,13 @@
         </ul>
         <ul>
           <h1 (click)="goToStatiscal()"
-              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories3">
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200">
             Thống kê
           </h1>
         </ul>
         <ul>
           <h1 (click)="logOut()"
-              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200"
-              id="manageStories3">
+              class="text-xl text-gray-100 cursor-pointer font-bold p-1 border-l-2 mx-1 my-4 border-transparent hover:border-yellow-1200 hover:text-yellow-1200">
             Đăng xuất
           </h1>
         </ul>
@@ -68,21 +66,21 @@
                   <div>
                     <img alt="Avatar" class="h-16 w-16 object-cover rounded-full"
                          loading="lazy"
-                         src="{{listDataComments.InfoAccount?.cover_img}}">
-                    <div class="font-bold text-blue-500 text-center">{{ listDataComments.InfoAccount?.name }}</div>
+                         src="{{listDataComments.InfoAccount?.CoverImg}}">
+                    <div class="font-bold text-blue-500 text-center">{{ listDataComments.InfoAccount?.Name }}</div>
                   </div>
-                  <div class="text-sm m-2">Bình luận :{{ listDataComments.Comment?.content }}</div>
+                  <div class="text-sm m-2">Bình luận :{{ listDataComments.Comment?.Content }}</div>
                 </div>
                 <div class="flex justify-between bg-red-400 rounded-b-xl px-2">
                   <div class="text-small text-white px-4">
-                    Time: {{ listDataComments.Comment?.time |date: 'dd-MM-yyyy ' }}
+                    Time: {{ listDataComments.Comment?.Time |date: 'dd-MM-yyyy ' }}
                   </div>
                   <div>
                     <button
-                      (click)="banComment(listDataComments.InfoAccount?.id_account,listDataComments.InfoAccount?.email)"
+                      (click)="banComment(listDataComments.InfoAccount?.IdAccount,listDataComments.InfoAccount?.Email)"
                       class="text-small text-white px-2 ">Cấm bình luận /
                     </button>
-                    <button (click)="delete(listDataComments.Comment?.id_comment)" class="text-small text-white "> Xóa
+                    <button (click)="delete(listDataComments.Comment?.IdComment)" class="text-small text-white "> Xóa
                       bình luận
                     </button>
                   </div>

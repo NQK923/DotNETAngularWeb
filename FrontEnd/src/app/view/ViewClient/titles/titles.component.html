@@ -25,9 +25,9 @@
               <div class="text-3xl font-semibold mb-4">{{ mangaDetails.author }}</div>
               <div class="cateInImg items-center text-center">
                 <div *ngFor="let category of filteredCategories"
-                     [attr.title]="category.name + ' \n' + category.description"
+                     [attr.title]="category.Name + ' \n' + category.Description"
                      class="bg-yellow-500 text-gray-900 rounded-lg p-2 m-2 textCate">
-                  {{ category.name }}
+                  {{ category.Name }}
                 </div>
               </div>
             </div>
@@ -89,9 +89,9 @@
         </div>
         <div class="cateOutImg items-center text-center">
           <div *ngFor="let category of filteredCategories"
-               [attr.title]="category.name + ' \n' + category.description"
+               [attr.title]="category.Name + ' \n' + category.Description"
                class="bg-yellow-500 text-gray-900 rounded-lg p-2 m-2 textCate">
-            {{ category.name }}
+            {{ category.Name }}
           </div>
         </div>
       </div>
@@ -112,18 +112,18 @@
                  src="https://mangaimg.blob.core.windows.net/assets/arrow-sort-icon.png">
           </div>
           <div class="overflow-y-auto max-h-96 m-2 scrollBarHidden">
-            <div (click)="goToChapter(chapter.index)" *ngFor="let chapter of chapters"
-                 [ngClass]="{'bg-gray-700 hover:bg-gray-900': chapter.isRead, 'bg-gray-600 hover:bg-gray-900': !chapter.isRead}"
+            <div (click)="goToChapter(chapter.Index)" *ngFor="let chapter of chapters"
+                 [ngClass]="{'bg-gray-700 hover:bg-gray-900': chapter.IsRead, 'bg-gray-600 hover:bg-gray-900': !chapter.IsRead}"
                  class="hover:bg-black w-6/7 cursor-pointer rounded-xl m-1 transition duration-300 "
                  tabindex="0">
               <div class="flex justify-between items-center py-2 px-2">
                 <div>
-                  <p class="text-white font-bold text-2xl">Chương: {{ chapter.index }}</p>
-                  <p class="text-white">{{ chapter.title }}</p>
+                  <p class="text-white font-bold text-2xl">Chương: {{ chapter.Index }}</p>
+                  <p class="text-white">{{ chapter.Title }}</p>
                 </div>
                 <div class="ml-auto text-right">
-                  <p class="text-white">Ngày đăng: {{ chapter.created_at | date:'HH:mm dd/MM/yyyy' }}</p>
-                  <p *ngIf="chapter.isRead" class="text-white text-sm flex items-center">
+                  <p class="text-white">Ngày đăng: {{ chapter.CreatedAt | date:'HH:mm dd/MM/yyyy' }}</p>
+                  <p *ngIf="chapter.IsRead" class="text-white text-sm flex items-center">
                     <img alt="Đã đọc" class="h-5 mr-1 white-icon"
                          src="https://mangaimg.blob.core.windows.net/assets/icons8-eye-30.png">
                   </p>

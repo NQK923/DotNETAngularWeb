@@ -1,5 +1,4 @@
 using Account.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 public class AccountDbContext(DbContextOptions<AccountDbContext> options) : DbContext(options)
@@ -10,6 +9,5 @@ public class AccountDbContext(DbContextOptions<AccountDbContext> options) : DbCo
     {
         modelBuilder.Entity<ModelAccount>()
             .ToTable("Account");
-        
     }
 }

@@ -52,17 +52,17 @@ public static class CategoryDetailsApi
         List<int> idCategories, CategoryDbContext dbContext)
     {
         if (idCategories.Count < 2) return Results.BadRequest("Invalid category list.");
-        
+
         var idManga = idCategories[0];
         idCategories.RemoveAt(0);
-        
+
         var categoryDetailsList = idCategories
             .Select(idCategory => new CategoryDetails { IdManga = idManga, IdCategory = idCategory })
             .ToList();
-        
+
         await dbContext.AddRangeAsync(categoryDetailsList);
         await dbContext.SaveChangesAsync();
-        
+
         return Results.Ok();
     }
 
@@ -77,7 +77,7 @@ public static class CategoryDetailsApi
             .ToListAsync();
 
         var oldCategoryIds = existingCategories.Select(c => c.IdCategory).ToList();
-        
+
         var categoriesToRemove = existingCategories.Where(c => !idCategories.Contains(c.IdCategory)).ToList();
         if (categoriesToRemove.Any()) dbContext.CategoryDetails.RemoveRange(categoriesToRemove);
 
@@ -87,7 +87,7 @@ public static class CategoryDetailsApi
         if (categoriesToAdd.Any()) dbContext.CategoryDetails.AddRange(categoriesToAdd);
 
         await dbContext.SaveChangesAsync();
-        
+
         return Results.Ok();
     }
 

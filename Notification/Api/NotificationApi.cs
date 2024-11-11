@@ -8,7 +8,7 @@ public static class NotificationApi
     public static void MapNotificationEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/notification", GetAllNotifications);
-        app.MapGet("/api/notificationById/{idNotification}", GetNotificationById);
+        app.MapGet("/api/notificationById/{idNotification:int}", GetNotificationById);
         app.MapPost("/api/notification", AddNotification);
     }
 
@@ -42,7 +42,7 @@ public static class NotificationApi
         }
     }
 
-    private static async Task<IResult> AddNotification(Notification.Model.Notification notification, NotificationDbContext dbContext)
+    private static async Task<IResult> AddNotification(Model.Notification notification, NotificationDbContext dbContext)
     {
         try
         {

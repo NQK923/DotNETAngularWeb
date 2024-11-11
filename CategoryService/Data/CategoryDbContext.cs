@@ -6,7 +6,7 @@ namespace CategoryService.Data;
 public class CategoryDbContext(DbContextOptions<CategoryDbContext> options) : DbContext(options)
 {
     public DbSet<Category> Category { get; init; }
-    
+
     public DbSet<CategoryDetails> CategoryDetails { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

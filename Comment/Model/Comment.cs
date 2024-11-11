@@ -4,8 +4,8 @@ namespace Comment.Model;
 
 public class Comment
 {
-    [Key]
-    public int IdComment { get; init; }
+    [Key] public int IdComment { get; init; }
+
     public int IdChapter { get; init; }
     public int IdAccount { get; init; }
     public string Content { get; set; }

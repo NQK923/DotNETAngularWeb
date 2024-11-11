@@ -144,7 +144,7 @@ export class RankComponent implements OnInit {
     });
   }
 
-  trackByMangaId(manga: Manga): number {
+  trackByMangaId(index: number, manga: Manga): number {
     return manga.IdManga;
   }
 

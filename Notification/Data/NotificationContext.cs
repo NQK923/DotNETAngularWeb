@@ -13,7 +13,7 @@ public class NotificationDbContext(DbContextOptions<NotificationDbContext> optio
         modelBuilder.Entity<Model.Notification>()
             .ToTable("Notification")
             .HasKey(n => n.IdNotification);
-        
+
         modelBuilder.Entity<NotificationMangaAccount>()
             .ToTable("Notification_Manga_Account")
             .HasKey(n => n.IdNotification);

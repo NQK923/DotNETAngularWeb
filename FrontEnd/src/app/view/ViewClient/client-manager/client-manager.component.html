@@ -46,44 +46,44 @@
             <div *ngFor="let manga of filteredMangas | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
                  class="p-3 text-white bg-gray-800 hover:bg-blue-900 rounded-lg border-2 border-yellow">
               <div class="flex items-stretch">
-                <img [src]="manga.cover_img" alt="" class=" justify-between w-1/3 object-cover rounded-lg"
+                <img [src]="manga.CoverImg" alt="" class=" justify-between w-1/3 object-cover rounded-lg"
                      loading="lazy">
                 <div class="ml-3 flex-grow my-0.5">
-                  <p class="font-bold text-lg text-white mb-1"> {{ manga.name }}</p>
-                  <p class="text-sm text-gray-200"> {{ manga.author }}</p>
+                  <p class="font-bold text-lg text-white mb-1"> {{ manga.Name }}</p>
+                  <p class="text-sm text-gray-200"> {{ manga.Author }}</p>
                   <div class="flex">
-                    <p class="text-sm text-white">Ch.  {{ manga.latestChapter }}</p>
+                    <p class="text-sm text-white">Ch.  {{ manga.LatestChapter }}</p>
                     <img alt="" class="ml-3 mr-1 h-4 mt-1" loading="lazy"
                          src="https://mangaimg.blob.core.windows.net/assets/icon_heart.png">
-                    <p class="text-sm text-white"> {{ manga.follower }}</p>
+                    <p class="text-sm text-white"> {{ manga.Follower }}</p>
                     <img alt="" class="ml-3 mr-1 h-4 mt-0.5" loading="lazy"
                          src="https://mangaimg.blob.core.windows.net/assets/iconeye.png">
-                    <p class="text-sm text-white"> {{ manga.totalViews }}</p>
+                    <p class="text-sm text-white"> {{ manga.TotalViews }}</p>
                   </div>
                   <p class="text-sm text-white mt-1">Trạng thái:
-                    {{ manga.is_posted ? 'Đã được duyệt' : 'Đang chờ duyệt' }}
+                    {{ manga.IsPosted ? 'Đã được duyệt' : 'Đang chờ duyệt' }}
                   </p>
                   <div class="w-full mt-2">
                     <div class="grid grid-cols-2 gap-2">
-                      <button (click)="toggleAddChap(manga.id_manga,manga.name)"
-                              [attr.title]="!manga.is_posted ? 'Cần phải được duyệt mới có thể thêm chương' : ''"
-                              [disabled]="!manga.is_posted"
+                      <button (click)="toggleAddChap(manga.IdManga,manga.Name)"
+                              [attr.title]="!manga.IsPosted ? 'Cần phải được duyệt mới có thể thêm chương' : ''"
+                              [disabled]="!manga.IsPosted"
                               class="text-center text-white hover:bg-gray-500 border-2 border-white text-sm p-1 font-bold rounded-full disabled:bg-gray-400 disabled:cursor-not-allowed">
                         Thêm chương
                       </button>
-                      <button (click)="toggleUpdateChap(manga.id_manga,manga.name)"
-                              [attr.title]="!(manga.is_posted && manga.num_of_chapter > 0) ? 'Cần thêm ít nhất 1 chương' : ''"
-                              [disabled]="!(manga.is_posted && manga.num_of_chapter > 0)"
+                      <button (click)="toggleUpdateChap(manga.IdManga,manga.Name)"
+                              [attr.title]="!(manga.IsPosted && manga.NumOfChapter > 0) ? 'Cần thêm ít nhất 1 chương' : ''"
+                              [disabled]="!(manga.IsPosted && manga.NumOfChapter > 0)"
                               class="text-center hover:bg-gray-500 border-2 text-white text-sm p-1 font-bold rounded-full disabled:bg-gray-400 disabled:cursor-not-allowed">
                         Sửa chương
                       </button>
-                      <button (click)="toggleDeleteChap(manga.id_manga,manga.name)"
-                              [attr.title]="!(manga.is_posted && manga.num_of_chapter > 0) ? 'Cần thêm ít nhất 1 chương' : ''"
-                              [disabled]="!(manga.is_posted && manga.num_of_chapter > 0)"
+                      <button (click)="toggleDeleteChap(manga.IdManga,manga.Name)"
+                              [attr.title]="!(manga.IsPosted && manga.NumOfChapter > 0) ? 'Cần thêm ít nhất 1 chương' : ''"
+                              [disabled]="!(manga.IsPosted && manga.NumOfChapter > 0)"
                               class="text-center border-2 border-white text-sm p-1 font-bold rounded-full disabled:bg-gray-400 disabled:cursor-not-allowed">
                         Xóa chương
                       </button>
-                      <button (click)="toggleUpdateManga(manga.id_manga,manga.name)"
+                      <button (click)="toggleUpdateManga(manga.IdManga,manga.Name)"
                               class="text-center text-white hover:bg-gray-500 border-2 text-sm p-1 font-bold rounded-full">
                         Sửa truyện
                       </button>
@@ -141,18 +141,17 @@
           <div class="p-2">
             <p class="font-semibold">Thể loại</p>
             <div class="h-40 overflow-y-auto grid grid-cols-3 gap-2">
-              <div *ngFor="let category of categories" [attr.title]="category.name + ' \n' + category.description"
+              <div *ngFor="let category of categories" [attr.title]="category.Name + ' \n' + category.Description"
                    class="flex items-center">
-                <input (change)="onCategoryChange($event, category.id_category)"
-                       [checked]="selectedCategories.includes(category.id_category)" type="checkbox">
-                <p class="ml-2 mt-3">{{ category.name }}</p>
+                <input (change)="onCategoryChange($event, category.IdCategory)"
+                       [checked]="selectedCategories.includes(category.IdCategory)" type="checkbox">
+                <p class="ml-2 mt-3">{{ category.Name }}</p>
               </div>
             </div>
           </div>
           <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
             <input (change)="onFileSelected($event)" accept="image/*"
-                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                   id="fileInput" required type="file">
+                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required type="file">
           </div>
           <button [disabled]="!addForm.valid || !selectedFile || selectedCategories.length === 0"
                   [ngClass]="{'cursor-pointer': addForm.valid && selectedFile && selectedCategories.length > 0}"
@@ -179,32 +178,31 @@
           </button>
         </div>
         <form #form="ngForm" (ngSubmit)="onSubmitUpdate(form)" class="p-4 space-y-4">
-          <input [(ngModel)]="mangaDetails.name"
+          <input [(ngModel)]="mangaDetails.Name"
                  class="form-control p-3 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
                  name="name"
                  placeholder="Tên truyện" required type="text">
-          <input [(ngModel)]="mangaDetails.author"
+          <input [(ngModel)]="mangaDetails.Author"
                  class="form-control p-3 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
                  name="author"
                  placeholder="Tác giả" required type="text">
-          <textarea [(ngModel)]="mangaDetails.describe"
+          <textarea [(ngModel)]="mangaDetails.Describe"
                     class="form-control p-3 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 h-32 resize-none overflow-y-auto"
                     name="describe"
                     placeholder="Mô tả" required></textarea>
           <p class="font-semibold">Thể loại</p>
           <div class="h-40 overflow-y-auto grid grid-cols-3 gap-2">
-            <div *ngFor="let category of categories" [attr.title]="category.name + ' \n' + category.description"
+            <div *ngFor="let category of categories" [attr.title]="category.Name + ' \n' + category.Description"
                  class="flex items-center w-1/2 space-x-2">
-              <input (change)="onCategoryChange($event, category.id_category)"
-                     [checked]="selectedCategories.includes(category.id_category)"
+              <input (change)="onCategoryChange($event, category.IdCategory)"
+                     [checked]="selectedCategories.includes(category.IdCategory)"
                      class="focus:ring-2 focus:ring-blue-500" type="checkbox">
-              <p class="ml-2 mt-3">{{ category.name }}</p>
+              <p class="ml-2 mt-3">{{ category.Name }}</p>
             </div>
           </div>
           <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
             <input (change)="onFileSelected($event)" accept="image/*"
-                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                   id="fileInput" type="file">
+                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file">
           </div>
           <button [disabled]="!form.valid || selectedCategories.length === 0"
                   [title]="!form.valid || selectedCategories.length === 0 ? 'Vui lòng nhập đủ thông tin' : ''"
@@ -243,8 +241,7 @@
             <p class="font-semibold">Thêm ảnh</p>
             <form class="bg-gray-100 p-4 rounded-lg shadow-inner" id="uploadForm">
               <input (change)="onFileChange($event)" accept="image/*"
-                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                     id="fileInput" multiple required type="file">
+                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple required type="file">
             </form>
           </div>
           <button (click)="addChapter()" [disabled]="isAddingChapter"
@@ -266,7 +263,7 @@
         <div class="flex justify-between items-center mb-4">
           <select (change)="onChapterChange()" [(ngModel)]="selectedChapter"
                   class="bg-gray-200 p-2 rounded text-sm w-full text-center">
-            <option *ngFor="let chap of chapters" [value]="chap.index">Chương {{ chap.index }}: {{ chap.title }}
+            <option *ngFor="let chap of chapters" [value]="chap.Index">Chương {{ chap.Index }}: {{ chap.Title }}
             </option>
           </select>
         </div>
@@ -282,7 +279,7 @@
                 <option value="option5">Xóa</option>
               </select>
               <div class="bg-white w-full relative border-2">
-                <input (change)="onImgSelected($event, image)" *ngIf="!isHidden" id="fileInput" type="file"/>
+                <input (change)="onImgSelected($event, image)" *ngIf="!isHidden" type="file"/>
               </div>
             </div>
             <img [src]="image" alt="Chapter Image" class="max-w-full h-auto" loading="lazy">
@@ -291,7 +288,7 @@
         <div class="flex justify-between mt-4">
           <select (change)="onChapterChange()" [(ngModel)]="selectedChapter"
                   class="bg-gray-200 p-2 rounded text-sm w-full text-center">
-            <option *ngFor="let chap of chapters" [value]="chap.index">Chương {{ chap.index }}: {{ chap.title }}
+            <option *ngFor="let chap of chapters" [value]="chap.Index">Chương {{ chap.Index }}: {{ chap.Title }}
             </option>
           </select>
         </div>
@@ -315,10 +312,10 @@
         <div class="p-4">
           <div class="space-y-4">
             <div *ngFor="let chapter of chapters" class="border-b border-gray-200 pb-2">
-              <p class="font-bold">Tên chương: {{ chapter.title }}</p>
-              <p>Thứ tự chương: {{ chapter.index }}</p>
+              <p class="font-bold">Tên chương: {{ chapter.Title }}</p>
+              <p>Thứ tự chương: {{ chapter.Index }}</p>
               <div class="mt-2 flex justify-end">
-                <button (click)="deleteChapter(chapter.index)"
+                <button (click)="deleteChapter(chapter.Index)"
                         class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">
                   Xóa chương
                 </button>
@@ -416,7 +413,7 @@
     </div>
     <div class="flex items-center justify-center">
       <img class="m-2 bg-white rounded-full p-1" loading="lazy"
-           src="https://mangaimg.blob.core.windows.net/assets/iconface.png">
+           src="https://mangaimg.blob.core.windows.net/assets/iconface.png" alt="">
       <img class="m-2 bg-white rounded-full p-1" loading="lazy"
            src="https://mangaimg.blob.core.windows.net/assets/iconmess.png">
     </div>
