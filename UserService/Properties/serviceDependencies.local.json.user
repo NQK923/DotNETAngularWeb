@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2024-11-10T05:08:41.2653207Z"
+    },
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2024-11-10T05:08:13.6840364Z"
+    }
+  },
+  "parameters": {
+    "mssql1.subscriptionId": {
+      "Name": "mssql1.subscriptionId",
+      "Type": "subscription",
+      "Value": "5f135e2e-dd2e-48a1-ab5d-f68a4d3336a3"
+    },
+    "mssql1.resourceGroupName": {
+      "Name": "mssql1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "MANGA"
+    }
+  }
+}

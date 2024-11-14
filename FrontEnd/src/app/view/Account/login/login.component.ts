@@ -1,10 +1,8 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {ModelAccount} from "../../../Model/ModelAccount";
-import {Router} from "@angular/router";
-import {AccountService} from "../../../service/Account/account.service";
-import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
-import {MessageService} from "primeng/api";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ModelAccount } from "../../../Model/ModelAccount";
+import { Router } from "@angular/router";
+import { AccountService } from "../../../service/Account/account.service";
+import { InfoAccountService } from "../../../service/InfoAccount/info-account.service";
 import { Location } from '@angular/common';
 import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
@@ -36,8 +34,7 @@ export class LoginComponent {
   // Two way data binding
 
   constructor(private router: Router,
-    private InfoAccountService: InfoAccountService,
-    private accountService: AccountService, private location: Location, private authService: SocialAuthService,private messageService: MessageService) {
+    private accountService: AccountService) {
     this.accountService.checkExternalLogin(this.gotToIndex.bind(this));
   }
 
@@ -51,7 +48,6 @@ export class LoginComponent {
   }
 
   gotToIndex(): void {
-    console.log("GoToIndex");
     this.router.navigate(['/']);
   }
 
@@ -63,13 +59,11 @@ export class LoginComponent {
   // check login
   async loginNormal(): Promise<void> {
     if (!this.checkLoginData()) return;
-    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this) ,this.failCallback.bind(this));
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this), this.failCallback.bind(this));
     if (!result) {
       // console.log("NOT OK");
       return;
     }
-    // console.log(await this.accountService.getIdAccount());
-    // console.log("OK");
   }
 
   private checkLoginData(): boolean {

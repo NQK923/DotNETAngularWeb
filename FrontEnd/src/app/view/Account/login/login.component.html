@@ -24,10 +24,10 @@
         <input [(ngModel)]="email" placeholder="Enter G-mail" type="email" [ngModelOptions]="{standalone: true}">
         <p *ngIf="isInvalidEmail" class="text-danger">Email không hợp lệ</p>
         <input [(ngModel)]="password" placeholder="Enter Password" type="password"
-          [ngModelOptions]="{standalone: true}">
+               [ngModelOptions]="{standalone: true}">
         <p *ngIf="isInvalidPassword" class="text-danger">{{messageErrorPassword}}</p>
         <input [(ngModel)]="confirmPassword" placeholder="Enter Confirm Password " type="password"
-          [ngModelOptions]="{standalone: true}">
+               [ngModelOptions]="{standalone: true}">
         <p *ngIf="isInvalidConfirmPassword" class="text-danger">Mật khẩu không khớp</p>
         <button (click)="registerAccount()">Sign up</button>
       </form>
@@ -54,7 +54,7 @@
         <input [(ngModel)]="username" placeholder="Enter UserName" type="text" [ngModelOptions]="{standalone: true}">
         <p *ngIf="isInvalidUsername" class="text-danger">{{messageErrorUsername}}</p>
         <input [(ngModel)]="password" placeholder="Enter Password" type="password"
-          [ngModelOptions]="{standalone: true}">
+               [ngModelOptions]="{standalone: true}">
         <p *ngIf="isInvalidPassword" class="text-danger">{{messageErrorPassword}}</p>
         <div class="flex">
           <div (click)=" goToForgotPassword()" class="underline text-sm">Quên mật khẩu</div>
@@ -67,7 +67,7 @@
         </div>
         <button (click)="signInFB()" class="btn btn-primary w-full font-weight-bold flex items-center" style="background-color: rgba(26,115,232,255);">
           <span class="flex-grow text-center">Đăng nhập với FaceBook</span>
-      </button>
+        </button>
       </form>
 
     </div>
