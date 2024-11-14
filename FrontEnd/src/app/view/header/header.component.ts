@@ -192,58 +192,58 @@ export class HeaderComponent implements OnInit {
 
   //get account info
   takeUserData() {
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      this.idAccount = parseInt(userId, 10);
-      if (this.idAccount == -1) {
-        const History = this.el.nativeElement.querySelector('#History');
-        const Favorite = this.el.nativeElement.querySelector('#Favorite');
-        const HistoryMobile = this.el.nativeElement.querySelector('#HistoryMobile');
-        const FavoriteMobile = this.el.nativeElement.querySelector('#FavoriteMobile');
-        const clientManager = this.el.nativeElement.querySelector('#clientManager');
-        const iconNotification = this.el.nativeElement.querySelector('#iconNotification');
-        History.classList.add('hidden');
-        Favorite.classList.add('hidden');
-        clientManager.classList.add('hidden');
-        iconNotification.classList.add('hidden');
-        HistoryMobile.classList.add('hidden');
-        FavoriteMobile.classList.add('hidden');
-      } else {
-        const Login = this.el.nativeElement.querySelector('#Login');
-        const LoginMobile = this.el.nativeElement.querySelector('#LoginMobile');
-        Login.classList.add('hidden');
-        LoginMobile.classList.add('hidden');
-      }
-    }
-    if (userId && Number(userId)!=-1) {
-      this.idAccount = parseInt(userId, 10);
-      this.accountService.getAccountById(this.idAccount).subscribe(
-        (data: ModelAccount) => {
-          this.account = data;
-          this.name = this.account.Username || null;
-          if (this.account.Role) {
-            this.isAdmin = true;
-          }
-        },
-        (error) => {
-          console.error('Error fetching accounts:', error);
-        }
-      );
-      this.infoAccountService.getInfoAccountById(this.idAccount).subscribe(
-        (data: ModelInfoAccount) => {
-          this.infoAccounts = data;
-          if (this.idAccount !== null) {
-            this.url = this.infoAccounts.CoverImg || null;
-          }
-        },
-        (error) => {
-          console.error('Error fetching account info:', error);
-        }
-      );
-
-    } else {
-      console.error('No userId found in localStorage');
-    }
+    // const userId = localStorage.getItem('userId');
+    // if (userId) {
+    //   this.idAccount = parseInt(userId, 10);
+    //   if (this.idAccount == -1) {
+    //     const History = this.el.nativeElement.querySelector('#History');
+    //     const Favorite = this.el.nativeElement.querySelector('#Favorite');
+    //     const HistoryMobile = this.el.nativeElement.querySelector('#HistoryMobile');
+    //     const FavoriteMobile = this.el.nativeElement.querySelector('#FavoriteMobile');
+    //     const clientManager = this.el.nativeElement.querySelector('#clientManager');
+    //     const iconNotification = this.el.nativeElement.querySelector('#iconNotification');
+    //     History.classList.add('hidden');
+    //     Favorite.classList.add('hidden');
+    //     clientManager.classList.add('hidden');
+    //     iconNotification.classList.add('hidden');
+    //     HistoryMobile.classList.add('hidden');
+    //     FavoriteMobile.classList.add('hidden');
+    //   } else {
+    //     const Login = this.el.nativeElement.querySelector('#Login');
+    //     const LoginMobile = this.el.nativeElement.querySelector('#LoginMobile');
+    //     Login.classList.add('hidden');
+    //     LoginMobile.classList.add('hidden');
+    //   }
+    // }
+    // if (userId && Number(userId)!=-1) {
+    //   this.idAccount = parseInt(userId, 10);
+    //   this.accountService.getAccountById(this.idAccount).subscribe(
+    //     (data: ModelAccount) => {
+    //       this.account = data;
+    //       this.name = this.account.Username || null;
+    //       if (this.account.Role) {
+    //         this.isAdmin = true;
+    //       }
+    //     },
+    //     (error) => {
+    //       console.error('Error fetching accounts:', error);
+    //     }
+    //   );
+    //   this.infoAccountService.getInfoAccountById(this.idAccount).subscribe(
+    //     (data: ModelInfoAccount) => {
+    //       this.infoAccounts = data;
+    //       if (this.idAccount !== null) {
+    //         this.url = this.infoAccounts.CoverImg || null;
+    //       }
+    //     },
+    //     (error) => {
+    //       console.error('Error fetching account info:', error);
+    //     }
+    //   );
+    //
+    // } else {
+    //   console.error('No userId found in localStorage');
+    // }
   }
 
   // delete all notification

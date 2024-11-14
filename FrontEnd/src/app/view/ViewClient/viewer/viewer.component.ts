@@ -170,18 +170,18 @@ export class ViewerComponent implements OnInit {
 
   loadAccount(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.accountService.getAccountById(Number(this.yourId)).subscribe(
-        (data: ModelAccount) => {
-          {
-            this.yourAc = data
-            resolve()
-          }
-          reject(new Error('Account not found'));
-        },
-        (error) => {
-          reject(error);
-        }
-      );
+      // this.accountService.getAccountById(Number(this.yourId)).subscribe(
+      //   (data: ModelAccount) => {
+      //     {
+      //       this.yourAc = data
+      //       resolve()
+      //     }
+      //     reject(new Error('Account not found'));
+      //   },
+      //   (error) => {
+      //     reject(error);
+      //   }
+      // );
     });
   }
 

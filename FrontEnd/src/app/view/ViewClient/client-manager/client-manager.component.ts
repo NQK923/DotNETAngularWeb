@@ -150,7 +150,7 @@ export class ClientManagerComponent implements OnInit {
             this.filteredMangas = updatedMangas;
           });
           this.setupEventListeners();
-          this.takeData();
+          // this.takeData();
         },
         error: (err) => {
           console.error('Error loading data', err);
@@ -839,106 +839,106 @@ export class ClientManagerComponent implements OnInit {
 
 
   updateInfo() {
-    const userId = localStorage.getItem('userId');
-    if (userId === null) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Lỗi',
-        detail: 'Không tìm thấy User'
-      });
-      return;
-    }
-    const emailElement = this.el.nativeElement.querySelector('#emailUser');
-    const nameElement = this.el.nativeElement.querySelector('#nameUser');
-    if (emailElement.value === "" && nameElement.value === "") {
-      this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin'});
-      return;
-    }
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailPattern.test(emailElement.value)) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Lỗi',
-        detail: 'Email phải có định dạng: example@gmail.com'
-      });
-      return;
-    }
-    this.urlImg = '';
-    this.accountService.getInfoAccount().subscribe(
-      (data: ModelInfoAccount[]) => {
-        this.infoAccounts = data;
-        if (this.idAccount !== null) {
-          this.findUrl(this.idAccount);
-        }
-      },
-      (error) => {
-        this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Lỗi khi lấy thông tin tài khoản.'});
-        console.error('Error fetching account info:', error);
-      }
-    );
-    for (let i = 0; i < this.infoAccounts.length; i++) {
-      if (this.infoAccounts[i].IdAccount === parseInt(userId, 10)) {
-        this.urlImg = this.infoAccounts[i].CoverImg || '';
-        break;
-      }
-    }
-    if (!emailElement || !nameElement) {
-      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không tìm thấy trường Email hoặc Tên'});
-      return;
-    }
-    const updateInfo: ModelInfoAccount = {
-      IdAccount: parseInt(userId, 10),
-      Email: emailElement.value,
-      CoverImg: this.urlImg,
-      Name: nameElement.value
-    };
-    this.accountService.updateaccount(updateInfo).subscribe({
-      next: () => {
-        this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Cập nhật thành công'});
-        this.ngOnInit();
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Lỗi',
-          detail: 'Đã xảy ra lỗi trong quá trình cập nhật. Vui lòng thử lại sau.'
-        });
-        console.error(error);
-      }
-    });
+    // const userId = localStorage.getItem('userId');
+    // if (userId === null) {
+    //   this.messageService.add({
+    //     severity: 'error',
+    //     summary: 'Lỗi',
+    //     detail: 'Không tìm thấy User'
+    //   });
+    //   return;
+    // }
+    // const emailElement = this.el.nativeElement.querySelector('#emailUser');
+    // const nameElement = this.el.nativeElement.querySelector('#nameUser');
+    // if (emailElement.value === "" && nameElement.value === "") {
+    //   this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin'});
+    //   return;
+    // }
+    // const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    // if (!emailPattern.test(emailElement.value)) {
+    //   this.messageService.add({
+    //     severity: 'error',
+    //     summary: 'Lỗi',
+    //     detail: 'Email phải có định dạng: example@gmail.com'
+    //   });
+    //   return;
+    // }
+    // this.urlImg = '';
+    // this.accountService.getInfoAccount().subscribe(
+    //   (data: ModelInfoAccount[]) => {
+    //     this.infoAccounts = data;
+    //     if (this.idAccount !== null) {
+    //       this.findUrl(this.idAccount);
+    //     }
+    //   },
+    //   (error) => {
+    //     this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Lỗi khi lấy thông tin tài khoản.'});
+    //     console.error('Error fetching account info:', error);
+    //   }
+    // );
+    // for (let i = 0; i < this.infoAccounts.length; i++) {
+    //   if (this.infoAccounts[i].IdAccount === parseInt(userId, 10)) {
+    //     this.urlImg = this.infoAccounts[i].CoverImg || '';
+    //     break;
+    //   }
+    // }
+    // if (!emailElement || !nameElement) {
+    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không tìm thấy trường Email hoặc Tên'});
+    //   return;
+    // }
+    // const updateInfo: ModelInfoAccount = {
+    //   IdAccount: parseInt(userId, 10),
+    //   Email: emailElement.value,
+    //   CoverImg: this.urlImg,
+    //   Name: nameElement.value
+    // };
+    // this.accountService.updateaccount(updateInfo).subscribe({
+    //   next: () => {
+    //     this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Cập nhật thành công'});
+    //     this.ngOnInit();
+    //   },
+    //   error: (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Lỗi',
+    //       detail: 'Đã xảy ra lỗi trong quá trình cập nhật. Vui lòng thử lại sau.'
+    //     });
+    //     console.error(error);
+    //   }
+    // });
   }
 
   takeData() {
-    this.accounts = [];
-    this.infoAccounts = [];
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      this.idAccount = parseInt(userId, 10);
-      this.accountService.getAccount().subscribe(
-        (data: ModelAccount[]) => {
-          this.accounts = data;
-          if (this.idAccount !== null) {
-            this.findUser(this.idAccount);
-          }
-        },
-        (error) => {
-          console.error('Error fetching accounts:', error);
-        }
-      );
-      this.accountService.getInfoAccount().subscribe(
-        (data: ModelInfoAccount[]) => {
-          this.infoAccounts = data;
-          if (this.idAccount !== null) {
-            this.findUrl(this.idAccount);
-          }
-        },
-        (error) => {
-          console.error('Error fetching account info:', error);
-        }
-      );
-    } else {
-      console.error('No userId found in localStorage');
-    }
+    // this.accounts = [];
+    // this.infoAccounts = [];
+    // const userId = localStorage.getItem('userId');
+    // if (userId) {
+    //   this.idAccount = parseInt(userId, 10);
+    //   this.accountService.getAccount().subscribe(
+    //     (data: ModelAccount[]) => {
+    //       this.accounts = data;
+    //       if (this.idAccount !== null) {
+    //         this.findUser(this.idAccount);
+    //       }
+    //     },
+    //     (error) => {
+    //       console.error('Error fetching accounts:', error);
+    //     }
+    //   );
+    //   this.accountService.getInfoAccount().subscribe(
+    //     (data: ModelInfoAccount[]) => {
+    //       this.infoAccounts = data;
+    //       if (this.idAccount !== null) {
+    //         this.findUrl(this.idAccount);
+    //       }
+    //     },
+    //     (error) => {
+    //       console.error('Error fetching account info:', error);
+    //     }
+    //   );
+    // } else {
+    //   console.error('No userId found in localStorage');
+    // }
   }
 
   findUser(userId: number) {
