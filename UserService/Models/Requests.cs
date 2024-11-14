@@ -8,5 +8,6 @@
         public record ChangeBanDateRequest(int idAccount, DateTime banDate);
         public record CheckOldPasswordRequest(int idAccount, string oldPassword);
         public record ChangeInformationRequest(int idAccount, string name, string cover_img);
+        public record InfoMationRegisterRequest(int idAccount, string name, string email, string img);
     }
 }

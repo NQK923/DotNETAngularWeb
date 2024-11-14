@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using UserService;
 
@@ -6,7 +7,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserServiceDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureSQL")));
-
 
 builder.Services.AddCors(options =>
 {
@@ -39,6 +39,7 @@ app.UseCors("AllowAllOrigins");
 //    return Results.Ok(result == "success");
 //});
 app.InitBasicAccountApi();
+app.InitBasicInfoAccountApi(builder.Configuration);
 app.Run();
 
 

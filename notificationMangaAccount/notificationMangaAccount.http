@@ -1,6 +1,0 @@
-@notificationMangaAccount_HostAddress = http://localhost:5208
-
-GET {{notificationMangaAccount_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

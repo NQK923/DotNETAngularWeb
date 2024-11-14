@@ -87,8 +87,6 @@ namespace UserService
         {
             endpointRouteBuilder.MapPost("/account/registerExternalAccount", async (string username, UserServiceDBContext dBContext) =>
             {
-                // Kiểm tra tài khoản có tồn tại
-
                 var newAccount = new Account
                 {
                     username = username,
@@ -203,6 +201,7 @@ namespace UserService
 
             });
         }
+
         public static void MapPutChangeStatus(this IEndpointRouteBuilder endpointRouteBuilder)
         {
             endpointRouteBuilder.MapPut("/account/changeStatusAccountByID", async (ChangeStatusRequest changeStatusRequest, UserServiceDBContext dBContext) =>
