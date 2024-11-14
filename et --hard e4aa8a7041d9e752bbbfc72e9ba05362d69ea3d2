@@ -1,0 +1,156 @@
+[33mcommit e4aa8a7041d9e752bbbfc72e9ba05362d69ea3d2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mTN[m[33m)[m
+Author: teamweb7 <91516024+trungnguyenle021106@users.noreply.github.com>
+Date:   Thu Nov 14 08:54:40 2024 +0700
+
+    USER SERVICE
+
+[33mcommit 975f41e457c8d72652ca54fc0ac5624902499629[m
+Author: teamweb7 <91516024+trungnguyenle021106@users.noreply.github.com>
+Date:   Thu Oct 31 10:47:41 2024 +0700
+
+    TN
+
+[33mcommit 9777ed8070a823856167d4ff90347bc200c39720[m
+Author: teamweb7 <91516024+trungnguyenle021106@users.noreply.github.com>
+Date:   Wed Oct 30 12:42:55 2024 +0700
+
+    TN
+
+[33mcommit bfeba588020788b150f439d74e5812d02981aad5[m
+Author: teamweb7 <91516024+trungnguyenle021106@users.noreply.github.com>
+Date:   Wed Oct 30 12:37:20 2024 +0700
+
+    TN
+
+[33mcommit a1e8382ca3f2ce34d8feffa8fa317dc990cebb8c[m
+Author: teamweb7 <91516024+trungnguyenle021106@users.noreply.github.com>
+Date:   Sun Oct 27 08:49:07 2024 +0700
+
+    TN
+
+[33mcommit a8ea38e26be51308fd9432328a721acd7fdb797c[m[33m ([m[1;32mmaster[m[33m)[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:26:56 2024 +0700
+
+    Update
+
+[33mcommit 61b7a7bb70376db5e65b1f4c43284447e64bcacc[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:55 2024 +0700
+
+    Delete docker-compose.yml
+
+[33mcommit 8f1e0cb4aa6df4ca141c57e1d4aadda8e1ae7c1c[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:47 2024 +0700
+
+    Delete README.md
+
+[33mcommit e159903ea8709e4f5e4f8d20878538fc05e8416e[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:37 2024 +0700
+
+    Delete MangaWebASP.sln
+
+[33mcommit 8e7d8bfcdfef7af2714f64e9597bc8c89aa0860f[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:28 2024 +0700
+
+    Delete 12345.pub
+
+[33mcommit 7745a7fd0dfd21def8a760a8b91fcc3f78feb1d2[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:21 2024 +0700
+
+    Delete 12345
+
+[33mcommit b2b7a4ce683a7dd8e2c9e9c1003f52d77da1127d[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:12 2024 +0700
+
+    Delete .gitignore
+
+[33mcommit 8c94cbeea80074d2c5b91c1171d1e204ea3ca032[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:17:04 2024 +0700
+
+    Delete .gitattributes
+
+[33mcommit 4bc00e3e9b79183723681b816c790f6aefc2fcf6[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:16:55 2024 +0700
+
+    Delete .dockerignore
+
+[33mcommit 7f88de15da9e19a837c0382375ea19aae47a2cef[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:16:46 2024 +0700
+
+    Delete Notification directory
+
+[33mcommit b10c6e4ad08d6a8da3e2b21310cba3b0f93c5b73[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:16:37 2024 +0700
+
+    Delete MangaService directory
+
+[33mcommit 9389c5dde804b8cd88afefa2d5c0c6cc4717bf9e[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:16:29 2024 +0700
+
+    Delete FrontEnd directory
+
+[33mcommit 47d94bb99d185e001c6db578af39556178e9d76e[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:16:15 2024 +0700
+
+    Delete ChapterService directory
+
+[33mcommit 5db4760fb7ae812cb14ed661ed7a387614a967e8[m
+Author: NGUYỄN QUÝ KHÁNH <117274353+NQK923@users.noreply.github.com>
+Date:   Fri Oct 25 22:16:05 2024 +0700
+
+    Delete Banners directory
+
+[33mcommit 523f8d62a481da28623fb475672ba3a0a3753979[m
+Merge: 74995e5 d643219
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 17:11:39 2024 +0700
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 74995e5d76ae9653480db81104b905b2d619fa71[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 17:11:19 2024 +0700
+
+    fix some bug
+
+[33mcommit d64321997305a4d656bbc0f6dbd273267d94e45b[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 17:11:19 2024 +0700
+
+    Create README.md
+
+[33mcommit a415c71ed909345f91d55e4bf21018e48e0c3251[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 17:05:59 2024 +0700
+
+    fix missing file
+
+[33mcommit f29e7a55170df93d6d222dd7418d14c337a41619[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 15:37:09 2024 +0700
+
+    Add .gitattributes.
+
+[33mcommit 3ff1f050da3a1c210823af2d973b2b47166eae94[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 15:46:18 2024 +0700
+
+    Delete .gitattributes
+
+[33mcommit 6b918555e0ec61b8ea6093359ff70b20614e8ae3[m
+Author: NQK923 <117274353+NQK923@users.noreply.github.com>
+Date:   Sun Oct 6 15:37:09 2024 +0700
+
+    Add .gitattributes.
