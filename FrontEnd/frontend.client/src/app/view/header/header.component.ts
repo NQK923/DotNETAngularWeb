@@ -1,20 +1,20 @@
-import {ChangeDetectorRef, Component, ElementRef, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {ModelAccount} from "../../Model/ModelAccount";
-import {AccountService} from "../../service/Account/account.service";
-import {ModelInfoAccount} from "../../Model/ModelInfoAccoutn";
-import {ModelNotification} from "../../Model/ModelNotification";
-import {ModelManga} from "../../Model/ModelManga";
-import {ModelNotificationMangaAccount} from "../../Model/ModelNotificationMangaAccount";
-import {NotificationService} from "../../service/notification/notification.service";
-import {InfoAccountService} from "../../service/InfoAccount/info-account.service";
+import { ChangeDetectorRef, Component, DoCheck, ElementRef, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModelAccount } from "../../Model/ModelAccount";
+import { AccountService } from "../../service/Account/account.service";
+import { ModelInfoAccount } from "../../Model/ModelInfoAccoutn";
+import { ModelNotification } from "../../Model/ModelNotification";
+import { ModelManga } from "../../Model/ModelManga";
+import { ModelNotificationMangaAccount } from "../../Model/ModelNotificationMangaAccount";
+import { NotificationService } from "../../service/notification/notification.service";
+import { InfoAccountService } from "../../service/InfoAccount/info-account.service";
 import {
   NotificationMangaAccountService
 } from "../../service/notificationMangaAccount/notification-manga-account.service";
-import {CombinedData} from "../../Model/CombinedData";
-import {MangaFavoriteService} from "../../service/MangaFavorite/manga-favorite.service";
-import {ModelMangaFavorite} from "../../Model/MangaFavorite";
-import {forkJoin, Observable} from "rxjs";
+import { CombinedData } from "../../Model/CombinedData";
+import { MangaFavoriteService } from "../../service/MangaFavorite/manga-favorite.service";
+import { ModelMangaFavorite } from "../../Model/MangaFavorite";
+import { forkJoin, Observable } from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -35,28 +35,39 @@ export class HeaderComponent implements OnInit {
   ListCombinedData: CombinedData[] = [];
   CombinedData: CombinedData[] = [];
   isHidden: boolean = true;
-  listMangaFavorite: ModelMangaFavorite [] = [];
+  listMangaFavorite: ModelMangaFavorite[] = [];
   numberNotification: number | null = null;
-    // Two way data binding
-  isLoggedIn : boolean = false;
-    // Two way data binding
+  // Two way data binding
+  isLoggedIn: boolean = true;
+  // Two way data binding
   constructor(private accountService: AccountService,
-              private router: Router,
-              private el: ElementRef,
-              private notificationService: NotificationService,
-              private infoAccountService: InfoAccountService,
-              private notificationMangaAccountService: NotificationMangaAccountService,
-              private mangaFavoriteService: MangaFavoriteService,
-              private cdr: ChangeDetectorRef,
+    private router: Router,
+    private el: ElementRef,
+    private notificationService: NotificationService,
+    private infoAccountService: InfoAccountService,
+    private notificationMangaAccountService: NotificationMangaAccountService,
+    private mangaFavoriteService: MangaFavoriteService,
+    private cdr: ChangeDetectorRef,
   ) {
   }
 
+  public SetIsLoggedIn(): void {
+    this.isLoggedIn = true;
+  }
+
   async ngOnInit() {
+    this.checkLogin();
+    this.allFunction()
+  }
+
+  private async checkLogin() {
+    // this.accountService.testlogin$.subscribe(status => {
+    //   this.isLoggedIn = status;
+    // });
+    //kiểm tra nếu account đã log
     (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
-      console.log("change:" + this.isLoggedIn)
     });
-    this.allFunction()
   }
 
   allFunction() {
@@ -75,9 +86,9 @@ export class HeaderComponent implements OnInit {
   onSearch(): void {
     if (this.searchQuery.trim()) {
       if (this.router.url.includes('/list-view')) {
-        this.router.navigate([], {queryParams: {search: this.searchQuery}});
+        this.router.navigate([], { queryParams: { search: this.searchQuery } });
       } else {
-        this.router.navigate(['/list-view'], {queryParams: {search: this.searchQuery}});
+        this.router.navigate(['/list-view'], { queryParams: { search: this.searchQuery } });
       }
     }
   }
@@ -191,13 +202,13 @@ export class HeaderComponent implements OnInit {
     const updateObservables: Observable<ModelNotificationMangaAccount>[] = [];
     for (let i = 0; i < this.CombinedData.length; i++) {
       const notificationData = {
-          id_manga: this.CombinedData[i].Mangainfo?.id_manga,
-          id_account: this.idAccount,
-          id_Notification: this.CombinedData[i].Notification?.id_Notification,
-          isGotNotification: true,
-          is_read: true,
-        } as ModelNotificationMangaAccount
-      ;
+        id_manga: this.CombinedData[i].Mangainfo?.id_manga,
+        id_account: this.idAccount,
+        id_Notification: this.CombinedData[i].Notification?.id_Notification,
+        isGotNotification: true,
+        is_read: true,
+      } as ModelNotificationMangaAccount
+        ;
       this.CombinedData = [];
       const observable = this.notificationMangaAccountService.updateNotificationAccount(notificationData);
       updateObservables.push(observable);

@@ -29,6 +29,7 @@
                 MapPostRegisterExternalAccount(endpointRouteBuilder);
                 MapPostCheckExistExternalAccount(endpointRouteBuilder);
                 MapGetIsLoggedIn(endpointRouteBuilder);
+                MapPostLogOut(endpointRouteBuilder);
             }
 
             public static void MapPutChangePassword(this IEndpointRouteBuilder endpointRouteBuilder)
@@ -107,17 +108,18 @@
                 });
             }
 
-
-
             public static void MapGetIDAccount(this IEndpointRouteBuilder endpointRouteBuilder)
             {
                 endpointRouteBuilder.MapGet("/account/getIDAccount", async (HttpContext httpContext) =>
                 {
-                    httpContext.Request.Cookies.TryGetValue("loggedIn", out var jwtToken);
-                    string token = jwtToken;
-                    var info = DecodeToken(token);
-                    var idAccount = info.GetType().GetProperty("IdAccount")?.GetValue(info, null);
-                    return Results.Ok(idAccount);
+                    if (httpContext.Request.Cookies.TryGetValue("loggedIn", out var jwtToken))
+                    {
+                        string token = jwtToken;
+                        var info = DecodeToken(token);
+                        var idAccount = info.GetType().GetProperty("IdAccount")?.GetValue(info, null);
+                        return Results.Ok(idAccount);
+                    }
+                    return Results.Ok(false);
                 });
             }
 
@@ -235,6 +237,15 @@
                 });
             }
 
+            public static void MapPostLogOut(this IEndpointRouteBuilder endpointRouteBuilder)
+            {
+                endpointRouteBuilder.MapPost("/account/logOut", (HttpContext httpContext) =>
+                {
+                    DeleteCookie(httpContext,"loggedIn");
+                    return Results.Ok("Logged out successfully");
+                });
+            }
+
             private static string GenerateToken(int idAccount, bool role)
             {
                 var claims = new[]
@@ -287,7 +298,12 @@
 
             private static void DeleteCookie(HttpContext httpContext, string nameCookie)
             {
-                httpContext.Response.Cookies.Delete(nameCookie);
+                httpContext.Response.Cookies.Delete(nameCookie, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                });
             }
         }
     }

@@ -22,7 +22,7 @@ const routes: Routes = [
   {path: '', component: IndexComponent},
   {path: 'index/:idAccount', component: IndexComponent},
   {path: 'titles/:id_manga', component: TitlesComponent},
-  {path: 'client-manager', component: ClientManagerComponent},
+  {path: 'client-manager', component: ClientManagerComponent, canActivate: [authGuard]},
   {path: 'list-view', component: ListViewComponent},
   {path: 'history', component: HistoryComponent},
   {path: 'favorite', component: FavoriteComponent},
@@ -30,7 +30,7 @@ const routes: Routes = [
   {path: 'rank', component: RankComponent},
 
   //account
-  {path: 'login', component: LoginComponent},
+  {path: 'login', component: LoginComponent, canActivate: [authGuard]},
   {path: 'update', component: UpdateAccountComponent},
 
   //manager

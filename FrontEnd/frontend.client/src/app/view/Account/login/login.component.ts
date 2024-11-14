@@ -49,7 +49,6 @@ export class LoginComponent {
   }
 
   gotToIndex(): void {
-    console.log("GoToIndex");
     this.router.navigate(['/']);
   }
 
@@ -61,13 +60,11 @@ export class LoginComponent {
   // check login
   async loginNormal(): Promise<void> {
     if (!this.checkLoginData()) return;
-    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this) ,this.failCallback.bind(this));
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this), this.failCallback.bind(this));
     if (!result) {
       // console.log("NOT OK");
       return;
     }
-    // console.log(await this.accountService.getIdAccount());
-    // console.log("OK");
   }
 
   private checkLoginData(): boolean {

@@ -26,6 +26,7 @@ import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { LoginComponent } from "./view/Account/login/login.component";
 import { UpdateAccountComponent } from "./view/Account/update-account/update-account.component";
+import { authGuard } from './auth.guard';
 import { SocialLoginModule, SocialAuthServiceConfig, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import {
   GoogleLoginProvider,

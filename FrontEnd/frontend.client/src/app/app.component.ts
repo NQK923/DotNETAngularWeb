@@ -27,13 +27,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
-        let currentUrl = this.router.url;
-        (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
-          if(loggedIn && currentUrl.includes("login"))
-            {
-              this.router.navigate(['/']);
-            }
-        });
+     
+
         window.scrollTo(0, 0);
       }
     });

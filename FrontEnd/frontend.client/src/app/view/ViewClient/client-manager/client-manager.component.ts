@@ -1,24 +1,24 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {MangaService} from '../../../service/Manga/manga.service';
-import {ChapterService} from "../../../service/Chapter/chapter.service";
-import {ModelAccount} from "../../../Model/ModelAccount";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
-import {AccountService} from "../../../service/Account/account.service";
-import {CategoriesService} from "../../../service/Categories/Categories.service";
-import {FormControl, NgForm} from "@angular/forms";
-import {ModelNotification} from "../../../Model/ModelNotification";
-import {NotificationService} from "../../../service/notification/notification.service";
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from '@angular/router';
+import { MangaService } from '../../../service/Manga/manga.service';
+import { ChapterService } from "../../../service/Chapter/chapter.service";
+import { ModelAccount } from "../../../Model/ModelAccount";
+import { ModelInfoAccount } from "../../../Model/ModelInfoAccoutn";
+import { AccountService } from "../../../service/Account/account.service";
+import { CategoriesService } from "../../../service/Categories/Categories.service";
+import { FormControl, NgForm } from "@angular/forms";
+import { ModelNotification } from "../../../Model/ModelNotification";
+import { NotificationService } from "../../../service/notification/notification.service";
 import {
   NotificationMangaAccountService
 } from "../../../service/notificationMangaAccount/notification-manga-account.service";
-import {ModelNotificationMangaAccount} from "../../../Model/ModelNotificationMangaAccount";
-import {CategoryDetailsService} from "../../../service/Category_details/Category_details.service"
-import {MatDialog} from '@angular/material/dialog';
-import {ConfirmDialogComponent} from "../../Dialog/confirm-dialog/confirm-dialog.component";
-import {MessageDialogComponent} from "../../Dialog/message-dialog/message-dialog.component";
-import {forkJoin} from "rxjs";
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import { ModelNotificationMangaAccount } from "../../../Model/ModelNotificationMangaAccount";
+import { CategoryDetailsService } from "../../../service/Category_details/Category_details.service"
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from "../../Dialog/confirm-dialog/confirm-dialog.component";
+import { MessageDialogComponent } from "../../Dialog/message-dialog/message-dialog.component";
+import { forkJoin, Observable, of } from "rxjs";
+import { catchError, debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 interface Manga {
   id_manga: number;
@@ -94,16 +94,27 @@ export class ClientManagerComponent implements OnInit {
   urlImg: string | null = null;
 
   constructor(private accountService: AccountService, private el: ElementRef,
-              private mangaService: MangaService,
-              private notificationService: NotificationService,
-              private notificationMangaAccountService: NotificationMangaAccountService,
-              private categoriesService: CategoriesService,
-              private chapterService: ChapterService,
-              private categoryDetailsService: CategoryDetailsService,
-              private router: Router,
-              private dialog: MatDialog,
+    private mangaService: MangaService,
+    private notificationService: NotificationService,
+    private notificationMangaAccountService: NotificationMangaAccountService,
+    private categoriesService: CategoriesService,
+    private chapterService: ChapterService,
+    private categoryDetailsService: CategoryDetailsService,
+    private router: Router,
+    private dialog: MatDialog,
   ) {
   }
+
+  // canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+  //   return this.accountService.isLoggedInObser().pipe(
+  //     map((loggedIn) => { 
+  //       if (!loggedIn) 
+  //       { this.router.navigate(['/login']); return false; } return true; })
+  //     , catchError((error) => { this.router.navigate(['/login']); return of(false); })
+  //   );
+  // }
+
+
 
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(
@@ -118,7 +129,7 @@ export class ClientManagerComponent implements OnInit {
         mangas: this.mangaService.getMangasByUser(Number(id)),
         categories: this.categoriesService.getAllCategories()
       }).subscribe({
-        next: ({mangas, categories}) => {
+        next: ({ mangas, categories }) => {
           this.mangas = mangas;
           this.filteredMangas = this.mangas;
           this.categories = categories;
@@ -164,7 +175,7 @@ export class ClientManagerComponent implements OnInit {
     switch (this.selectedOption) {
       case 'option2':
         this.dialog.open(ConfirmDialogComponent, {
-          data: {message: 'Bạn có chắc chắn muốn thay thế ảnh hiện tại không?'},
+          data: { message: 'Bạn có chắc chắn muốn thay thế ảnh hiện tại không?' },
         }).afterClosed().subscribe(result => {
           if (result) {
             this.replaceImg(file, uri);
@@ -330,7 +341,7 @@ export class ClientManagerComponent implements OnInit {
     // @ts-ignore
     const filesArray = Array.from(this.selectedFiles);
     filesArray.forEach((file, idx) => {
-      const renamedFile = new File([file], `${idx + 1}.${file.name.split('.').pop()}`, {type: file.type});
+      const renamedFile = new File([file], `${idx + 1}.${file.name.split('.').pop()}`, { type: file.type });
       formData.append('files', renamedFile);
     });
     formData.append('id_manga', this.selectedIdManga.toString());
@@ -725,7 +736,7 @@ export class ClientManagerComponent implements OnInit {
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           canvas.toBlob((blob) => {
             if (blob) {
-              this.selectedFile = new File([blob], 'Cover_' + file.name, {type: file.type});
+              this.selectedFile = new File([blob], 'Cover_' + file.name, { type: file.type });
             }
           }, file.type);
         };
@@ -872,9 +883,8 @@ export class ClientManagerComponent implements OnInit {
     }
   }
 
-  logOut() {
-    localStorage.setItem('userId', "-1");
-    this.router.navigate([`/`]);
+  logOut(): void {
+    this.accountService.logOut(this.goToIndex.bind(this));
   }
 
   addNotification(id_manga: any, text: any) {
@@ -931,7 +941,7 @@ export class ClientManagerComponent implements OnInit {
     )
   }
 
-//Pagination
+  //Pagination
   getPagedMangas(): Manga[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
@@ -956,7 +966,7 @@ export class ClientManagerComponent implements OnInit {
 
   openMessageDialog(message: string): void {
     this.dialog.open(MessageDialogComponent, {
-      data: {message},
+      data: { message },
     });
   }
 }
