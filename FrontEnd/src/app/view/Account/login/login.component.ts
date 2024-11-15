@@ -108,7 +108,7 @@ export class LoginComponent {
   // create new account
   async registerAccount(): Promise<void> {
     if (!this.checkRegisterData()) return;
-    let result: boolean = await this.accountService.register(this.username, this.password)
+    let result: boolean = await this.accountService.register(this.username, this.password , this.email)
     if (!result) { console.log("NOT OK"); return; }
     console.log("OK");
   }

@@ -7,6 +7,7 @@ import { LoginRegisterRequest } from '../../Model/Account/LoginRegisterRequest';
 import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { InfoAccountService } from '../InfoAccount/info-account.service';
 import { AddInfoAccountRequest } from '../../Model/InfoAccount/AddInfoAccountRequest';
+import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse';
 
 
 
@@ -17,7 +18,7 @@ export class AccountService {
   private port = 7253;
   private apiUrl = `https://localhost:${this.port}/api/Account`;
   private apiLoginUrl: string = 'https://localhost:' + this.port + '/account/login';
-  private apiGetIDAccountUrl: string = 'https://localhost:' + this.port + '/account/getIDAccount';
+  private apiGetAccountCookieUrl: string = 'https://localhost:' + this.port + '/account/getAccountCookie';
   private apiInfo = `https://localhost:${this.port}/api/InfoAccount`;
   private apiAvatar = `https://localhost:${this.port}/api/InfoAccountavata`;
   private apiUpdateAccount = `https://localhost:${this.port}/api/InfoAccountupdate`;
@@ -103,8 +104,8 @@ export class AccountService {
     return new Promise((resolve, reject) => {
       this.http.post<number>(`${this.apiRegisterExternalAccount}?username=${user.id.toString()}`, {}).subscribe({
         next: (response) => {
-          // console.log("OK");
-          let newInfo: AddInfoAccountRequest = { name: user.name, email: user.email, img: user.photoUrl, idAccount: response };
+
+          let newInfo: AddInfoAccountRequest = { name: user.name, img: user.photoUrl, idAccount: response };
           this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
             console.log(response);
           });
@@ -134,11 +135,12 @@ export class AccountService {
   }
 
 
-  public getIdAccount(): Promise<number> {
+  public getAccountCookie(): Promise<AccountCookieResponse> {
     // GỌI NHƯ NÀY ĐỂ SỬ DỤNG HÀM  await this.accountService.getIdAccount();
     return new Promise((resolve, reject) => {
-      this.http.get<number>(this.apiGetIDAccountUrl, { withCredentials: true }).subscribe({
+      this.http.get<AccountCookieResponse>(this.apiGetAccountCookieUrl, { withCredentials: true }).subscribe({
         next: (response) => {
+          console.log("AccountCookieResponse" + response)
           // console.log("Mã tài khoản:"+response);
           resolve(response);
         },
@@ -150,9 +152,9 @@ export class AccountService {
   }
 
 
-  public getIdAccountObservable(): Observable<any> {
+  public getAccountCookieObservable(): Observable<AccountCookieResponse> {
     // GỌI NHƯ NÀY ĐỂ SỬ DỤNG HÀM  this.accountService.getIdAccountObservable().subscribe(response =>{  });
-    return this.http.get<number>(this.apiGetIDAccountUrl, { withCredentials: true })
+    return this.http.get<AccountCookieResponse>(this.apiGetAccountCookieUrl, { withCredentials: true })
   }
 
   public isLoggedIn(): Promise<Observable<boolean>> {
@@ -183,6 +185,7 @@ export class AccountService {
         next: (response) => {
           console.log(response);
           this.loggedIn.next(true);
+          successCallback();
           resolve(true);
         },
         error: (error: HttpErrorResponse) => {
@@ -193,12 +196,15 @@ export class AccountService {
     });
   }
 
-  register(username: string, password: string): Promise<boolean> {
+  register(username: string, password: string, email: string): Promise<boolean> {
     let registerRequest: LoginRegisterRequest = { username: username, password: password };
     return new Promise((resolve, reject) => {
       this.http.post<any>(this.apiRegisterUrl, registerRequest).subscribe({
         next: (response) => {
-
+          let newInfo: AddInfoAccountRequest = { name: "user"+response, email: email, idAccount : response, img : "https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png" };
+          this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
+            console.log(response);
+          });
           resolve(true);
         },
         error: (error) => {

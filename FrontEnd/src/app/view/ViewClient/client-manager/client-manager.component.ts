@@ -114,7 +114,8 @@ export class ClientManagerComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+      console.log(await this.accountService.getAccountCookie());
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
