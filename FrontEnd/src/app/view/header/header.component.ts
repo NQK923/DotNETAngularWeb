@@ -66,7 +66,6 @@ export class HeaderComponent implements OnInit {
     this.ListCombinedDataIsRead = [];
     (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
-      console.log("change:" + this.isLoggedIn)
     });
     this.allFunction();
   }

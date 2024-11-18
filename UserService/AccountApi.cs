@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using UserService.Models;
+using static UserService.Models.Responses;
 
 namespace UserService
 {
@@ -19,7 +20,7 @@ namespace UserService
             MapPutChangeStatus(endpointRouteBuilder);//Thay đổi status
             MapPostLogin(endpointRouteBuilder);//Đăng nhập thường
             MapPostCheckOldPasswordAccountByID(endpointRouteBuilder);//Kiểm tra mật khẩu cũ tài khoản theo ID
-            MapGetIDAccount(endpointRouteBuilder);//Lấy ID tài khoản
+            MapGetAccountCookie(endpointRouteBuilder);//Lấy ID tài khoản
             MapPostRegisterExternalAccount(endpointRouteBuilder);//Đăng ký bằng tài khoản bên thứ ba google, facebook
             MapPostCheckExistExternalAccount(endpointRouteBuilder);//Kiểm tra tài khoản bên ngoài đã tồn tại trong hệ thống chưa
             MapGetIsLoggedIn(endpointRouteBuilder);//Kiểm tra xem đã đăng nhập web chưa qua cookies có tồn tại hay không ?
@@ -100,16 +101,16 @@ namespace UserService
             });
         }
 
-        public static void MapGetIDAccount(this IEndpointRouteBuilder endpointRouteBuilder)
+        public static void MapGetAccountCookie(this IEndpointRouteBuilder endpointRouteBuilder)
         {
-            endpointRouteBuilder.MapGet("/account/getIDAccount", async (HttpContext httpContext) =>
+            endpointRouteBuilder.MapGet("/account/getAccountCookie", async (HttpContext httpContext) =>
             {
                 if (httpContext.Request.Cookies.TryGetValue("loggedIn", out var jwtToken))
                 {
                     string token = jwtToken;
-                    var info = DecodeToken(token);
-                    var idAccount = info.GetType().GetProperty("IdAccount")?.GetValue(info, null);
-                    return Results.Ok(idAccount);
+                    AccountCookieResponse info = DecodeToken(token);
+
+                    return Results.Ok(info);
                 }
                 return Results.Ok(false);
             });
@@ -261,27 +262,30 @@ namespace UserService
             return jwt;
         }
 
-        private static object DecodeToken(string token)
+        private static AccountCookieResponse DecodeToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
             if (jsonToken == null)
             {
-                return Results.BadRequest("Invalid token");
+                return null;
             }
 
             var claims = jsonToken.Claims.Select(c => new { c.Type, c.Value }).ToList();
             var roleClaim = claims.FirstOrDefault(c => c.Type == "role")?.Value;
             var idClaim = claims.FirstOrDefault(c => c.Type == "idAccount")?.Value;
 
-            return new { Role = roleClaim, IdAccount = idClaim };
+            int id_account = int.Parse(idClaim);
+            bool role =bool.Parse(roleClaim);
+            return new AccountCookieResponse ( id_account = id_account, role = role );
         }
 
         private static void CreateCookie(HttpContext httpContext, string token)
         {
             httpContext.Response.Cookies.Append("loggedIn", token, new CookieOptions
             {
+              
                 HttpOnly = true,
                 Secure = false,
                 SameSite = SameSiteMode.Strict,

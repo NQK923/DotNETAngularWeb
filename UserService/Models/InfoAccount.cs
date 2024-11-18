@@ -15,8 +15,7 @@ namespace UserService.Models
         [Required]
         public required string name { get; set; }
 
-        [Required]
-        public required string email { get; set; }
+        public string? email { get; set; }
 
         [Required]
         public required string cover_img { get; set; }
