@@ -16,11 +16,11 @@ export class CategoryDetailsService {
   }
 
   getCategoriesByIdManga(id_manga: number): Observable<any[]> {
-    return this.http.get<any>(`${this.apiUrl}/category_details/${id_manga}`);
+    return this.http.get<any>(`${this.apiUrl}/CategoryDetails/${id_manga}`);
   }
 
   getIdMangaByCategories(list: number[]): Observable<any[]> {
-    return this.http.post<any[]>(`${this.apiUrl}/category_details/getIdManga`, list);
+    return this.http.post<any[]>(`${this.apiUrl}/CategoryDetails/getIdManga`, list);
   }
 
   addCategoriesDetails(list: number[]): Observable<any[]> {
@@ -32,10 +32,10 @@ export class CategoryDetailsService {
   }
 
   deleteCategoriesDetails(idCategories: number[]): Observable<any> {
-    return this.http.request<any>('delete', `${this.apiUrl}/category_details/delete`, {body: idCategories});
+    return this.http.request<any>('delete', `${this.apiUrl}/CategoryDetails/delete`, {body: idCategories});
   }
 
   getCategories(): Observable<CategoryDetailModel[]> {
-    return this.http.get<any>(`${this.apiUrl}/category_details/get_all`);
+    return this.http.get<any>(`${this.apiUrl}/CategoryDetails/get_all`);
   }
 }

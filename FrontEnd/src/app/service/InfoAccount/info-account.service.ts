@@ -15,10 +15,10 @@ export class InfoAccountService {
 
   private apiUrl = 'http://localhost:5011/api/InfoAccount';
   private api = 'http://localhost:5011/api/InfoAccountById';
-  private port = 7253;
-  private apiAddInfomationUrl = `https://localhost:${this.port}/infoAccount/AddInfomation`;
-  private apiGetInfomationAccountByIDUrl = `https://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
- 
+  private port = 5004;
+  private apiAddInfomationUrl = `http://localhost:${this.port}/infoAccount/AddInfomation`;
+  private apiGetInfomationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
+
 
   constructor(private http: HttpClient) {
   }
@@ -32,9 +32,9 @@ export class InfoAccountService {
     return this.http.get<ModelInfoAccount[]>(this.apiUrl);
   }
 
-  getInfoAccountById(id_account: number): Observable<ModelInfoAccount> {
-    return this.http.get<ModelInfoAccount>(`${this.api}/${id_account}`);
-  }
+  // getInfoAccountById(id_account: number): Observable<ModelInfoAccount> {
+  //   return this.http.get<ModelInfoAccount>(`${this.api}/${id_account}`);
+  // }
 
   getinfoaccount(): Observable<ModelInfoAccount[]> {
     return this.http.get<ModelInfoAccount[]>(this.apiUrl);

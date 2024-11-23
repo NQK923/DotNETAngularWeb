@@ -12,6 +12,14 @@ public class MangaDbContext(DbContextOptions<MangaDbContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Manga>(entity =>
+        {
+            entity.Property(m => m.NumOfChapter).HasDefaultValue(0);
+            entity.Property(m => m.IsDeleted).HasDefaultValue(false);
+            entity.Property(m => m.Rating).HasDefaultValue(0);
+            entity.Property(m => m.RatedNum).HasDefaultValue(0);
+            entity.Property(m => m.IsPosted).HasDefaultValue(false);
+        });
         modelBuilder.Entity<MangaFavorite>().HasKey(mf => new { mf.IdManga, mf.IdAccount });
         modelBuilder.Entity<MangaHistory>().HasKey(mh => new { mh.IdManga, mh.IdAccount });
         modelBuilder.Entity<MangaViewHistory>().HasKey(mvh => new { mvh.IdManga, mvh.Time });
