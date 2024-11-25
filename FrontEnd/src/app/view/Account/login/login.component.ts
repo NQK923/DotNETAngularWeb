@@ -107,22 +107,22 @@ export class LoginComponent {
 
   // create new account
   async registerAccount(): Promise<void> {
-    if (!this.checkRegisterData()) return;
-    let result: boolean = await this.accountService.register(this.username, this.password , this.email)
+    if (!await this.checkRegisterData()) return;
+    let result: boolean = await this.accountService.register(this.username, this.password, this.email)
     if (!result) { console.log("NOT OK"); return; }
     console.log("OK");
   }
 
-  private checkRegisterData(): boolean {
+  private async checkRegisterData(): Promise<boolean> {
     this.resetError();
     let flag: boolean;
-    flag = this.checkValidUsername() || this.checkValidEmail() || this.checkValidPassword() || this.checkConfirmPassword();
+    flag = this.checkValidUsername() && await this.checkValidEmail() && this.checkValidPassword() && this.checkConfirmPassword();
     return flag;
   }
 
   private checkValidUsername(): boolean {
     if (!this.accountService.checkValidUsername(this.username)) {
-      this.messageErrorUsername = "Tên người dùng không được để trống và không quá 12 ký tự";
+      this.messageErrorUsername = "Tên người dùng không được để trống có ít nhất 6 ký tự không quá 12 ký tự";
       this.isInvalidUsername = true;
       return false;
     }
@@ -130,8 +130,8 @@ export class LoginComponent {
     return true;
   }
 
-  private checkValidEmail(): boolean {
-    if (!this.accountService.checkValidEmail(this.username)) { this.isInvalidEmail = true; return false; }
+  private async checkValidEmail(): Promise<boolean> {
+    if (!await this.accountService.checkValidEmail(this.email)) { this.isInvalidEmail = true; return false; }
     this.isInvalidEmail = false;
     return true;
   }
@@ -144,7 +144,7 @@ export class LoginComponent {
 
   private checkValidPassword(): boolean {
     if (!this.accountService.checkValidPassword(this.password)) {
-      this.messageErrorPassword = "Mật khẩu không được để trống và tối thiểu 6 ký tự";
+      this.messageErrorPassword = "Mật khẩu tối thiểu 6 ký tự và tối đa 30 ký tự";
       this.isInvalidPassword = true;
       return false;
     }

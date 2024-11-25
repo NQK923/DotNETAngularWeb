@@ -98,7 +98,7 @@ export class ClientManagerComponent implements OnInit {
   nameUser: string | null = null;
   idAccount: number | null = null;
   urlImg: string | null = null;
-
+  urlAvatarUser : string | null = null;
   constructor(private accountService: AccountService, private el: ElementRef,
               private mangaService: MangaService,
               private notificationService: NotificationService,
@@ -964,8 +964,11 @@ export class ClientManagerComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.setItem('userId', "-1");
-    this.router.navigate([`/`]);
+    this.accountService.logOut(()=>{
+      this.router.navigate([`/`]);
+    });
+    // localStorage.setItem('userId', "-1");
+    
   }
 
   addNotification(id_manga: any, text: any) {

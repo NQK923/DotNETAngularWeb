@@ -24,9 +24,8 @@ export class InfoAccountService {
   }
   //Trung Nguyen làm
   getInfoAccountByIdTN(id_account: number): Observable<InfoAccountResponse> {
-    return this.http.get<InfoAccountResponse>(`${this.apiGetInfomationAccountByIDUrl}/${id_account}`);
+    return this.http.get<InfoAccountResponse>(`${this.apiGetInfomationAccountByIDUrl}?idAccount=${id_account}`);
   }
-
 
   getInfoAccount(): Observable<ModelInfoAccount[]> {
     return this.http.get<ModelInfoAccount[]>(this.apiUrl);

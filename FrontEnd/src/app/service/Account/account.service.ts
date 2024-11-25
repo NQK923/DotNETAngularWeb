@@ -29,6 +29,8 @@ export class AccountService {
   private apiRegisterExternalAccount: string = 'https://localhost:' + this.port + '/account/registerExternalAccount';
   private apiIsLoggedIn: string = 'https://localhost:' + this.port + '/account/isLoggedIn';
   private apiLogOut: string = 'https://localhost:' + this.port + '/account/logOut';
+  private apiCheckEmail: string = 'https://localhost:' + this.port + '/infoAccount/CheckEmailValid';
+
 
   user: SocialUser | undefined;
 
@@ -104,8 +106,12 @@ export class AccountService {
     return new Promise((resolve, reject) => {
       this.http.post<number>(`${this.apiRegisterExternalAccount}?username=${user.id.toString()}`, {}).subscribe({
         next: (response) => {
+          let newInfo: AddInfoAccountRequest;
+          if (user.provider == "FACEBOOK") {
+            newInfo = { name: user.name, img: user.response.picture.data.url, idAccount: response };
+          }
+          else { newInfo = { name: user.name, img: user.photoUrl, idAccount: response }; }
 
-          let newInfo: AddInfoAccountRequest = { name: user.name, img: user.photoUrl, idAccount: response };
           this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
             console.log(response);
           });
@@ -201,7 +207,7 @@ export class AccountService {
     return new Promise((resolve, reject) => {
       this.http.post<any>(this.apiRegisterUrl, registerRequest).subscribe({
         next: (response) => {
-          let newInfo: AddInfoAccountRequest = { name: "user"+response, email: email, idAccount : response, img : "https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png" };
+          let newInfo: AddInfoAccountRequest = { name: "user" + response, email: email, idAccount: response, img: "https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png" };
           this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
             console.log(response);
           });
@@ -215,7 +221,7 @@ export class AccountService {
   }
 
   public checkValidUsername(username: string): boolean {
-    const usernamePattern = /^(?=.{1,12}$).+/;
+    const usernamePattern = /^(?=.{6,12}$).+/;
     if (!usernamePattern.test(username)) {
       return false;
     }
@@ -236,7 +242,7 @@ export class AccountService {
   }
 
   public checkValidPassword(password: string): boolean {
-    const passwordPattern = /^(?=.{6,}$).+/;
+    const passwordPattern = /^(?=.{6,30}$).+/;
     if (!passwordPattern.test(password)) {
       return false;
     }
@@ -246,12 +252,25 @@ export class AccountService {
     if (!(password == confirmPassword)) return false;
     return true;
   }
-  public checkValidEmail(email: string): boolean {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailPattern.test(email)) {
-      return false;
-    }
-    return true;
-  }
+  // public checkValidEmail(email: string): boolean {
+  //   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  //   if (!emailPattern.test(email)) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
+  public checkValidEmail(email: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.http.post<boolean>(`${this.apiCheckEmail}?email=${email}`, {}).subscribe({
+        next: (response) => {
+
+          resolve(response);
+        },
+        error: (error: HttpErrorResponse) => {
+          reject(error);
+        }
+      });
+    });
+  }
 }

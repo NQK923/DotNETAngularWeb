@@ -1,6 +1,9 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Diagnostics;
 using System.Net.Http;
 using UserService.Models;
 using static UserService.Models.Requests;
@@ -13,6 +16,7 @@ namespace UserService
         {
             MapPostAddInfomation(endpointRouteBuilder, configuration);
             MapGetInfoMationAccountByID(endpointRouteBuilder);
+            MapPostValidEmail(endpointRouteBuilder);
         }
 
         public static void MapGetInfoMationAccountByID(this IEndpointRouteBuilder endpointRouteBuilder)
@@ -25,6 +29,21 @@ namespace UserService
                     return Results.BadRequest();
                 }
                 return Results.Ok(infoAccount);
+            });
+        }
+
+        public static void MapPostValidEmail(this IEndpointRouteBuilder endpointRouteBuilder)
+        {
+            endpointRouteBuilder.MapPost("/infoAccount/CheckEmailValid", async (string email) =>
+            {
+                using var httpClient = new HttpClient(); 
+                var response = await httpClient.GetAsync($"https://emailvalidation.abstractapi.com/v1/?api_key=a2d97dea13244bc0bb8ec58a0f5080c7&email={email}");
+                var content = await response.Content.ReadAsStringAsync();
+                var jsonResponse = JObject.Parse(content);
+                bool isSmtpValid = jsonResponse["is_smtp_valid"]["value"].Value<bool>();
+                Debug.WriteLine(isSmtpValid);
+                Console.WriteLine(isSmtpValid);
+                return Results.Ok(isSmtpValid);
             });
         }
 
