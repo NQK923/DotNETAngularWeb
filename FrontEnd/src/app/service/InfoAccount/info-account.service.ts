@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ModelInfoAccount } from '../../Model/ModelInfoAccoutn';
 import { AddInfoAccountRequest } from '../../Model/InfoAccount/AddInfoAccountRequest';
 import { InfoAccountResponse } from '../../Model/InfoAccount/InfoAccountResponse';
@@ -20,7 +20,7 @@ export class InfoAccountService {
   private apiAddInfomationUrl = `https://localhost:${this.port}/infoAccount/AddInfomation`;
   private apiGetInfomationAccountByIDUrl = `https://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
   private apiChangeInfoMationAccountByIDUrl = `https://localhost:${this.port}/infoAccount/ChangeInfoMationAccountByID`;
-
+  private isChangeInfo = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {
   }
@@ -34,6 +34,8 @@ export class InfoAccountService {
     return this.http.put<any>(this.apiChangeInfoMationAccountByIDUrl, formData);
   }
 
+  setChangeInfo(value: boolean): void { this.isChangeInfo.next(value); console.log("setChangeInfo") }
+  getChangeInfo(): Observable<boolean> { console.log("getChangeInfo"); return this.isChangeInfo.asObservable(); }
 
   //Trung Nguyen làm
   getInfoAccountByIdTN(id_account: number): Observable<InfoAccountResponse> {

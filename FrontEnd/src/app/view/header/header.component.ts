@@ -63,13 +63,15 @@ export class HeaderComponent implements OnInit {
 
 
   async ngOnInit() {
-    this.checkLogin();
+    await this.checkLogin();
+    this.infoAccountService.getChangeInfo().subscribe(response => {
+      if (response == true) {
+        this.SetAvatarUser();
+        this.infoAccountService.setChangeInfo(false);
+      }
+    });
     this.ListCombinedData = [];
     this.ListCombinedDataIsRead = [];
-    (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
-      this.isLoggedIn = loggedIn;
-      this.SetAvatarUser();
-    });
     this.allFunction();
   }
 

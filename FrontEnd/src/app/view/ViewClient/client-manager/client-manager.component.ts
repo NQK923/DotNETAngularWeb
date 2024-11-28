@@ -103,7 +103,7 @@ export class ClientManagerComponent implements OnInit {
   urlImg: string | null = null;
   urlAvatarUser: string | null = null;
   isExternal: boolean = false;
-
+  panel: string = "";
   constructor(private accountService: AccountService, private el: ElementRef,
     private mangaService: MangaService,
     private notificationService: NotificationService,
@@ -118,6 +118,10 @@ export class ClientManagerComponent implements OnInit {
     private mangaFavoriteService: MangaFavoriteService,
     private infoAccountService: InfoAccountService,
   ) {
+  }
+
+  ChangeInfomation(panel: string): void {
+    this.panel = panel;
   }
 
   private SetInfoUser() {
@@ -142,13 +146,18 @@ export class ClientManagerComponent implements OnInit {
   async ngOnInit() {
     // console.log(await this.accountService.getAccountCookie());
     this.SetInfoUser();
+    this.infoAccountService.getChangeInfo().subscribe(response => {
+      if (response == true) {
+        this.SetInfoUser();
+      }
+    });
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchTerm => {
       this.filterMangas(searchTerm);
     });
-    const userId = localStorage.getItem('userId');
+    const userId = (await this.accountService.getAccountCookie()).id_account;
     if (userId) {
       forkJoin({
         mangas: this.mangaService.getMangasByUser(Number(userId)),
@@ -846,14 +855,17 @@ export class ClientManagerComponent implements OnInit {
     if (this.email) {
       info.email = this.email;
     }
-    if(this.selectedFile)
-    {
+    if (this.selectedFile) {
       console.log(this.selectedFile.name);
     }
     this.infoAccountService.updateInfoAccountById(info, this.selectedFile).subscribe(response => {
       if (response == false) {
         this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không có thông tin nào thay đổi.' });
+        return;
       }
+
+      this.infoAccountService.setChangeInfo(true);
+      window.location.reload();
     });
   }
 

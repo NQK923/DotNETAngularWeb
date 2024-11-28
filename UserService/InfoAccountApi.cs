@@ -55,7 +55,7 @@ namespace UserService
                     var blobContainerClient = blobServiceClient.GetBlobContainerClient("avatars");
                     var blobName = $"IA{infoAccount.id_account}.jpg";
                     var blobClient = blobContainerClient.GetBlobClient(blobName);
-                    Console.WriteLine(blobClient.Uri.ToString());
+                    
                     await blobClient.DeleteIfExistsAsync();
 
 
@@ -64,8 +64,10 @@ namespace UserService
                     {
                         await blobClient.UploadAsync(stream, true);
                     }
+                    var properties = await blobClient.GetPropertiesAsync();
                     string img = blobClient.Uri.ToString();
                     infoAccount.cover_img = img;
+                    Console.WriteLine("Up ảnh");
                 }
 
                 await dBContext.SaveChangesAsync();
@@ -106,7 +108,7 @@ namespace UserService
         {
             endpointRouteBuilder.MapPost("/infoAccount/AddInfomation", async (InfoMationRegisterRequest infoMationRegisterRequest, UserServiceDBContext dBContext) =>
             {
-                // Kiểm tra tài khoản có tồn tại
+                
                 string img = "";
                 if (!infoMationRegisterRequest.img.Equals("https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png"))
                 {
@@ -133,6 +135,7 @@ namespace UserService
                         });
                     }
                     img = blobClient.Uri.ToString();
+                    var properties = await blobClient.GetPropertiesAsync();
                 }
                 else
                 {

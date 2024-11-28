@@ -35,7 +35,7 @@ export class AccountService {
   user: SocialUser | undefined;
 
   private loggedIn = new BehaviorSubject<boolean>(false);
-  testlogin$ = this.loggedIn.asObservable();
+
   constructor(private authService: SocialAuthService, private http: HttpClient, private infoAccountService: InfoAccountService) {
 
   }
@@ -74,6 +74,7 @@ export class AccountService {
     return new Promise(() => {
       this.http.post<any>(this.apiLogOut, {}, { withCredentials: true }).subscribe({
         next: (response) => {
+          this.authService.signOut();
           console.log(response)
           callback();
         },
@@ -113,6 +114,7 @@ export class AccountService {
           else { newInfo = { name: user.name, img: user.photoUrl, idAccount: response }; }
 
           this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
+            this.infoAccountService.setChangeInfo(true);
             console.log(response);
           });
 
