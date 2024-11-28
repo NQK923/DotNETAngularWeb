@@ -287,42 +287,42 @@ export class ViewerComponent implements OnInit {
   }
 
   takeData() {
-    for (let i = 0; i < this.comments.length; i++) {
-      const comment = this.comments[i];
-      const existsInList = this.listDataComment.some(item => item.Comment?.IdComment === comment.IdComment);
-      if (existsInList) {
-        continue;
-      }
-      if (comment.IdChapter === this.chapterId && comment.IdAccount !== this.yourId) {
-        this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).subscribe(
-          (data: ModelInfoAccount) => {
-            this.listDataComment.push(new CommentData(comment, data));
-          }
-        );
-      }
-    }
+    // for (let i = 0; i < this.comments.length; i++) {
+    //   const comment = this.comments[i];
+    //   const existsInList = this.listDataComment.some(item => item.Comment?.IdComment === comment.IdComment);
+    //   if (existsInList) {
+    //     continue;
+    //   }
+    //   if (comment.IdChapter === this.chapterId && comment.IdAccount !== this.yourId) {
+    //     this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).subscribe(
+    //       (data: ModelInfoAccount) => {
+    //         this.listDataComment.push(new CommentData(comment, data));
+    //       }
+    //     );
+    //   }
+    // }
   }
 
   takeYourData() {
-    const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.IdComment));
-    const relevantComments = this.comments.filter(comment =>
-      comment.IdChapter === this.chapterId &&
-      comment.IdAccount === this.yourId &&
-      !existingCommentIds.has(comment.IdComment)
-    );
-    const accountRequests = relevantComments.map(comment =>
-      this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).pipe(
-        map((data: ModelInfoAccount) => new CommentData(comment, data))
-      )
-    );
-    forkJoin(accountRequests).subscribe(
-      (dataComments: CommentData[]) => {
-        this.listYourComment.push(...dataComments);
-      },
-      (error) => {
-        console.error('Error fetching account info:', error);
-      }
-    );
+    // const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.IdComment));
+    // const relevantComments = this.comments.filter(comment =>
+    //   comment.IdChapter === this.chapterId &&
+    //   comment.IdAccount === this.yourId &&
+    //   !existingCommentIds.has(comment.IdComment)
+    // );
+    // const accountRequests = relevantComments.map(comment =>
+    //   this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).pipe(
+    //     map((data: ModelInfoAccount) => new CommentData(comment, data))
+    //   )
+    // );
+    // forkJoin(accountRequests).subscribe(
+    //   (dataComments: CommentData[]) => {
+    //     this.listYourComment.push(...dataComments);
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching account info:', error);
+    //   }
+    // );
   }
 
   loadComment(): Promise<void> {

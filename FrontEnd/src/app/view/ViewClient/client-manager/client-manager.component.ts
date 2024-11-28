@@ -148,7 +148,8 @@ export class ClientManagerComponent implements OnInit {
     ).subscribe(searchTerm => {
       this.filterMangas(searchTerm);
     });
-    const userId = localStorage.getItem('userId');
+    const cookie = await this.accountService.getAccountCookie();
+    const userId = cookie.id_account;
     if (userId) {
       forkJoin({
         mangas: this.mangaService.getMangasByUser(Number(userId)),
@@ -556,8 +557,9 @@ export class ClientManagerComponent implements OnInit {
     return formData;
   }
 
-  uploadOrUpdateManga(formData: FormData, action: 'upload' | 'update', mangaId?: number) {
-    const id_user = localStorage.getItem('userId');
+  async uploadOrUpdateManga(formData: FormData, action: 'upload' | 'update', mangaId?: number) {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
     const userId = Number(id_user);
 
     const mangaServiceMethod = action === 'upload'
@@ -770,7 +772,6 @@ export class ClientManagerComponent implements OnInit {
   setupEventListeners() {
     const buttonAdd = this.el.nativeElement.querySelector('#buttonAdd');
     const overlay = this.el.nativeElement.querySelector('#overlay');
-    const out = this.el.nativeElement.querySelector('#out');
     if (buttonAdd) {
       buttonAdd.addEventListener('click', () => {
         overlay.classList.toggle('hidden');
@@ -858,32 +859,32 @@ export class ClientManagerComponent implements OnInit {
   }
 
   addAvatar(form: any) {
-    const idAccount = localStorage.getItem('userId');
-    if (!this.selectedFile) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Chưa chọn file.' });
-      return;
-    }
-    if (!idAccount) {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Chưa nhập ID.' });
-      return;
-    }
-    if (this.selectedFile && idAccount) {
-      const formData = new FormData();
-      formData.append('id', idAccount);
-      formData.append('file', this.selectedFile, this.selectedFile.name);
-      this.accountService.uploadavata(formData).subscribe(
-        () => {
-          this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Upload thành công!' });
-          this.ngOnInit();
-        },
-        (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Upload thất bại!' });
-          console.error('Upload failed:', error);
-        }
-      );
-    } else {
-      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không có ảnh' });
-    }
+    // const idAccount = localStorage.getItem('userId');
+    // if (!this.selectedFile) {
+    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Chưa chọn file.'});
+    //   return;
+    // }
+    // if (!idAccount) {
+    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Chưa nhập ID.'});
+    //   return;
+    // }
+    // if (this.selectedFile && idAccount) {
+    //   const formData = new FormData();
+    //   formData.append('id', idAccount);
+    //   formData.append('file', this.selectedFile, this.selectedFile.name);
+    //   this.accountService.uploadavata(formData).subscribe(
+    //     () => {
+    //       this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Upload thành công!'});
+    //       this.ngOnInit();
+    //     },
+    //     (error) => {
+    //       this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Upload thất bại!'});
+    //       console.error('Upload failed:', error);
+    //     }
+    //   );
+    // } else {
+    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không có ảnh'});
+    // }
   }
 
 

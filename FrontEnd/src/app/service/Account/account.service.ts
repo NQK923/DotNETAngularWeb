@@ -41,34 +41,34 @@ export class AccountService {
   }
 
 
-  postMail(email: string, title: string, text: string): Observable<any> {
-    const params = new HttpParams()
-      .set('email', email)
-      .set('title', title)
-      .set('text', text);
-    return this.http.post(this.apiPassword, null, { params });
-  }
-
-  updateaccount(account: ModelInfoAccount): Observable<ModelInfoAccount> {
-    return this.http.put<ModelInfoAccount>(this.apiUpdateAccount, account);
-  }
-
-
-  uploadavata(formData: FormData): Observable<any> {
-    return this.http.post(this.apiAvatar, formData);
-  }
-
-  getAccount(): Observable<ModelAccount[]> {
-    return this.http.get<ModelAccount[]>(this.apiUrl);
-  }
-
-  updateAccount(Account: ModelAccount): Observable<ModelAccount> {
-    return this.http.put<ModelAccount>(this.apiUrl, Account);
-  }
-
-  getinfoAccount(): Observable<ModelInfoAccount[]> {
-    return this.http.get<ModelInfoAccount[]>(this.apiInfo);
-  }
+  // postMail(email: string, title: string, text: string): Observable<any> {
+  //   const params = new HttpParams()
+  //     .set('email', email)
+  //     .set('title', title)
+  //     .set('text', text);
+  //   return this.http.post(this.apiPassword, null, { params });
+  // }
+  //
+  // updateaccount(account: ModelInfoAccount): Observable<ModelInfoAccount> {
+  //   return this.http.put<ModelInfoAccount>(this.apiUpdateAccount, account);
+  // }
+  //
+  //
+  // uploadavata(formData: FormData): Observable<any> {
+  //   return this.http.post(this.apiAvatar, formData);
+  // }
+  //
+  // getAccount(): Observable<ModelAccount[]> {
+  //   return this.http.get<ModelAccount[]>(this.apiUrl);
+  // }
+  //
+  // updateAccount(Account: ModelAccount): Observable<ModelAccount> {
+  //   return this.http.put<ModelAccount>(this.apiUrl, Account);
+  // }
+  //
+  // getinfoAccount(): Observable<ModelInfoAccount[]> {
+  //   return this.http.get<ModelInfoAccount[]>(this.apiInfo);
+  // }
 
   logOut(callback: () => void): Promise<void> {
     return new Promise(() => {

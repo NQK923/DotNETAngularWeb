@@ -44,9 +44,9 @@ export class InfoAccountService {
     return this.http.get<ModelInfoAccount[]>(this.apiUrl);
   }
 
-  getInfoAccountById(id_account: number): Observable<ModelInfoAccount> {
-    return this.http.get<ModelInfoAccount>(`${this.api}/${id_account}`);
-  }
+  // getInfoAccountById(id_account: number): Observable<ModelInfoAccount> {
+  //   return this.http.get<ModelInfoAccount>(`${this.api}/${id_account}`);
+  // }
 
   getinfoaccount(): Observable<ModelInfoAccount[]> {
     return this.http.get<ModelInfoAccount[]>(this.apiUrl);

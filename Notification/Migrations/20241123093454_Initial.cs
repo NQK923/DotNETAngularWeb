@@ -33,8 +33,8 @@ namespace Notification.Migrations
                     IdNotification = table.Column<int>(type: "int", nullable: false),
                     IdManga = table.Column<int>(type: "int", nullable: false),
                     IdAccount = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
