@@ -4,7 +4,7 @@
       <div class="col-8 p-2 flex items-center">
         <!-- Logo -->
         <img (click)="goToIndex()" alt="Logo" class="hidden xl:block ml-4 img cursor-pointer"
-             src="https://mangaimg.blob.core.windows.net/assets/logo4.png">
+             src="https://dotnetmangaimg.blob.core.windows.net/assets/logo4.png">
         <!-- Hamburger Button -->
         <button class="text-white xl:hidden mx-4" (click)="menuOpen = !menuOpen">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +72,7 @@
           </div>
         </div>
         <div (click)="goToNotification()" class="flex px-2 cursor-pointer" id="iconNotification">
-          <img alt="Bell Icon" class="h-14" src="https://mangaimg.blob.core.windows.net/assets/icons8-bell-100.png">
+          <img alt="Bell Icon" class="h-14" src="https://dotnetmangaimg.blob.core.windows.net/assets/icons8-bell-100.png">
           <h1 class="h-1 w-1 text-sm rounded-full text-red-500 -ml-4 font-bold">+{{ numberNotification }}</h1>
         </div>
       </div>
@@ -112,7 +112,7 @@
               src="{{ data.Mangainfo?.CoverImg }}"
             />
             <ng-template #defaultImage>
-              <img alt="Avatar" class="object-cover" src="https://mangaimg.blob.core.windows.net/assets/trash_icon.webp" />
+              <img alt="Avatar" class="object-cover" src="https://dotnetmangaimg.blob.core.windows.net/assets/trash_icon.webp" />
             </ng-template>
           </div>
           <div class="ml-4 w-4/5">
@@ -136,7 +136,7 @@
               src="{{ oldData.Mangainfo?.CoverImg }}"
             />
             <ng-template #defaultImage>
-              <img alt="Avatar" class="object-cover" src="https://mangaimg.blob.core.windows.net/assets/trash_icon.webp" />
+              <img alt="Avatar" class="object-cover" src="https://dotnetmangaimg.blob.core.windows.net/assets/trash_icon.webp" />
             </ng-template>
           </div>
           <div class="ml-4 w-4/5">

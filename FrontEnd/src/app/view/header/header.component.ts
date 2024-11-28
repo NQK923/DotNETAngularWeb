@@ -125,9 +125,9 @@ export class HeaderComponent implements OnInit {
     return this.notificationService.getNotificationById(id);
   }
 
-  takeDataInfoAccount(id: number): Observable<ModelInfoAccount> {
-    return this.infoAccountService.getInfoAccountById(id);
-  }
+  // takeDataInfoAccount(id: number): Observable<ModelInfoAccount> {
+  //   return this.infoAccountService.getInfoAccountById(id);
+  // }
 
   takeDataManga(id: number): Observable<ModelManga> {
     return this.mangaService.getMangaById(id);
@@ -159,7 +159,7 @@ export class HeaderComponent implements OnInit {
       notification: this.takeDataNotification(notificationAc.IdNotification).pipe(
         map(notification => Array.isArray(notification) ? notification[0] : notification)
       ),
-      account: this.takeDataInfoAccount(notificationAc.IdAccount)
+      // account: this.takeDataInfoAccount(notificationAc.IdAccount)
     }).pipe(
       map(result => ({ ...result, notificationAc }))
     );

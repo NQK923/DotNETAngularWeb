@@ -12,7 +12,7 @@ using Notification.Data;
 namespace Notification.Migrations
 {
     [DbContext(typeof(NotificationDbContext))]
-    [Migration("20241110082019_Initial")]
+    [Migration("20241123093454_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -61,10 +61,14 @@ namespace Notification.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.HasKey("IdNotification");
 

@@ -74,24 +74,24 @@ export class ManagerCommentComponent implements OnInit {
   //get comment data
   //get comment data
   takeData() {
-    this.listDataComment = [];
-    const existingCommentIds = new Set(this.listDataComment.map(comment => comment.Comment?.IdComment));
-    const reportedComments = this.comments.filter(comment =>
-      comment.IsReported && !existingCommentIds.has(comment.IdComment)
-    );
-    const accountRequests = reportedComments.map(comment =>
-      this.infoAccountService.getInfoAccountById(Number(comment.IdComment)).pipe(
-        map((data: ModelInfoAccount) => new CommentData(comment, data))
-      )
-    );
-    forkJoin(accountRequests).subscribe(
-      (dataComments: CommentData[]) => {
-        this.listDataComment.push(...dataComments);
-      },
-      (error) => {
-        console.error('Error fetching account info:', error);
-      }
-    );
+    // this.listDataComment = [];
+    // const existingCommentIds = new Set(this.listDataComment.map(comment => comment.Comment?.IdComment));
+    // const reportedComments = this.comments.filter(comment =>
+    //   comment.IsReported && !existingCommentIds.has(comment.IdComment)
+    // );
+    // const accountRequests = reportedComments.map(comment =>
+    //   this.infoAccountService.getInfoAccountById(Number(comment.IdComment)).pipe(
+    //     map((data: ModelInfoAccount) => new CommentData(comment, data))
+    //   )
+    // );
+    // forkJoin(accountRequests).subscribe(
+    //   (dataComments: CommentData[]) => {
+    //     this.listDataComment.push(...dataComments);
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching account info:', error);
+    //   }
+    // );
   }
 
 // Xóa bình luận
@@ -125,73 +125,73 @@ export class ManagerCommentComponent implements OnInit {
 
 
   banComment(id: any, gmail: any) {
-    this.accountService.getAccount().subscribe(
-      (data: ModelAccount[]) => {
-        this.accounts = data;
-        for (const account of this.accounts) {
-          if (account.IdAccount === id) {
-            this.accountComment = account;
-            const newAccount: ModelAccount = {
-              IdAccount: this.accountComment.IdAccount,
-              Username: this.accountComment.Username,
-              Password: this.accountComment.Password,
-              Status: this.accountComment.Status,
-              BanComment: true
-            };
-            this.updateComment(newAccount, gmail)
-            return;
-          }
-        }
-        if (!this.accountComment) {
-          console.error('Không tìm thấy đối tượng với id khớp trong mảng.');
-        }
-      },
-      (error) => {
-        console.error('Error fetching accounts:', error);
-      }
-    );
+    // this.accountService.getAccount().subscribe(
+    //   (data: ModelAccount[]) => {
+    //     this.accounts = data;
+    //     for (const account of this.accounts) {
+    //       if (account.IdAccount === id) {
+    //         this.accountComment = account;
+    //         const newAccount: ModelAccount = {
+    //           IdAccount: this.accountComment.IdAccount,
+    //           Username: this.accountComment.Username,
+    //           Password: this.accountComment.Password,
+    //           Status: this.accountComment.Status,
+    //           BanComment: true
+    //         };
+    //         this.updateComment(newAccount, gmail)
+    //         return;
+    //       }
+    //     }
+    //     if (!this.accountComment) {
+    //       console.error('Không tìm thấy đối tượng với id khớp trong mảng.');
+    //     }
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching accounts:', error);
+    //   }
+    // );
   }
 
 // Cập nhật bình luận
   updateComment(account: ModelAccount, gmail: string) {
-    const title: string = "Thông báo tài khoản:";
-    const text: string = "Tài khoản bị cấm bình luận";
-
-    this.accountService.updateAccount(account).subscribe(
-      () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Thành công',
-          detail: 'Cập nhật thành công!'
-        });
-
-        this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Thành công',
-              detail: 'Gửi mail thành công.'
-            });
-          },
-          error: (error) => {
-            console.error(error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Lỗi',
-              detail: 'Có lỗi xảy ra khi gửi mail.'
-            });
-          }
-        });
-      },
-      (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Thất bại',
-          detail: 'Cập nhật thất bại!'
-        });
-        console.error('Update error:', error);
-      }
-    );
+    // const title: string = "Thông báo tài khoản:";
+    // const text: string = "Tài khoản bị cấm bình luận";
+    //
+    // this.accountService.updateAccount(account).subscribe(
+    //   () => {
+    //     this.messageService.add({
+    //       severity: 'success',
+    //       summary: 'Thành công',
+    //       detail: 'Cập nhật thành công!'
+    //     });
+    //
+    //     this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
+    //       next: () => {
+    //         this.messageService.add({
+    //           severity: 'success',
+    //           summary: 'Thành công',
+    //           detail: 'Gửi mail thành công.'
+    //         });
+    //       },
+    //       error: (error) => {
+    //         console.error(error);
+    //         this.messageService.add({
+    //           severity: 'error',
+    //           summary: 'Lỗi',
+    //           detail: 'Có lỗi xảy ra khi gửi mail.'
+    //         });
+    //       }
+    //     });
+    //   },
+    //   (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Thất bại',
+    //       detail: 'Cập nhật thất bại!'
+    //     });
+    //     console.error('Update error:', error);
+    //   }
+    // );
   }
 
   goToIndex() {
