@@ -15,12 +15,12 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
   const router = inject(Router);
   const accountService = inject(AccountService);
 
-  const userId = localStorage.getItem('userId');
+  // const userId = localStorage.getItem('userId');
 
-  if (!userId) {
-    router.navigate(['/']);
-    return of(false);
-  }
+  // if (!userId) {
+  //   router.navigate(['/']);
+  //   return of(false);
+  // }
 
   return accountService.isLoggedInObservable().pipe(
     map((loggedIn) => {

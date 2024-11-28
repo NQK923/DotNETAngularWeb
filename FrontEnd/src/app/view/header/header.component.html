@@ -68,7 +68,7 @@
         <!-- Avatar & Notifications -->
         <div (click)="isAdmin ? goToManager() : goToClientManager()" class="cursor-pointer" id="clientManager">
           <div class="h-14 w-14 bg-white rounded-full overflow-hidden border">
-            <img alt="Avatar" class="h-14 w-14 p-0 object-cover flex" src="https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png">
+            <img alt="Avatar" class="h-14 w-14 p-0 object-cover flex" [src]="urlAvatarUser">
           </div>
         </div>
         <div (click)="goToNotification()" class="flex px-2 cursor-pointer" id="iconNotification">

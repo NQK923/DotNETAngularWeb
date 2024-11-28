@@ -1,22 +1,22 @@
-import {Component, ElementRef, HostListener, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {ModelAccount} from "../../Model/ModelAccount";
-import {AccountService} from "../../service/Account/account.service";
-import {ModelInfoAccount} from "../../Model/ModelInfoAccoutn";
-import {ModelNotification} from "../../Model/ModelNotification";
-import {ModelManga} from "../../Model/ModelManga";
-import {ModelNotificationMangaAccount} from "../../Model/ModelNotificationMangaAccount";
-import {NotificationService} from "../../service/notification/notification.service";
-import {InfoAccountService} from "../../service/InfoAccount/info-account.service";
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModelAccount } from "../../Model/ModelAccount";
+import { AccountService } from "../../service/Account/account.service";
+import { ModelInfoAccount } from "../../Model/ModelInfoAccoutn";
+import { ModelNotification } from "../../Model/ModelNotification";
+import { ModelManga } from "../../Model/ModelManga";
+import { ModelNotificationMangaAccount } from "../../Model/ModelNotificationMangaAccount";
+import { NotificationService } from "../../service/notification/notification.service";
+import { InfoAccountService } from "../../service/InfoAccount/info-account.service";
 import {
   NotificationMangaAccountService
 } from "../../service/notificationMangaAccount/notification-manga-account.service";
-import {CombinedData} from "../../Model/CombinedData";
-import {MangaFavoriteService} from "../../service/MangaFavorite/manga-favorite.service";
-import {ModelMangaFavorite} from "../../Model/MangaFavorite";
-import {concatMap, forkJoin, map, Observable} from "rxjs";
-import {MangaService} from "../../service/Manga/manga.service";
-import {ConfirmationService, MessageService} from "primeng/api";
+import { CombinedData } from "../../Model/CombinedData";
+import { MangaFavoriteService } from "../../service/MangaFavorite/manga-favorite.service";
+import { ModelMangaFavorite } from "../../Model/MangaFavorite";
+import { concatMap, forkJoin, map, Observable } from "rxjs";
+import { MangaService } from "../../service/Manga/manga.service";
+import { ConfirmationService, MessageService } from "primeng/api";
 
 @Component({
   selector: 'app-header',
@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
   name: string | null = null;
   idAccount: number = -1;
   infoAccount: ModelInfoAccount[] = [];
-  mangas: ModelManga [] = [];
+  mangas: ModelManga[] = [];
   mangaFavorite: ModelMangaFavorite[] = [];
   ListCombinedData: CombinedData[] = [];
   ListCombinedDataIsRead: CombinedData[] = [];
@@ -41,20 +41,22 @@ export class HeaderComponent implements OnInit {
   info: ModelInfoAccount | undefined;
   isAdmin: boolean = false;
   menuOpen = false;
+  urlAvatarUser: string | null = null;
 
-    // Two way data binding
-  isLoggedIn : boolean = true;
-    // Two way data binding
+
+  // Two way data binding
+  isLoggedIn: boolean = true;
+  // Two way data binding
   constructor(private accountService: AccountService,
-              private router: Router,
-              private el: ElementRef,
-              private notificationService: NotificationService,
-              private infoAccountService: InfoAccountService,
-              private notificationMangaAccountService: NotificationMangaAccountService,
-              private mangaFavoriteService: MangaFavoriteService,
-              private mangaService: MangaService,
-              private messageService: MessageService,
-              private confirmationService: ConfirmationService,
+    private router: Router,
+    private el: ElementRef,
+    private notificationService: NotificationService,
+    private infoAccountService: InfoAccountService,
+    private notificationMangaAccountService: NotificationMangaAccountService,
+    private mangaFavoriteService: MangaFavoriteService,
+    private mangaService: MangaService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) {
   }
 
@@ -66,8 +68,22 @@ export class HeaderComponent implements OnInit {
     this.ListCombinedDataIsRead = [];
     (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
+      this.SetAvatarUser();
     });
     this.allFunction();
+  }
+
+  private SetAvatarUser() {
+    if (!this.isLoggedIn) { this.urlAvatarUser = "https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png" }
+    else {
+      this.accountService.getAccountCookieObservable().subscribe(response => {
+        this.infoAccountService.getInfoAccountByIdTN(response.id_account).subscribe(response1 => {
+          this.urlAvatarUser = response1.cover_img;
+        }, error => {
+          console.log(error)
+        });
+      })
+    }
   }
 
   private async checkLogin() {
@@ -77,6 +93,7 @@ export class HeaderComponent implements OnInit {
     //kiểm tra nếu account đã log
     (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
+      this.SetAvatarUser();
     });
   }
 
@@ -142,7 +159,7 @@ export class HeaderComponent implements OnInit {
       ),
       // account: this.takeDataInfoAccount(notificationAc.IdAccount)
     }).pipe(
-      map(result => ({...result, notificationAc}))
+      map(result => ({ ...result, notificationAc }))
     );
   }
 
@@ -180,9 +197,9 @@ export class HeaderComponent implements OnInit {
   onSearch(): void {
     if (this.searchQuery.trim()) {
       if (this.router.url.includes('/list-view')) {
-        this.router.navigate([], {queryParams: {search: this.searchQuery}});
+        this.router.navigate([], { queryParams: { search: this.searchQuery } });
       } else {
-        this.router.navigate(['/list-view'], {queryParams: {search: this.searchQuery}});
+        this.router.navigate(['/list-view'], { queryParams: { search: this.searchQuery } });
       }
     } else {
       this.router.navigate(['/list-view']);
