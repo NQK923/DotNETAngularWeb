@@ -20,6 +20,8 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { MangaViewHistoryService } from "../../../service/MangaViewHistory/MangaViewHistory.service";
 import { MangaFavoriteService } from "../../../service/MangaFavorite/manga-favorite.service";
 import { InfoAccountService } from '../../../service/InfoAccount/info-account.service';
+import { InfoAccountRequest } from '../../../Model/InfoAccount/InfoAccountRequest';
+import { AccountCookieResponse } from '../../../Model/Account/AccountCookieResponse';
 
 interface Manga {
   IdManga: number;
@@ -101,6 +103,7 @@ export class ClientManagerComponent implements OnInit {
   urlImg: string | null = null;
   urlAvatarUser: string | null = null;
   isExternal: boolean = false;
+
   constructor(private accountService: AccountService, private el: ElementRef,
     private mangaService: MangaService,
     private notificationService: NotificationService,
@@ -124,7 +127,7 @@ export class ClientManagerComponent implements OnInit {
         if (response1.email == "" || response1.email == null) {
           this.isExternal = true;
         }
-        else{
+        else {
           this.email = response1.email;
         }
         this.nameUser = response1.name;
@@ -830,6 +833,28 @@ export class ClientManagerComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+  // TN update info
+  async updateInfoByIdAccount() {
+    let cookie: AccountCookieResponse = await this.accountService.getAccountCookie();
+    let info: InfoAccountRequest = { id_account: cookie.id_account };
+
+    if (this.nameUser) {
+      info.name = this.nameUser;
+    }
+
+    if (this.email) {
+      info.email = this.email;
+    }
+    if(this.selectedFile)
+    {
+      console.log(this.selectedFile.name);
+    }
+    this.infoAccountService.updateInfoAccountById(info, this.selectedFile).subscribe(response => {
+      if (response == false) {
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không có thông tin nào thay đổi.' });
+      }
+    });
   }
 
   addAvatar(form: any) {

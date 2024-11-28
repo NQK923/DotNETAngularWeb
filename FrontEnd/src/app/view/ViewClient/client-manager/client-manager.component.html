@@ -388,8 +388,12 @@
         </div>
 
         <input class="w-full border h-12 rounded-full p-2 mb-3"  [(ngModel)]="name" id="nameUser" placeholder="Tên:" type="text">
-        <input class="w-full border h-12 rounded-full p-2 mb-3" id="emailUser" placeholder="Email:" type="text">
-        <button (click)="updateInfo()" class="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+        <input *ngIf="!isExternal" class="w-full border h-12 rounded-full p-2 mb-3" id="emailUser" placeholder="Email:" type="text">
+        <!-- <button (click)="updateInfo()" class="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+          Lưu
+        </button> -->
+
+        <button (click)="updateInfoByIdAccount()" class="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
           Lưu
         </button>
       </div>

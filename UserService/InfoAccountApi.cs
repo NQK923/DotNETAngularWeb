@@ -1,6 +1,8 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -17,7 +19,60 @@ namespace UserService
             MapPostAddInfomation(endpointRouteBuilder, configuration);
             MapGetInfoMationAccountByID(endpointRouteBuilder);
             MapPostValidEmail(endpointRouteBuilder);
+            MapPutChangeInfoMationAccountByID(endpointRouteBuilder, configuration);
         }
+
+        public static void MapPutChangeInfoMationAccountByID(this IEndpointRouteBuilder endpointRouteBuilder, IConfiguration configuration)
+        {
+            endpointRouteBuilder.MapPut("/infoAccount/ChangeInfoMationAccountByID", async (HttpRequest request, UserServiceDBContext dBContext) =>
+            {
+                var form = await request.ReadFormAsync();
+                var infoAccountReq = form["infoAccountReq"];
+                var file = form.Files["file"];
+
+                var changeInformationRequest = JsonConvert.DeserializeObject<ChangeInformationRequest>(infoAccountReq);
+
+                var infoAccount = await dBContext.infoAccounts.FirstOrDefaultAsync(info => info.id_account == changeInformationRequest.id_account);
+                if (infoAccount == null)
+                {
+                    return Results.BadRequest("Lỗi MapPutChangeInfoMationAccountByID");
+                }
+                if (infoAccount.email == null && infoAccount.name.Equals(changeInformationRequest.name) && file == null)
+                {
+                    return Results.Ok(false);
+                }
+                if (infoAccount.email !=null && infoAccount.email.Equals(changeInformationRequest.email) && infoAccount.name.Equals(changeInformationRequest.name) && file == null)
+                {
+                    return Results.Ok(false);
+                }
+
+
+                if (!string.IsNullOrEmpty(changeInformationRequest.email)) { infoAccount.email = changeInformationRequest.email; }
+                if (!string.IsNullOrEmpty(changeInformationRequest.name)) { infoAccount.name = changeInformationRequest.name; }
+                if (file != null)
+                {
+                    var blobServiceClient = new BlobServiceClient(configuration["AzureStorage:ConnectionString"]);
+                    var blobContainerClient = blobServiceClient.GetBlobContainerClient("avatars");
+                    var blobName = $"IA{infoAccount.id_account}.jpg";
+                    var blobClient = blobContainerClient.GetBlobClient(blobName);
+                    Console.WriteLine(blobClient.Uri.ToString());
+                    await blobClient.DeleteIfExistsAsync();
+
+
+                    blobClient = blobContainerClient.GetBlobClient(blobName);
+                    using (var stream = file.OpenReadStream())
+                    {
+                        await blobClient.UploadAsync(stream, true);
+                    }
+                    string img = blobClient.Uri.ToString();
+                    infoAccount.cover_img = img;
+                }
+
+                await dBContext.SaveChangesAsync();
+                return Results.Ok(infoAccount);
+            });
+        }
+
 
         public static void MapGetInfoMationAccountByID(this IEndpointRouteBuilder endpointRouteBuilder)
         {
@@ -36,7 +91,7 @@ namespace UserService
         {
             endpointRouteBuilder.MapPost("/infoAccount/CheckEmailValid", async (string email) =>
             {
-                using var httpClient = new HttpClient(); 
+                using var httpClient = new HttpClient();
                 var response = await httpClient.GetAsync($"https://emailvalidation.abstractapi.com/v1/?api_key=a2d97dea13244bc0bb8ec58a0f5080c7&email={email}");
                 var content = await response.Content.ReadAsStringAsync();
                 var jsonResponse = JObject.Parse(content);
@@ -77,7 +132,7 @@ namespace UserService
                             HttpHeaders = blobHttpHeaders
                         });
                     }
-                    img = blobClient.Uri.ToString();                  
+                    img = blobClient.Uri.ToString();
                 }
                 else
                 {
