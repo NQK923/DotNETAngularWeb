@@ -36,7 +36,7 @@ export class LoginComponent {
 
   constructor(private router: Router,
     private accountService: AccountService, private messageService: MessageService,) {
-    this.accountService.checkExternalLogin(this.reloadPage.bind(this), this.failCallback.bind(this) );
+    this.accountService.checkExternalLogin(this.gotToIndex.bind(this), this.failCallback.bind(this) );
   }
 
 

@@ -13,8 +13,7 @@ export class InfoAccountService {
 
   // private apiUrl = 'https://localhost:44387/api/InfoAccount';
   // private api = 'https://localhost:44387/api/InfoAccountById';
-  private isChangeInfo = new BehaviorSubject<boolean>(false);
-  private port = 5004;
+  private port = 7253;
   private apiAddInfomationUrl = `http://localhost:${this.port}/infoAccount/AddInfomation`;
   private apiGetInfomationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
   private apiChangeInfoMationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/ChangeInfoMationAccountByID`;
