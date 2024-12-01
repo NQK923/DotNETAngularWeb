@@ -36,7 +36,7 @@ export class LoginComponent {
 
   constructor(private router: Router,
     private accountService: AccountService, private messageService: MessageService,) {
-    this.accountService.checkExternalLogin(this.reloadPage.bind(this));
+    this.accountService.checkExternalLogin(this.reloadPage.bind(this), this.failCallback.bind(this) );
   }
 
 
@@ -89,6 +89,11 @@ export class LoginComponent {
         this.isInvalidPassword = true;
         break;
       default:
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Tài khoản đã bị khóa tới thời gian : ' + error.toString()
+        });
         break;
     }
   }

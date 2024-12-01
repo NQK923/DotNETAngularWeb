@@ -96,7 +96,8 @@ export class ClientManagerComponent implements OnInit {
   returnNotification: ModelNotification | null = null;
   infoAccounts: ModelInfoAccount[] = [];
   url: string | null = null;
-  name: string | null = null;
+  nameUpdate: string | null = null;
+  emailUpdate: string | null = null;
   email: string | null = null;
   nameUser: string | null = null;
   idAccount: number | null = null;
@@ -133,9 +134,10 @@ export class ClientManagerComponent implements OnInit {
         }
         else {
           this.email = response1.email;
+          this.emailUpdate = response1.email;
         }
         this.nameUser = response1.name;
-        this.name = response1.name;
+        this.nameUpdate = response1.name;
       }, error => {
         console.log(error)
       });
@@ -844,12 +846,12 @@ export class ClientManagerComponent implements OnInit {
     let cookie: AccountCookieResponse = await this.accountService.getAccountCookie();
     let info: InfoAccountRequest = { id_account: cookie.id_account };
 
-    if (this.name) {
-      info.name = this.name;
+    if (this.nameUpdate) {
+      info.name = this.nameUpdate;
     }
 
-    if (this.email) {
-      info.email = this.email;
+    if (this.emailUpdate) {
+      info.email = this.emailUpdate;
     }
     if (this.selectedFile) {
       console.log(this.selectedFile.name);
@@ -859,8 +861,13 @@ export class ClientManagerComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không có thông tin nào thay đổi.' });
         return;
       }
-
-      window.location.reload();
+      else if (response == "Email không hợp lệ") {
+        this.emailUpdate = this.email;
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email không hợp lệ.' });
+        return;
+      }
+      this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Thay đổi thông tin thành công' });
+      setTimeout(() => { window.location.reload(); }, 1500);
     });
   }
 
@@ -1001,7 +1008,7 @@ export class ClientManagerComponent implements OnInit {
     for (let i = 0; i < this.accounts.length; i++) {
 
       if (this.accounts[i].IdAccount === userId) {
-        this.name = this.accounts[i].Username || null;
+        this.nameUpdate = this.accounts[i].Username || null;
         break;
       }
     }
@@ -1012,7 +1019,7 @@ export class ClientManagerComponent implements OnInit {
       if (this.infoAccounts[i].IdAccount === userId) {
         this.url = this.infoAccounts[i].CoverImg || null;
         this.nameUser = this.infoAccounts[i].Name || null;
-        this.email = this.infoAccounts[i].Email || null;
+        this.emailUpdate = this.infoAccounts[i].Email || null;
         break;
       }
     }

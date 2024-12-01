@@ -14,7 +14,7 @@
           <div class="h-14 w-14 bg-white rounded-full overflow-hidden border">
             <img alt="Avatar" class="h-full w-full object-cover" loading="lazy" [src]="urlAvatarUser">
           </div>
-          <div class="text-white  text-sm text-center">{{ name }}</div>
+          <div class="text-white  text-sm text-center">{{ nameUser }}</div>
         </div>
       </div>
     </div>
@@ -330,7 +330,7 @@
         </button>
         <div class="text-center mb-4">
           <img alt="Person" class="rounded-full border border-gray-300 w-24 h-24 mx-auto" [src]="urlAvatarUser">
-          <p class="font-bold text-blue-500 mt-2">Tài khoản: {{ name }}</p>
+          <p class="font-bold text-blue-500 mt-2">Tài khoản: {{ nameUser }}</p>
         </div>
 
         <div class="flex justify-center gap-4 mb-4">
@@ -365,7 +365,7 @@
 
         <div class="text-center mb-4">
           <img alt="Person" class="rounded-full border border-gray-300 w-24 h-24 mx-auto" [src]="urlAvatarUser">
-          <p class="font-bold mb-2">Tài khoản: {{ name }}</p>
+          <p class="font-bold mb-2">Tài khoản: {{ nameUser }}</p>
         </div>
 
         <!-- File Upload -->
@@ -386,8 +386,8 @@
             class="w-full bg-blue-200 py-2 rounded-r-full hover:bg-blue-300">Chỉnh sửa thông tin</button>
         </div>
 
-        <input class="w-full border h-12 rounded-full p-2 mb-3"  [(ngModel)]="name" id="nameUser" placeholder="Tên:" type="text">
-        <input *ngIf="!isExternal" class="w-full border h-12 rounded-full p-2 mb-3" id="emailUser" placeholder="Email:" type="text">
+        <input class="w-full border h-12 rounded-full p-2 mb-3"  [(ngModel)]="nameUpdate" id="nameUser" placeholder="Tên:" type="text">
+        <input *ngIf="!isExternal" class="w-full border h-12 rounded-full p-2 mb-3" [(ngModel)]="emailUpdate" id="emailUser" placeholder="Email:" type="text">
         <!-- <button (click)="updateInfo()" class="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
           Lưu
         </button> -->
