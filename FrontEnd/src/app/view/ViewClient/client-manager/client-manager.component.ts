@@ -145,12 +145,7 @@ export class ClientManagerComponent implements OnInit {
 
   async ngOnInit() {
     // console.log(await this.accountService.getAccountCookie());
-    this.SetInfoUser();
-    this.infoAccountService.getChangeInfo().subscribe(response => {
-      if (response == true) {
-        this.SetInfoUser();
-      }
-    });
+    this.SetInfoUser()
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -865,7 +860,6 @@ export class ClientManagerComponent implements OnInit {
         return;
       }
 
-      this.infoAccountService.setChangeInfo(true);
       window.location.reload();
     });
   }

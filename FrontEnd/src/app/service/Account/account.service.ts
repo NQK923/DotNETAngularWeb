@@ -113,11 +113,6 @@ export class AccountService {
           }
           else { newInfo = { name: user.name, img: user.photoUrl, idAccount: response }; }
 
-          this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
-            this.infoAccountService.setChangeInfo(true);
-            console.log(response);
-          });
-
           this.loggedIn.next(true);
           resolve(response);
         },

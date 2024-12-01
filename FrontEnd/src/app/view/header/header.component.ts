@@ -64,12 +64,7 @@ export class HeaderComponent implements OnInit {
 
   async ngOnInit() {
     await this.checkLogin();
-    this.infoAccountService.getChangeInfo().subscribe(response => {
-      if (response == true) {
-        this.SetAvatarUser();
-        this.infoAccountService.setChangeInfo(false);
-      }
-    });
+
     this.ListCombinedData = [];
     this.ListCombinedDataIsRead = [];
     this.allFunction();
@@ -80,6 +75,7 @@ export class HeaderComponent implements OnInit {
     else {
       this.accountService.getAccountCookieObservable().subscribe(response => {
         this.infoAccountService.getInfoAccountByIdTN(response.id_account).subscribe(response1 => {
+          console.log(response1.cover_img)
           this.urlAvatarUser = response1.cover_img;
         }, error => {
           console.log(error)

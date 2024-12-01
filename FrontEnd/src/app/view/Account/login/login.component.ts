@@ -35,7 +35,7 @@ export class LoginComponent {
 
   constructor(private router: Router,
     private accountService: AccountService) {
-    this.accountService.checkExternalLogin(this.gotToIndex.bind(this));
+    this.accountService.checkExternalLogin(this.reloadPage.bind(this));
   }
 
 
@@ -55,11 +55,14 @@ export class LoginComponent {
     this.accountService.signInWithFB();
   }
 
+  reloadPage(): void {
+    window.location.reload();
+  }
 
   // check login
   async loginNormal(): Promise<void> {
     if (!this.checkLoginData()) return;
-    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this), this.failCallback.bind(this));
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.reloadPage.bind(this), this.failCallback.bind(this));
     if (!result) {
       // console.log("NOT OK");
       return;

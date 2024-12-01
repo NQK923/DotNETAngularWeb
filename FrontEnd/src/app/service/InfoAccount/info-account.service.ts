@@ -34,8 +34,6 @@ export class InfoAccountService {
     return this.http.put<any>(this.apiChangeInfoMationAccountByIDUrl, formData);
   }
 
-  setChangeInfo(value: boolean): void { this.isChangeInfo.next(value); console.log("setChangeInfo") }
-  getChangeInfo(): Observable<boolean> { console.log("getChangeInfo"); return this.isChangeInfo.asObservable(); }
 
   //Trung Nguyen làm
   getInfoAccountByIdTN(id_account: number): Observable<InfoAccountResponse> {

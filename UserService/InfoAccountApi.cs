@@ -58,6 +58,8 @@ namespace UserService
                     
                     await blobClient.DeleteIfExistsAsync();
 
+                    if(infoAccount.cover_img.Contains("New")){ blobName = $"IA{infoAccount.id_account}.jpg";}
+                    else { blobName = $"NewIA{infoAccount.id_account}.jpg"; }
 
                     blobClient = blobContainerClient.GetBlobClient(blobName);
                     using (var stream = file.OpenReadStream())
