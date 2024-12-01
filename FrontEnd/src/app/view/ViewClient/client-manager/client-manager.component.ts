@@ -846,6 +846,11 @@ export class ClientManagerComponent implements OnInit {
     let cookie: AccountCookieResponse = await this.accountService.getAccountCookie();
     let info: InfoAccountRequest = { id_account: cookie.id_account };
 
+    if (this.nameUpdate == "" || this.emailUpdate == "") {
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không bỏ trống dữ liệu.' });
+      return;
+    }
+
     if (this.nameUpdate) {
       info.name = this.nameUpdate;
     }

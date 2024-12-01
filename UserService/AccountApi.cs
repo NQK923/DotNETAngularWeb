@@ -79,7 +79,8 @@ namespace UserService
             {
                 var account = await dBContext.accounts.FirstOrDefaultAsync(account => account.username == username);
                 if (account == null) return Results.Ok("Tài khoản chưa tồn tại");
-                if (!account.status) return Results.BadRequest(account.banDate);
+                if (!account.status && account.banDate < DateTime.Now) { account.status = true; await dBContext.SaveChangesAsync(); }
+                else { return Results.BadRequest(account.banDate); }
                 CreateCookie(httpContext, GenerateToken(account.id_account, account.role));
                 return Results.Ok();
             });
@@ -164,7 +165,8 @@ namespace UserService
                 var account = await dBContext.accounts.FirstOrDefaultAsync(acc => acc.username == loginRegisterRequest.username);
                 if (account == null) return Results.BadRequest("Tài khoản không tồn tại");
                 if (!account.password.Equals(loginRegisterRequest.password)) return Results.BadRequest("Sai mật khẩu");
-                if (!account.status) return Results.BadRequest(account.banDate);
+                if (!account.status && account.banDate < DateTime.Now) { account.status = true; await dBContext.SaveChangesAsync(); }
+                else { return Results.BadRequest(account.banDate); }
 
                 CreateCookie(httpContext, GenerateToken(account.id_account, account.role));
                 return Results.Ok();
