@@ -844,8 +844,8 @@ export class ClientManagerComponent implements OnInit {
     let cookie: AccountCookieResponse = await this.accountService.getAccountCookie();
     let info: InfoAccountRequest = { id_account: cookie.id_account };
 
-    if (this.nameUser) {
-      info.name = this.nameUser;
+    if (this.name) {
+      info.name = this.name;
     }
 
     if (this.email) {
