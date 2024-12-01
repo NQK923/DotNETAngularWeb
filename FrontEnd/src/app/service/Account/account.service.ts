@@ -35,7 +35,7 @@ export class AccountService {
   user: SocialUser | undefined;
 
   private loggedIn = new BehaviorSubject<boolean>(false);
-  testlogin$ = this.loggedIn.asObservable();
+
   constructor(private authService: SocialAuthService, private http: HttpClient, private infoAccountService: InfoAccountService) {
 
   }
@@ -74,6 +74,7 @@ export class AccountService {
     return new Promise(() => {
       this.http.post<any>(this.apiLogOut, {}, { withCredentials: true }).subscribe({
         next: (response) => {
+          this.authService.signOut();
           console.log(response)
           callback();
         },
@@ -88,18 +89,33 @@ export class AccountService {
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
   }
 
-  public checkExternalLogin(successCallback: () => void): void {
+  public checkExternalLogin(successCallback: () => void, failCallback: (error: string) => void): void {
     this.authService.authState.subscribe(async (user) => {
       console.log(user);
-      this.LoginExternal(user, successCallback);
+      this.LoginExternal(user, successCallback, failCallback);
     });
   }
 
-  private async LoginExternal(user: SocialUser, successCallback: () => void) {
-    let result: string = await this.CheckExistExternalAccount(user.id.toString());
-    if (result == "Tài khoản chưa tồn tại") await this.RegisterExternalAccount(user);
-    this.loggedIn.next(true);
-    successCallback();
+  private async LoginExternal(user: SocialUser, successCallback: () => void, failCallback: (error: string) => void) {
+    return new Promise((resolve, reject) => {
+      this.http.post<string>(`${this.apiCheckExistExternalAccountUrl}?username=${user.id.toString()}`, {}, { withCredentials: true }).subscribe({
+        next: async (response) => {
+          console.log("LoginExternal")
+          if (response == "Tài khoản chưa tồn tại") { await this.RegisterExternalAccount(user); }
+          else {
+            console.log("else")
+            this.loggedIn.next(true);
+            successCallback();
+          }
+        },
+        error: (error) => {
+          failCallback(error.error);
+          reject(false);
+        }
+      });
+    });
+
+
   }
 
   private RegisterExternalAccount(user: SocialUser): Promise<number> {
@@ -112,10 +128,6 @@ export class AccountService {
           }
           else { newInfo = { name: user.name, img: user.photoUrl, idAccount: response }; }
 
-          this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
-            console.log(response);
-          });
-
           this.loggedIn.next(true);
           resolve(response);
         },
@@ -127,19 +139,6 @@ export class AccountService {
     });
   }
   // Trả về cookie
-  private CheckExistExternalAccount(username: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.http.post<string>(`${this.apiCheckExistExternalAccountUrl}?username=${username}`, {}, { withCredentials: true }).subscribe({
-        next: (response) => {
-          resolve(response);
-        },
-        error: (error) => {
-          reject(false);
-        }
-      });
-    });
-  }
-
 
   public getAccountCookie(): Promise<AccountCookieResponse> {
     // GỌI NHƯ NÀY ĐỂ SỬ DỤNG HÀM  await this.accountService.getIdAccount();

@@ -96,14 +96,15 @@ export class ClientManagerComponent implements OnInit {
   returnNotification: ModelNotification | null = null;
   infoAccounts: ModelInfoAccount[] = [];
   url: string | null = null;
-  name: string | null = null;
+  nameUpdate: string | null = null;
+  emailUpdate: string | null = null;
   email: string | null = null;
   nameUser: string | null = null;
   idAccount: number | null = null;
   urlImg: string | null = null;
   urlAvatarUser: string | null = null;
   isExternal: boolean = false;
-
+  panel: string = "";
   constructor(private accountService: AccountService, private el: ElementRef,
     private mangaService: MangaService,
     private notificationService: NotificationService,
@@ -120,6 +121,10 @@ export class ClientManagerComponent implements OnInit {
   ) {
   }
 
+  ChangeInfomation(panel: string): void {
+    this.panel = panel;
+  }
+
   private SetInfoUser() {
     this.accountService.getAccountCookieObservable().subscribe(response => {
       this.infoAccountService.getInfoAccountByIdTN(response.id_account).subscribe(response1 => {
@@ -129,9 +134,10 @@ export class ClientManagerComponent implements OnInit {
         }
         else {
           this.email = response1.email;
+          this.emailUpdate = response1.email;
         }
         this.nameUser = response1.name;
-        this.name = response1.name;
+        this.nameUpdate = response1.name;
       }, error => {
         console.log(error)
       });
@@ -141,7 +147,7 @@ export class ClientManagerComponent implements OnInit {
 
   async ngOnInit() {
     // console.log(await this.accountService.getAccountCookie());
-    this.SetInfoUser();
+    this.SetInfoUser()
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -839,21 +845,33 @@ export class ClientManagerComponent implements OnInit {
     let cookie: AccountCookieResponse = await this.accountService.getAccountCookie();
     let info: InfoAccountRequest = { id_account: cookie.id_account };
 
-    if (this.nameUser) {
-      info.name = this.nameUser;
+    if (this.nameUpdate == "" || this.emailUpdate == "") {
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không bỏ trống dữ liệu.' });
+      return;
     }
 
-    if (this.email) {
-      info.email = this.email;
+    if (this.nameUpdate) {
+      info.name = this.nameUpdate;
     }
-    if(this.selectedFile)
-    {
+
+    if (this.emailUpdate) {
+      info.email = this.emailUpdate;
+    }
+    if (this.selectedFile) {
       console.log(this.selectedFile.name);
     }
     this.infoAccountService.updateInfoAccountById(info, this.selectedFile).subscribe(response => {
       if (response == false) {
         this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không có thông tin nào thay đổi.' });
+        return;
       }
+      else if (response == "Email không hợp lệ") {
+        this.emailUpdate = this.email;
+        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Email không hợp lệ.' });
+        return;
+      }
+      this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Thay đổi thông tin thành công' });
+      setTimeout(() => { window.location.reload(); }, 1500);
     });
   }
 
@@ -994,7 +1012,7 @@ export class ClientManagerComponent implements OnInit {
     for (let i = 0; i < this.accounts.length; i++) {
 
       if (this.accounts[i].IdAccount === userId) {
-        this.name = this.accounts[i].Username || null;
+        this.nameUpdate = this.accounts[i].Username || null;
         break;
       }
     }
@@ -1005,7 +1023,7 @@ export class ClientManagerComponent implements OnInit {
       if (this.infoAccounts[i].IdAccount === userId) {
         this.url = this.infoAccounts[i].CoverImg || null;
         this.nameUser = this.infoAccounts[i].Name || null;
-        this.email = this.infoAccounts[i].Email || null;
+        this.emailUpdate = this.infoAccounts[i].Email || null;
         break;
       }
     }

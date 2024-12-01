@@ -41,13 +41,25 @@ namespace UserService
                 {
                     return Results.Ok(false);
                 }
-                if (infoAccount.email !=null && infoAccount.email.Equals(changeInformationRequest.email) && infoAccount.name.Equals(changeInformationRequest.name) && file == null)
+                if (infoAccount.email != null && infoAccount.email.Equals(changeInformationRequest.email) && infoAccount.name.Equals(changeInformationRequest.name) && file == null)
                 {
                     return Results.Ok(false);
                 }
 
 
-                if (!string.IsNullOrEmpty(changeInformationRequest.email)) { infoAccount.email = changeInformationRequest.email; }
+                if (!string.IsNullOrEmpty(changeInformationRequest.email))
+                {
+                    using var httpClient = new HttpClient();
+                    var response = await httpClient.GetAsync($"https://emailvalidation.abstractapi.com/v1/?api_key=a2d97dea13244bc0bb8ec58a0f5080c7&email={changeInformationRequest.email}");
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonResponse = JObject.Parse(content);
+                    bool isSmtpValid = jsonResponse["is_smtp_valid"]["value"].Value<bool>();
+                    if (isSmtpValid) { infoAccount.email = changeInformationRequest.email; }
+                    else
+                    {
+                        return Results.Ok("Email không hợp lệ");
+                    }
+                }
                 if (!string.IsNullOrEmpty(changeInformationRequest.name)) { infoAccount.name = changeInformationRequest.name; }
                 if (file != null)
                 {
@@ -55,17 +67,21 @@ namespace UserService
                     var blobContainerClient = blobServiceClient.GetBlobContainerClient("avatars");
                     var blobName = $"IA{infoAccount.id_account}.jpg";
                     var blobClient = blobContainerClient.GetBlobClient(blobName);
-                    Console.WriteLine(blobClient.Uri.ToString());
+
                     await blobClient.DeleteIfExistsAsync();
 
+                    if (infoAccount.cover_img.Contains("New")) { blobName = $"IA{infoAccount.id_account}.jpg"; }
+                    else { blobName = $"NewIA{infoAccount.id_account}.jpg"; }
 
                     blobClient = blobContainerClient.GetBlobClient(blobName);
                     using (var stream = file.OpenReadStream())
                     {
                         await blobClient.UploadAsync(stream, true);
                     }
+                    var properties = await blobClient.GetPropertiesAsync();
                     string img = blobClient.Uri.ToString();
                     infoAccount.cover_img = img;
+                    Console.WriteLine("Up ảnh");
                 }
 
                 await dBContext.SaveChangesAsync();
@@ -106,7 +122,7 @@ namespace UserService
         {
             endpointRouteBuilder.MapPost("/infoAccount/AddInfomation", async (InfoMationRegisterRequest infoMationRegisterRequest, UserServiceDBContext dBContext) =>
             {
-                // Kiểm tra tài khoản có tồn tại
+
                 string img = "";
                 if (!infoMationRegisterRequest.img.Equals("https://dotnetmangaimg.blob.core.windows.net/avatars/defaulImage.png"))
                 {
@@ -133,6 +149,7 @@ namespace UserService
                         });
                     }
                     img = blobClient.Uri.ToString();
+                    var properties = await blobClient.GetPropertiesAsync();
                 }
                 else
                 {

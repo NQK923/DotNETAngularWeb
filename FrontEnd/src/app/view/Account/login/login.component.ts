@@ -6,6 +6,7 @@ import { InfoAccountService } from "../../../service/InfoAccount/info-account.se
 import { Location } from '@angular/common';
 import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -34,8 +35,8 @@ export class LoginComponent {
   // Two way data binding
 
   constructor(private router: Router,
-    private accountService: AccountService) {
-    this.accountService.checkExternalLogin(this.gotToIndex.bind(this));
+    private accountService: AccountService, private messageService: MessageService,) {
+    this.accountService.checkExternalLogin(this.reloadPage.bind(this), this.failCallback.bind(this) );
   }
 
 
@@ -55,11 +56,14 @@ export class LoginComponent {
     this.accountService.signInWithFB();
   }
 
+  reloadPage(): void {
+    window.location.reload();
+  }
 
   // check login
   async loginNormal(): Promise<void> {
     if (!this.checkLoginData()) return;
-    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.gotToIndex.bind(this), this.failCallback.bind(this));
+    let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.reloadPage.bind(this), this.failCallback.bind(this));
     if (!result) {
       // console.log("NOT OK");
       return;
@@ -85,6 +89,11 @@ export class LoginComponent {
         this.isInvalidPassword = true;
         break;
       default:
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Tài khoản đã bị khóa tới thời gian : ' + error.toString()
+        });
         break;
     }
   }
@@ -110,7 +119,8 @@ export class LoginComponent {
     if (!await this.checkRegisterData()) return;
     let result: boolean = await this.accountService.register(this.username, this.password, this.email)
     if (!result) { console.log("NOT OK"); return; }
-    console.log("OK");
+    this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công' });
+    setTimeout(() => { this.reloadPage() }, 1500); // 1000 milliseconds = 1 second }
   }
 
   private async checkRegisterData(): Promise<boolean> {
