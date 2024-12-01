@@ -16,10 +16,10 @@ export class InfoAccountService {
 
   private apiUrl = 'http://localhost:5011/api/InfoAccount';
   private api = 'http://localhost:5011/api/InfoAccountById';
-  private port = 7253;
-  private apiAddInfomationUrl = `https://localhost:${this.port}/infoAccount/AddInfomation`;
-  private apiGetInfomationAccountByIDUrl = `https://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
-  private apiChangeInfoMationAccountByIDUrl = `https://localhost:${this.port}/infoAccount/ChangeInfoMationAccountByID`;
+  private port = 5004;
+  private apiAddInfomationUrl = `http://localhost:${this.port}/infoAccount/AddInfomation`;
+  private apiGetInfomationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
+  private apiChangeInfoMationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/ChangeInfoMationAccountByID`;
 
 
   constructor(private http: HttpClient) {

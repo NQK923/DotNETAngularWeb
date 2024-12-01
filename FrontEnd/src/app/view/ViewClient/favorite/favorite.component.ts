@@ -6,27 +6,27 @@ import {forkJoin, Observable} from 'rxjs';
 import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Manga {
-  IdManga: number;
-  Name: string;
-  Author: string;
-  NumOfChapter: number;
-  Rating: number;
-  IdAccount: number;
-  IsPosted: boolean;
-  CoverImg: string;
-  Describe: string;
-  UpdatedAt: Date;
-  TotalViews: number;
-  RatedNum: number;
-  IsDeleted: boolean;
-  IsNotification: boolean;
+  idManga: number;
+  name: string;
+  author: string;
+  numOfChapter: number;
+  rating: number;
+  idAccount: number;
+  isPosted: boolean;
+  coverImg: string;
+  describe: string;
+  updatedAt: Date;
+  totalViews: number;
+  ratedNum: number;
+  isDeleted: boolean;
+  isNotification: boolean;
 }
 
 interface MangaFavorite {
-  IdManga: number;
-  IdAccount: number;
-  IsFavorite: boolean;
-  IsNotification: boolean;
+  idManga: number;
+  idAccount: number;
+  isFavorite: boolean;
+  isNotification: boolean;
 }
 
 @Component({
@@ -61,13 +61,13 @@ export class FavoriteComponent implements OnInit {
     this.mangaFavoriteService.getMangaFavByAccount(idNumber).subscribe(fm => {
       this.favoriteMangas = fm;
       const mangaObservables: Observable<Manga>[] = this.favoriteMangas.map(fav =>
-        this.mangaService.getMangaById(fav.IdManga)
+        this.mangaService.getMangaById(fav.idManga)
       );
       forkJoin(mangaObservables).subscribe(mangaList => {
-        this.mangas = mangaList.filter(manga => !manga.IsDeleted).map(manga => {
-          const favorite = this.favoriteMangas.find(fav => (fav.IdManga === manga.IdManga));
+        this.mangas = mangaList.filter(manga => !manga.isDeleted).map(manga => {
+          const favorite = this.favoriteMangas.find(fav => (fav.idManga === manga.idManga));
           if (favorite) {
-            manga.IsNotification = favorite.IsNotification;
+            manga.isNotification = favorite.isNotification;
           }
           return manga;
         });
@@ -81,8 +81,8 @@ export class FavoriteComponent implements OnInit {
     this.confirmAction('Bạn có chắc chắn muốn bỏ yêu thích không?', () => {
       const idNumber = Number(localStorage.getItem('userId'));
       this.mangaFavoriteService.toggleFavorite(idNumber, mangaId).subscribe(() => {
-        this.favoriteMangas = this.favoriteMangas.filter(manga => manga.IdManga !== mangaId);
-        this.mangas = this.mangas.filter(manga => manga.IdManga !== mangaId);
+        this.favoriteMangas = this.favoriteMangas.filter(manga => manga.idManga !== mangaId);
+        this.mangas = this.mangas.filter(manga => manga.idManga !== mangaId);
         this.messageService.add({
           severity: 'success',
           summary: 'Xoá thành công',
@@ -101,13 +101,13 @@ export class FavoriteComponent implements OnInit {
 
   toggleNotification(idManga: number) {
     const idNumber = Number(localStorage.getItem('userId'));
-    const mangaFavorite = this.favoriteMangas.find(fav => fav.IdManga === idManga);
+    const mangaFavorite = this.favoriteMangas.find(fav => fav.idManga === idManga);
     if (mangaFavorite) {
-      this.mangaFavoriteService.toggleNotification(idNumber, mangaFavorite.IdManga).subscribe(() => {
-        mangaFavorite.IsNotification = !mangaFavorite.IsNotification;
-        const manga = this.mangas.find(m => m.IdManga === idManga);
+      this.mangaFavoriteService.toggleNotification(idNumber, mangaFavorite.idManga).subscribe(() => {
+        mangaFavorite.isNotification = !mangaFavorite.isNotification;
+        const manga = this.mangas.find(m => m.idManga === idManga);
         if (manga) {
-          manga.IsNotification = mangaFavorite.IsNotification;
+          manga.isNotification = mangaFavorite.isNotification;
         }
       }, error => {
         console.error("Error toggling notification state.", error);

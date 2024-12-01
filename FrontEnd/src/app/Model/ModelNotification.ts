@@ -1,6 +1,6 @@
 export interface ModelNotification {
-  IdNotification?: number;
-  Content?: string;
-  Time?: Date;
-  TypeNoti?: string;
+  idNotification?: number;
+  content?: string;
+  time?: Date;
+  typeNoti?: string;
 }

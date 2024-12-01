@@ -12,20 +12,20 @@
            class="p-3 flex">
         <div
           class="w-64 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden transition-transform transform hover:scale-105">
-          <img (click)="viewMangaDetails(entry.manga.IdManga)"
-               [attr.title]="entry.manga.Name + ' \n' + entry.manga.Describe"
-               [src]="entry.manga.CoverImg" alt="Image description"
+          <img (click)="viewMangaDetails(entry.manga.idManga)"
+               [attr.title]="entry.manga.name + ' \n' + entry.manga.describe"
+               [src]="entry.manga.coverImg" alt="Image description"
                class="w-full h-80 object-fit cursor-pointer"
                loading="lazy">
           <div class="p-1">
-            <p class="text-white font-bold text-lg truncate mb-1">{{ entry.manga.Name }}</p>
-            <p class="text-white text-sm mb-1">Chương: {{ entry.history.IndexChapter }}</p>
-            <p class="text-white text-sm mb-1">Lần đọc cuối: {{ entry.history.Time | date:'short' }}</p>
+            <p class="text-white font-bold text-lg truncate mb-1">{{ entry.manga.name }}</p>
+            <p class="text-white text-sm mb-1">Chương: {{ entry.history.indexChapter }}</p>
+            <p class="text-white text-sm mb-1">Lần đọc cuối: {{ entry.history.time | date:'short' }}</p>
           </div>
           <div class="bg-gradient-to-r from-black to-gray-500 p-1 flex justify-center">
             <img alt="" class="h-8 white-icon mt-1" loading="lazy"
                  src="https://dotnetmangaimg.blob.core.windows.net/assets/trash_icon.webp">
-            <p (click)="confirmDelete(entry.history.IdAccount, entry.manga.IdManga)"
+            <p (click)="confirmDelete(entry.history.idAccount, entry.manga.idManga)"
                class="text-blue-500 font-bold cursor-pointer hover:underline text-center my-2">
               Xóa khỏi lịch sử đọc
             </p>

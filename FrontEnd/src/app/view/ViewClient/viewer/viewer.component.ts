@@ -14,11 +14,11 @@ import {MangaService} from "../../../service/Manga/manga.service";
 import {ConfirmationService, MessageService} from "primeng/api";
 
 interface Chapter {
-  IdChapter: number;
-  Title: string;
-  IdManga: number;
-  CreatedAt: Date;
-  Index: number;
+  idChapter: number;
+  title: string;
+  idManga: number;
+  createdAt: Date;
+  index: number;
 }
 
 export class CommentData {
@@ -107,7 +107,7 @@ export class ViewerComponent implements OnInit {
     const numericIndex = +index;
     if (numericIndex >= 1 && numericIndex <= this.chapters.length) {
       this.images = [];
-      const selectedChapter = this.chapters.find(chapter => chapter.Index === numericIndex);
+      const selectedChapter = this.chapters.find(chapter => chapter.index === numericIndex);
       if (selectedChapter) {
         this.mangaViewHistoryService.createHistory(this.id_manga).subscribe(
           () => {
@@ -116,8 +116,8 @@ export class ViewerComponent implements OnInit {
             console.error('Error: ', error);
           }
         )
-        if (selectedChapter && selectedChapter.IdChapter !== undefined) {
-          localStorage.setItem('id_chapter', selectedChapter.IdChapter.toString());
+        if (selectedChapter && selectedChapter.idChapter !== undefined) {
+          localStorage.setItem('id_chapter', selectedChapter.idChapter.toString());
           if (this.isLoggedIn()) {
             const id_user = localStorage.getItem('userId');
             let numberId: number;
@@ -233,12 +233,12 @@ export class ViewerComponent implements OnInit {
       rejectLabel: 'Hủy',
       accept: () => {
         const comment: ModelComment = {
-          IdComment: id_cm,
-          IdChapter: this.chapterId,
-          IdAccount: id,
-          Content: textUpdate.value,
-          IsReported: false,
-          Time: new Date()
+          idComment: id_cm,
+          idChapter: this.chapterId,
+          idAccount: id,
+          content: textUpdate.value,
+          isReported: false,
+          time: new Date()
         };
 
         this.commentService.updateComment(comment).subscribe(
@@ -268,11 +268,11 @@ export class ViewerComponent implements OnInit {
     const text = this.el.nativeElement.querySelector('#textComment');
     const id = this.yourId;
     const comment: ModelComment = {
-      IdChapter: this.chapterId,
-      IdAccount: id,
-      Content: text.value,
-      IsReported: false,
-      Time: new Date()
+      idChapter: this.chapterId,
+      idAccount: id,
+      content: text.value,
+      isReported: false,
+      time: new Date()
     }
     this.commentService.addComment(comment).subscribe(
       () => {
@@ -356,12 +356,12 @@ export class ViewerComponent implements OnInit {
 
   addReport(idComment: any, idChap: any, id: any, text: any) {
     const comment: ModelComment = {
-      IdComment: idComment,
-      IdChapter: idChap,
-      IdAccount: id,
-      Content: text,
-      IsReported: true,
-      Time: new Date()
+      idComment: idComment,
+      idChapter: idChap,
+      idAccount: id,
+      content: text,
+      isReported: true,
+      time: new Date()
     };
     this.commentService.updateComment(comment).subscribe(
       () => {
@@ -375,7 +375,7 @@ export class ViewerComponent implements OnInit {
   }
 
   trackByChapterIndex(index: number,chapter: Chapter): number {
-    return chapter.Index;
+    return chapter.index;
   }
 
   goToLogin() {

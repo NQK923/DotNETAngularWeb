@@ -24,31 +24,31 @@ import { InfoAccountRequest } from '../../../Model/InfoAccount/InfoAccountReques
 import { AccountCookieResponse } from '../../../Model/Account/AccountCookieResponse';
 
 interface Manga {
-  IdManga: number;
-  Name: string;
-  Author: string;
-  NumOfChapter: number;
-  IdAccount: number;
-  IsPosted: boolean;
-  CoverImg: string;
-  Describe: string;
-  TotalViews: number
-  Follower: number;
-  LatestChapter: number;
+  idManga: number;
+  name: string;
+  author: string;
+  numOfChapter: number;
+  idAccount: number;
+  isPosted: boolean;
+  coverImg: string;
+  describe: string;
+  totalViews: number
+  follower: number;
+  latestChapter: number;
 }
 
 interface Chapter {
-  IdChapter: number;
-  Title: string;
-  IdManga: number;
-  CreatedAt: Date;
-  Index: number;
+  idChapter: number;
+  title: string;
+  idManga: number;
+  createdAt: Date;
+  index: number;
 }
 
 interface Category {
-  IdCategory: number;
-  Name: string;
-  Description: string;
+  idCategory: number;
+  name: string;
+  description: string;
 }
 
 @Component({
@@ -79,17 +79,17 @@ export class ClientManagerComponent implements OnInit {
   page: number = 1;
   itemsPerPage: number = 6;
   mangaDetails: Manga = {
-    IdManga: 0,
-    IdAccount: 0,
-    NumOfChapter: 0,
-    CoverImg: '',
-    Name: '',
-    Author: '',
-    Describe: '',
-    IsPosted: false,
-    Follower: 0,
-    TotalViews: 0,
-    LatestChapter: 0,
+    idManga: 0,
+    idAccount: 0,
+    numOfChapter: 0,
+    coverImg: '',
+    name: '',
+    author: '',
+    describe: '',
+    isPosted: false,
+    follower: 0,
+    totalViews: 0,
+    latestChapter: 0,
   };
   accounts: ModelAccount[] = [];
   infoManga: Manga | null = null;
@@ -161,14 +161,14 @@ export class ClientManagerComponent implements OnInit {
           this.categories = categories;
           const observables = this.mangas.map(manga =>
             forkJoin({
-              totalViews: this.mangaViewHistoryService.getAllView(manga.IdManga),
-              followers: this.mangaFavoriteService.countFollower(manga.IdManga),
-              latestChapter: this.chapterService.getLastedChapter(manga.IdManga),
+              totalViews: this.mangaViewHistoryService.getAllView(manga.idManga),
+              followers: this.mangaFavoriteService.countFollower(manga.idManga),
+              latestChapter: this.chapterService.getLastedChapter(manga.idManga),
             }).pipe(
               map(({ totalViews, followers, latestChapter }) => {
-                manga.TotalViews = totalViews;
-                manga.Follower = followers;
-                manga.LatestChapter = latestChapter;
+                manga.totalViews = totalViews;
+                manga.follower = followers;
+                manga.latestChapter = latestChapter;
                 return manga;
               })
             )
@@ -193,7 +193,7 @@ export class ClientManagerComponent implements OnInit {
   filterMangas(searchTerm: string): void {
     if (searchTerm) {
       this.filteredMangas = this.mangas.filter(manga =>
-        manga.Name.toLowerCase().includes(searchTerm.toLowerCase())
+        manga.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       this.page = 1;
     } else {
@@ -511,7 +511,7 @@ export class ClientManagerComponent implements OnInit {
   loadChapters(): void {
     this.chapterService.getChaptersByMangaId(Number(this.selectedIdManga)).subscribe(chapters => {
       this.chapters = chapters;
-      this.selectedChapter = this.chapters[0]?.Index || 1;
+      this.selectedChapter = this.chapters[0]?.index || 1;
       this.loadChapterImages(this.selectedChapter);
     });
   }
@@ -576,7 +576,6 @@ export class ClientManagerComponent implements OnInit {
     if (action === 'upload') {
       this.isAddingManga = false;
       this.selectedCategories.unshift(data);
-      console.log(this.selectedCategories);
       this.categoryDetailsService.addCategoriesDetails(this.selectedCategories).subscribe();
     }
     this.messageService.add({ severity: 'success', summary: 'Thành công', detail: message });
@@ -626,11 +625,11 @@ export class ClientManagerComponent implements OnInit {
 
   deleteManga(manga: Manga): void {
     this.confirmAction(
-      `Bạn có chắc chắn muốn xoá manga: ${manga.Name} không? Sau khi xoá không thể hoàn tác!`,
+      `Bạn có chắc chắn muốn xoá manga: ${manga.name} không? Sau khi xoá không thể hoàn tác!`,
       () => {
-        this.mangaService.deleteMangaById(manga.IdManga).subscribe(
+        this.mangaService.deleteMangaById(manga.idManga).subscribe(
           () => {
-            this.deleteRelatedData(manga.IdManga);
+            this.deleteRelatedData(manga.idManga);
           },
           (error) => {
             this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xoá thất bại, vui lòng thử lại!' });
@@ -688,7 +687,7 @@ export class ClientManagerComponent implements OnInit {
   }
 
   updateUIAfterDelete(id: number): void {
-    this.filteredMangas = this.filteredMangas.filter(m => m.IdManga !== id);
+    this.filteredMangas = this.filteredMangas.filter(m => m.idManga !== id);
     if ((this.page - 1) * this.itemsPerPage >= this.filteredMangas.length) {
       this.page--;
     }
@@ -1030,9 +1029,9 @@ export class ClientManagerComponent implements OnInit {
         const time = new Date(timestamp);
         time.setHours(time.getHours() + 7);
         const notification: ModelNotification = {
-          Content: textNotification,
-          Time: time,
-          TypeNoti: typeNoti
+          content: textNotification,
+          time: time,
+          typeNoti: typeNoti
         };
         this.mangaFavoriteService.isSendNoti(id_manga).subscribe({
           next: (listId: any[]) => {
@@ -1041,11 +1040,11 @@ export class ClientManagerComponent implements OnInit {
                 next: (response) => {
                   this.returnNotification = response;
                   const infoNotification: ModelNotificationMangaAccount = {
-                    IdNotification: this.returnNotification?.IdNotification,
-                    IdManga: Number(id_manga),
-                    IdAccount: id_account,
-                    IsDeleted: false,
-                    IsRead: false,
+                    idNotification: this.returnNotification?.idNotification,
+                    idManga: Number(id_manga),
+                    idAccount: id_account,
+                    isDeleted: false,
+                    isRead: false,
                   };
                   this.notificationMangaAccountService.addInfoNotification(infoNotification).subscribe({
                     next: () => {

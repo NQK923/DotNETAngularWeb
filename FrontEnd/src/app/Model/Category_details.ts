@@ -1,4 +1,4 @@
 export interface CategoryDetailModel {
-  IdCategory: number;
-  IdManga: number;
+  idCategory: number;
+  idManga: number;
 }

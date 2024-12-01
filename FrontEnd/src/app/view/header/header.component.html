@@ -106,19 +106,19 @@
              class="flex items-center p-2 mt-2 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer">
           <div class="h-14 w-14 overflow-hidden rounded-full border">
             <img
-              *ngIf="!data.Mangainfo?.IsDeleted; else defaultImage"
+              *ngIf="!data.Mangainfo?.isDeleted; else defaultImage"
               alt="Avatar"
               class="object-cover"
-              src="{{ data.Mangainfo?.CoverImg }}"
+              src="{{ data.Mangainfo?.coverImg }}"
             />
             <ng-template #defaultImage>
               <img alt="Avatar" class="object-cover" src="https://dotnetmangaimg.blob.core.windows.net/assets/trash_icon.webp" />
             </ng-template>
           </div>
           <div class="ml-4 w-4/5">
-            <p class="font-bold text-blue-500 text-sm">{{ data.Mangainfo?.Name }} {{ data.Notification?.TypeNoti }}</p>
-            <p class="text-sm">{{ data.Notification?.Content }}</p>
-            <p class="text-sm text-blue-500">{{ data.Notification?.Time | date: 'HH:mm dd/MM/yyyy' }}</p>
+            <p class="font-bold text-blue-500 text-sm">{{ data.Mangainfo?.name }} {{ data.Notification?.typeNoti }}</p>
+            <p class="text-sm">{{ data.Notification?.content }}</p>
+            <p class="text-sm text-blue-500">{{ data.Notification?.time | date: 'HH:mm dd/MM/yyyy' }}</p>
           </div>
         </div>
       </ng-container>
@@ -130,10 +130,10 @@
              class="flex items-center p-2 mt-2 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer opacity-50">
           <div class="h-14 w-14 overflow-hidden rounded-full border">
             <img
-              *ngIf="!oldData.Mangainfo?.IsDeleted; else defaultImage"
+              *ngIf="!oldData.Mangainfo?.isDeleted; else defaultImage"
               alt="Avatar"
               class="object-cover"
-              src="{{ oldData.Mangainfo?.CoverImg }}"
+              src="{{ oldData.Mangainfo?.coverImg }}"
             />
             <ng-template #defaultImage>
               <img alt="Avatar" class="object-cover" src="https://dotnetmangaimg.blob.core.windows.net/assets/trash_icon.webp" />
@@ -141,9 +141,9 @@
           </div>
           <div class="ml-4 w-4/5">
             <p
-              class="font-bold text-blue-500 text-sm">{{ oldData.Mangainfo?.Name }} {{ oldData.Notification?.TypeNoti }}</p>
-            <p class="text-sm">{{ oldData.Notification?.Content }}</p>
-            <p class="text-sm text-blue-500">{{ oldData.Notification?.Time | date: 'HH:mm dd/MM/yyyy' }}</p>
+              class="font-bold text-blue-500 text-sm">{{ oldData.Mangainfo?.name }} {{ oldData.Notification?.typeNoti }}</p>
+            <p class="text-sm">{{ oldData.Notification?.content }}</p>
+            <p class="text-sm text-blue-500">{{ oldData.Notification?.time | date: 'HH:mm dd/MM/yyyy' }}</p>
           </div>
         </div>
       </ng-container>

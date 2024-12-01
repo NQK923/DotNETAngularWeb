@@ -1,7 +1,7 @@
 export interface ModelNotificationMangaAccount {
-  IdNotification?: number;
-  IdManga: number;
-  IdAccount: number;
-  IsDeleted: boolean;
-  IsRead: boolean;
+  idNotification?: number;
+  idManga: number;
+  idAccount: number;
+  isDeleted: boolean;
+  isRead: boolean;
 }
