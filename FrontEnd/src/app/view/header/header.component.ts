@@ -151,8 +151,8 @@ export class HeaderComponent implements OnInit {
 
   getCombinedData(notificationAc: ModelNotificationMangaAccount) {
     return forkJoin({
-      manga: this.takeDataManga(notificationAc.IdManga),
-      notification: this.takeDataNotification(notificationAc.IdNotification).pipe(
+      manga: this.takeDataManga(notificationAc.idManga),
+      notification: this.takeDataNotification(notificationAc.idNotification).pipe(
         map(notification => Array.isArray(notification) ? notification[0] : notification)
       ),
       // account: this.takeDataInfoAccount(notificationAc.IdAccount)
@@ -171,11 +171,11 @@ export class HeaderComponent implements OnInit {
       };
       // @ts-ignore
       const isFavorite = this.mangaFavorite.some(fav => fav.id_manga === combo.Mangainfo.id_manga);
-      const isNotNewChapter = combo.Notification?.TypeNoti !== "Đã thêm 1 chương mới";
+      const isNotNewChapter = combo.Notification?.typeNoti !== "Đã thêm 1 chương mới";
 
       if (isFavorite || isNotNewChapter) {
         if (combo.NotificationMangaAccounts) {
-          if (!combo.NotificationMangaAccounts.IsRead) {
+          if (!combo.NotificationMangaAccounts.isRead) {
             this.ListCombinedData.push(combo);
           } else {
             this.ListCombinedDataIsRead.push(combo);
@@ -275,11 +275,11 @@ export class HeaderComponent implements OnInit {
         const allData = [...this.ListCombinedData, ...this.ListCombinedDataIsRead];
         for (let i = 0; i < allData.length; i++) {
           const notificationData = {
-            IdManga: allData[i].Mangainfo?.IdManga,
-            IdAccount: allData[i].InfoAccount?.IdAccount,
-            IdNotification: allData[i].Notification?.IdNotification,
-            IsDeleted: true,
-            IsRead: true,
+            idManga: allData[i].Mangainfo?.idManga,
+            idAccount: allData[i].InfoAccount?.IdAccount,
+            idNotification: allData[i].Notification?.idNotification,
+            isDeleted: true,
+            isRead: true,
           } as ModelNotificationMangaAccount;
           const observable = this.notificationMangaAccountService.updateNotificationAccount(notificationData);
           updateObservables.push(observable);
@@ -360,8 +360,8 @@ export class HeaderComponent implements OnInit {
   }
 
   goToContent(data: CombinedData) {
-    if (data.NotificationMangaAccounts?.IsRead == false) {
-      this.notificationMangaAccountService.toggleNotiStatus(data.NotificationMangaAccounts?.IdNotification).subscribe({
+    if (data.NotificationMangaAccounts?.isRead == false) {
+      this.notificationMangaAccountService.toggleNotiStatus(data.NotificationMangaAccounts?.idNotification).subscribe({
         next: () => {
         },
         error: (err) => {
@@ -369,10 +369,10 @@ export class HeaderComponent implements OnInit {
         }
       });
     }
-    if (data.Notification?.TypeNoti === "Đã thêm 1 chương mới") {
+    if (data.Notification?.typeNoti === "Đã thêm 1 chương mới") {
       this.toggleNotification();
       this.ngOnInit();
-      this.router.navigate(['/titles', data.Mangainfo?.IdManga]);
+      this.router.navigate(['/titles', data.Mangainfo?.idManga]);
     } else {
       this.searchQuery = '';
       this.router.navigate(['/client-manager']);

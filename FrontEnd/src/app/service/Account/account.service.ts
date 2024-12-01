@@ -15,21 +15,21 @@ import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse
   providedIn: 'root'
 })
 export class AccountService {
-  private port = 7253;
-  private apiUrl = `https://localhost:${this.port}/api/Account`;
-  private apiLoginUrl: string = 'https://localhost:' + this.port + '/account/login';
-  private apiGetAccountCookieUrl: string = 'https://localhost:' + this.port + '/account/getAccountCookie';
+  private port = 5004;
+  private apiUrl = `http://localhost:${this.port}/api/Account`;
+  private apiLoginUrl: string = 'http://localhost:' + this.port + '/account/login';
+  private apiGetAccountCookieUrl: string = 'http://localhost:' + this.port + '/account/getAccountCookie';
   private apiInfo = `https://localhost:${this.port}/api/InfoAccount`;
   private apiAvatar = `https://localhost:${this.port}/api/InfoAccountavata`;
   private apiUpdateAccount = `https://localhost:${this.port}/api/InfoAccountupdate`;
   private apiPassword = `https://localhost:${this.port}/api/password`;
-  private apiCheckOldPasswordUrl: string = 'https://localhost:' + this.port + '/account/checkOldPasswordAccountByID';
-  private apiRegisterUrl: string = 'https://localhost:' + this.port + '/account/register';
-  private apiCheckExistExternalAccountUrl: string = 'https://localhost:' + this.port + '/account/checkExistExternalAccount';
-  private apiRegisterExternalAccount: string = 'https://localhost:' + this.port + '/account/registerExternalAccount';
-  private apiIsLoggedIn: string = 'https://localhost:' + this.port + '/account/isLoggedIn';
-  private apiLogOut: string = 'https://localhost:' + this.port + '/account/logOut';
-  private apiCheckEmail: string = 'https://localhost:' + this.port + '/infoAccount/CheckEmailValid';
+  private apiCheckOldPasswordUrl: string = 'http://localhost:' + this.port + '/account/checkOldPasswordAccountByID';
+  private apiRegisterUrl: string = 'http://localhost:' + this.port + '/account/register';
+  private apiCheckExistExternalAccountUrl: string = 'http://localhost:' + this.port + '/account/checkExistExternalAccount';
+  private apiRegisterExternalAccount: string = 'http://localhost:' + this.port + '/account/registerExternalAccount';
+  private apiIsLoggedIn: string = 'http://localhost:' + this.port + '/account/isLoggedIn';
+  private apiLogOut: string = 'http://localhost:' + this.port + '/account/logOut';
+  private apiCheckEmail: string = 'http://localhost:' + this.port + '/infoAccount/CheckEmailValid';
 
 
   user: SocialUser | undefined;

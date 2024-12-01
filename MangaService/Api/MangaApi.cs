@@ -15,7 +15,7 @@ public static class MangaApi
         app.MapGet("/api/manga/unPosted", GetUnPostedManga);
         app.MapGet("/api/manga/get/{idManga:int}", GetMangaById);
         app.MapGet("/api/manga/user/{idAccount:int}", GetUserManga);
-        app.MapPost("api/manga/upload/{idUser:int}", UploadManga);
+        app.MapPost("/api/manga/upload/{idUser:int}", UploadManga);
         app.MapPut("/api/manga/update/{idManga:int}", UpdateManga);
         app.MapPut("/api/manga/ratingChange", ChangeRating);
         app.MapPut("/api/manga/updateTime", UpdateMangaTime);

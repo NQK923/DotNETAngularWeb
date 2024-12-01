@@ -26,11 +26,11 @@
   <!-- Manga List -->
   <div class="bg-gray-950">
     <div *ngIf="!isLoading" class="p-6 flex flex-wrap items-center justify-center">
-      <div (click)="viewMangaDetails(manga.IdManga)"
+      <div (click)="viewMangaDetails(manga.idManga)"
            *ngFor="let manga of mangas | paginate: { itemsPerPage: itemsPerPage, currentPage: page };trackBy: trackByMangaId"
-           [attr.title]="manga.Name + ' \n' + manga.Describe"
+           [attr.title]="manga.name + ' \n' + manga.describe"
            class="hover:bg-gray-800 rounded w-64 overflow-hidden m-2 transition-transform transform hover:scale-105 flex flex-col cursor-pointer">
-        <img [src]="manga.CoverImg" alt="" class="w-full h-auto object-cover" loading="lazy"
+        <img [src]="manga.coverImg" alt="" class="w-full h-auto object-cover" loading="lazy"
              style="aspect-ratio: 2 / 3;">
         <div class="bg-black p-2 bg-gradient-to-r from-black to-gray-500 flex justify-between items-center">
           <div
@@ -42,7 +42,7 @@
             <img *ngIf="selectedOption === 'follows'" alt="Icon" class="h-5" loading="lazy"
                  src="https://dotnetmangaimg.blob.core.windows.net/assets/icon_heart.png">
             <p *ngIf="selectedOption === 'rating'"
-               class="text-white font-bold m-1">{{ manga.Rating | number:'1.1-1' }}</p>
+               class="text-white font-bold m-1">{{ manga.rating | number:'1.1-1' }}</p>
             <p *ngIf="selectedOption === 'follows'"
                class="text-white font-bold m-1">{{ manga.follows}}</p>
             <p *ngIf="selectedOption === 'day'" class="text-white font-bold m-1">{{ manga.viewsByDay }} lượt xem</p>
@@ -51,8 +51,8 @@
           </div>
         </div>
         <div class="p-2 flex-grow">
-          <p class="text-white text-sm font-bold truncate">{{ manga.Name }}</p>
-          <p class="text-white text-sm">{{ manga.Author }}</p>
+          <p class="text-white text-sm font-bold truncate">{{ manga.name }}</p>
+          <p class="text-white text-sm">{{ manga.author }}</p>
         </div>
       </div>
     </div>

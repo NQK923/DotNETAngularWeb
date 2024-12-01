@@ -12,8 +12,8 @@
       <div class="flex items-center px-4">
         <select (change)="goToChapter(chapter_index)" [(ngModel)]="chapter_index"
                 class="bg-white rounded p-2 text-sm transition duration-300 ease-in-out focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          <option *ngFor="let chapter of chapters; trackBy: trackByChapterIndex" [value]="chapter.Index">
-            Chương {{ chapter.Index }}: {{ chapter.Title }}
+          <option *ngFor="let chapter of chapters; trackBy: trackByChapterIndex" [value]="chapter.index">
+            Chương {{ chapter.index }}: {{ chapter.title }}
           </option>
         </select>
       </div>
@@ -46,8 +46,8 @@
       <div class="flex items-center px-4">
         <select (change)="goToChapter(chapter_index)" [(ngModel)]="chapter_index"
                 class="bg-white rounded p-2 text-sm transition duration-300 ease-in-out focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          <option *ngFor="let chapter of chapters; trackBy: trackByChapterIndex" [value]="chapter.Index">
-            Chương {{ chapter.Index }}: {{ chapter.Title }}
+          <option *ngFor="let chapter of chapters; trackBy: trackByChapterIndex" [value]="chapter.index">
+            Chương {{ chapter.index }}: {{ chapter.title }}
           </option>
         </select>
       </div>
@@ -103,21 +103,21 @@
             <div class="font-bold text-blue-500 ml-2 text-xl">{{ listYourComment.InfoAccount?.Name }}</div>
             <div class="m-2 flex">
               <input class="p-3 w-full  text-white border-none bg-gray-700 rounded"
-                     id="text{{listYourComment.Comment?.IdComment}}"
-                     placeholder="{{ listYourComment.Comment?.Content }}" type="text">
-              <button (click)="updateComment(listYourComment.Comment?.IdComment)"
+                     id="text{{listYourComment.Comment?.idComment}}"
+                     placeholder="{{ listYourComment.Comment?.content }}" type="text">
+              <button (click)="updateComment(listYourComment.Comment?.idComment)"
                       class="hidden bg-blue-500 text-white font-bold w-24 rounded-r-xl"
                       id="buttonUndate">Sửa bình luận
               </button>
             </div>
             <div class="flex justify-between mt-2 text-white text-sm ml-2">
-              <span>{{ listYourComment.Comment?.Time | date: 'dd-MM-yyyy' }}</span>
+              <span>{{ listYourComment.Comment?.time | date: 'dd-MM-yyyy' }}</span>
               <div class="flex">
                 <button (click)="onUpdate()" class="text-blue-500 underline">Sửa
                   bình luận
                 </button>
                 <div class="text-blue-500 m-1">/</div>
-                <button (click)="deleteComment(listYourComment.Comment?.IdComment)" class="text-blue-500 underline">Xóa
+                <button (click)="deleteComment(listYourComment.Comment?.idComment)" class="text-blue-500 underline">Xóa
                   bình luận
                 </button>
               </div>
@@ -136,12 +136,12 @@
                src="{{listDataComments.InfoAccount?.CoverImg}}">
           <div class="ml-4 w-full rounded">
             <div class="font-bold text-blue-500 ml-2 text-xl">{{ listDataComments.InfoAccount?.Name }}</div>
-            <div class="p-3 w-full m-2 text-white text-sm bg-gray-700 rounded">{{ listDataComments.Comment?.Content }}
+            <div class="p-3 w-full m-2 text-white text-sm bg-gray-700 rounded">{{ listDataComments.Comment?.content }}
             </div>
             <div class="flex justify-between mt-2 text-white text-sm ml-2">
-              <span>{{ listDataComments.Comment?.Time | date: 'dd-MM-yyyy' }}</span>
+              <span>{{ listDataComments.Comment?.time | date: 'dd-MM-yyyy' }}</span>
               <button
-                (click)="addReport(listDataComments.Comment?.IdComment, listDataComments.Comment?.IdChapter, listDataComments.InfoAccount?.IdAccount, listDataComments.Comment?.Content)"
+                (click)="addReport(listDataComments.Comment?.idComment, listDataComments.Comment?.idChapter, listDataComments.InfoAccount?.IdAccount, listDataComments.Comment?.content)"
                 class="text-blue-500 underline">Báo cáo bình luận
               </button>
             </div>

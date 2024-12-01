@@ -1,14 +1,14 @@
 ﻿export interface ModelManga {
-  IdManga: number;
-  Name: string;
-  Author: string;
-  NumOfChapter: number;
-  Rating: number;
-  IdAccount: number;
-  IsPosted: boolean;
-  CoverImg: string;
-  Describe: string;
-  UpdatedAt: Date;
-  IsDeleted: boolean;
-  RatedNum: number;
+  idManga: number;
+  name: string;
+  author: string;
+  numOfChapter: number;
+  rating: number;
+  idAccount: number;
+  isPosted: boolean;
+  coverImg: string;
+  describe: string;
+  updatedAt: Date;
+  isDeleted: boolean;
+  ratedNum: number;
 }

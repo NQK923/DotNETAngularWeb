@@ -12,28 +12,28 @@
       <div class="p-2 flex flex-wrap justify-center">
         <div *ngFor="let manga of mangas | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
              class="w-64 bg-gradient-to-b from-black to-gray-500 rounded-xl overflow-hidden m-3 transition-transform transform hover:scale-105 cursor-pointer">
-          <img (click)="viewMangaDetails(manga.IdManga)" [attr.title]="manga.Name + ' \n' + manga.Describe"
-               [src]="manga.CoverImg"
+          <img (click)="viewMangaDetails(manga.idManga)" [attr.title]="manga.name + ' \n' + manga.describe"
+               [src]="manga.coverImg"
                alt="Image description"
                class="w-full h-5/6 object-cover rounded-t-xl"
                loading="lazy">
           <div class="p-1">
             <div class="flex justify-between p-1">
-              <p class="text-white font-bold text-xl truncate mb-0 manga-name">{{ manga.Name }}</p>
+              <p class="text-white font-bold text-xl truncate mb-0 manga-name">{{ manga.name }}</p>
               <div class="flex p-1">
-                <img (click)="removeFromFavorites(manga.IdManga)" [attr.title]="'Bỏ yêu thích'" alt="" class="h-7 px-1"
+                <img (click)="removeFromFavorites(manga.idManga)" [attr.title]="'Bỏ yêu thích'" alt="" class="h-7 px-1"
                      loading="lazy"
                      src="https://dotnetmangaimg.blob.core.windows.net/assets/icon_heart.png">
-                <img (click)="toggleNotification(manga.IdManga)"
-                     [attr.title]="manga.IsNotification ? 'Tắt thông báo' : 'Bật thông báo'"
-                     [ngClass]="{'active': !manga.IsNotification}"
+                <img (click)="toggleNotification(manga.idManga)"
+                     [attr.title]="manga.isNotification ? 'Tắt thông báo' : 'Bật thông báo'"
+                     [ngClass]="{'active': !manga.isNotification}"
                      alt="Notification Icon"
                      class="h-7 px-1 cursor-pointer notification-icon"
                      loading="lazy"
                      src="https://dotnetmangaimg.blob.core.windows.net/assets/icons8-bell-30.png">
               </div>
             </div>
-            <p class="text-white text-sm mb-1 px-1">{{ manga.Author }}</p>
+            <p class="text-white text-sm mb-1 px-1">{{ manga.author }}</p>
           </div>
         </div>
       </div>

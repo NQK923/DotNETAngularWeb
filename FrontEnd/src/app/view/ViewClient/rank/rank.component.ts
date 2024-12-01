@@ -7,22 +7,22 @@ import {MangaViewHistoryService} from '../../../service/MangaViewHistory/MangaVi
 import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
 
 interface Manga {
-  IdManga: number;
-  Name: string;
-  Author: string;
-  NumOfChapter: number;
-  Rating: number;
-  IdAccount: number;
-  IsPosted: boolean;
-  CoverImg: string;
-  Describe: string;
-  UpdatedAt: Date;
+  idManga: number;
+  name: string;
+  author: string;
+  numOfChapter: number;
+  rating: number;
+  idAccount: number;
+  isPosted: boolean;
+  coverImg: string;
+  describe: string;
+  updatedAt: Date;
   totalViews: number;
   viewsByDay?: number;
   viewsByWeek?: number;
   viewsByMonth?: number;
   follows?: number;
-  rated_num: number;
+  ratedNum: number;
 }
 
 @Component({
@@ -77,7 +77,7 @@ export class RankComponent implements OnInit {
           this.mangas.map((manga) =>
             manga.follows != null
               ? of(manga.follows)
-              : this.mangaFavoriteService.countFollower(manga.IdManga)
+              : this.mangaFavoriteService.countFollower(manga.idManga)
           )
         );
         break;
@@ -87,7 +87,7 @@ export class RankComponent implements OnInit {
           this.mangas.map((manga) =>
             manga.viewsByDay != null
               ? of(manga.viewsByDay)
-              : this.mangaViewHistoryService.getViewByDay(manga.IdManga)
+              : this.mangaViewHistoryService.getViewByDay(manga.idManga)
           )
         );
         break;
@@ -97,7 +97,7 @@ export class RankComponent implements OnInit {
           this.mangas.map((manga) =>
             manga.viewsByWeek != null
               ? of(manga.viewsByWeek)
-              : this.mangaViewHistoryService.getViewByWeek(manga.IdManga)
+              : this.mangaViewHistoryService.getViewByWeek(manga.idManga)
           )
         );
         break;
@@ -107,7 +107,7 @@ export class RankComponent implements OnInit {
           this.mangas.map((manga) =>
             manga.viewsByMonth != null
               ? of(manga.viewsByMonth)
-              : this.mangaViewHistoryService.getViewByMonth(manga.IdManga)
+              : this.mangaViewHistoryService.getViewByMonth(manga.idManga)
           )
         );
         break;
@@ -126,7 +126,7 @@ export class RankComponent implements OnInit {
     ).subscribe(() => {
       switch (option) {
         case 'rating':
-          this.mangas.sort((a, b) => b.Rating - a.Rating);
+          this.mangas.sort((a, b) => b.rating - a.rating);
           break;
         case 'follows':
           this.mangas.sort((a, b) => (b.follows ?? 0) - (a.follows??0));
@@ -145,7 +145,7 @@ export class RankComponent implements OnInit {
   }
 
   trackByMangaId(index: number, manga: Manga): number {
-    return manga.IdManga;
+    return manga.idManga;
   }
 
   viewMangaDetails(id_manga: number) {
