@@ -66,7 +66,7 @@ export class AccountService {
       this.http.post<string>(`${this.apiCheckExistExternalAccountUrl}?username=${user.id.toString()}`, {}, { withCredentials: true }).subscribe({
         next: async (response) => {
           console.log("LoginExternal")
-          if (response == "Tài khoản chưa tồn tại") { await this.RegisterExternalAccount(user); }
+          if (response == "Tài khoản chưa tồn tại") { await this.RegisterExternalAccount(user, successCallback); }
           else {
             console.log("else")
             this.loggedIn.next(true);
@@ -83,7 +83,7 @@ export class AccountService {
 
   }
 
-  private RegisterExternalAccount(user: SocialUser): Promise<number> {
+  private RegisterExternalAccount(user: SocialUser, successCallback: () => void): Promise<number> {
     return new Promise((resolve, reject) => {
       this.http.post<number>(`${this.apiRegisterExternalAccount}?username=${user.id.toString()}`, {}).subscribe({
         next: (response) => {
@@ -92,8 +92,11 @@ export class AccountService {
             newInfo = { name: user.name, img: user.response.picture.data.url, idAccount: response };
           }
           else { newInfo = { name: user.name, img: user.photoUrl, idAccount: response }; }
-          this.infoAccountService.addInfoAccount(newInfo);
-          this.loggedIn.next(true);
+          this.infoAccountService.addInfoAccount(newInfo).subscribe(response => {
+            this.loggedIn.next(true);
+            successCallback();
+            console.log(response);
+          });
           resolve(response);
         },
         error: (error) => {
