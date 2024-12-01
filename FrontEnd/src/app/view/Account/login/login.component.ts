@@ -92,7 +92,7 @@ export class LoginComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Lỗi',
-          detail: 'Tài khoản đã bị khóa tới thời gian : ' + error.toString()
+          detail: 'Tài khoản đã bị khóa tới thời gian : ' + error
         });
         break;
     }

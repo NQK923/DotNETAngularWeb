@@ -16,13 +16,8 @@ import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse
 })
 export class AccountService {
   private port = 5004;
-  private apiUrl = `http://localhost:${this.port}/api/Account`;
   private apiLoginUrl: string = 'http://localhost:' + this.port + '/account/login';
   private apiGetAccountCookieUrl: string = 'http://localhost:' + this.port + '/account/getAccountCookie';
-  private apiInfo = `https://localhost:${this.port}/api/InfoAccount`;
-  private apiAvatar = `https://localhost:${this.port}/api/InfoAccountavata`;
-  private apiUpdateAccount = `https://localhost:${this.port}/api/InfoAccountupdate`;
-  private apiPassword = `https://localhost:${this.port}/api/password`;
   private apiCheckOldPasswordUrl: string = 'http://localhost:' + this.port + '/account/checkOldPasswordAccountByID';
   private apiRegisterUrl: string = 'http://localhost:' + this.port + '/account/register';
   private apiCheckExistExternalAccountUrl: string = 'http://localhost:' + this.port + '/account/checkExistExternalAccount';
@@ -39,36 +34,6 @@ export class AccountService {
   constructor(private authService: SocialAuthService, private http: HttpClient, private infoAccountService: InfoAccountService) {
 
   }
-
-
-  // postMail(email: string, title: string, text: string): Observable<any> {
-  //   const params = new HttpParams()
-  //     .set('email', email)
-  //     .set('title', title)
-  //     .set('text', text);
-  //   return this.http.post(this.apiPassword, null, { params });
-  // }
-  //
-  // updateaccount(account: ModelInfoAccount): Observable<ModelInfoAccount> {
-  //   return this.http.put<ModelInfoAccount>(this.apiUpdateAccount, account);
-  // }
-  //
-  //
-  // uploadavata(formData: FormData): Observable<any> {
-  //   return this.http.post(this.apiAvatar, formData);
-  // }
-  //
-  // getAccount(): Observable<ModelAccount[]> {
-  //   return this.http.get<ModelAccount[]>(this.apiUrl);
-  // }
-  //
-  // updateAccount(Account: ModelAccount): Observable<ModelAccount> {
-  //   return this.http.put<ModelAccount>(this.apiUrl, Account);
-  // }
-  //
-  // getinfoAccount(): Observable<ModelInfoAccount[]> {
-  //   return this.http.get<ModelInfoAccount[]>(this.apiInfo);
-  // }
 
   logOut(callback: () => void): Promise<void> {
     return new Promise(() => {
@@ -127,7 +92,7 @@ export class AccountService {
             newInfo = { name: user.name, img: user.response.picture.data.url, idAccount: response };
           }
           else { newInfo = { name: user.name, img: user.photoUrl, idAccount: response }; }
-
+          this.infoAccountService.addInfoAccount(newInfo);
           this.loggedIn.next(true);
           resolve(response);
         },
@@ -138,8 +103,8 @@ export class AccountService {
       });
     });
   }
-  // Trả về cookie
 
+  // Trả về cookie
   public getAccountCookie(): Promise<AccountCookieResponse> {
     // GỌI NHƯ NÀY ĐỂ SỬ DỤNG HÀM  await this.accountService.getIdAccount();
     return new Promise((resolve, reject) => {
@@ -251,13 +216,6 @@ export class AccountService {
     if (!(password == confirmPassword)) return false;
     return true;
   }
-  // public checkValidEmail(email: string): boolean {
-  //   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  //   if (!emailPattern.test(email)) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
 
   public checkValidEmail(email: string): Promise<boolean> {
     return new Promise((resolve, reject) => {

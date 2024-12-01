@@ -342,15 +342,15 @@ export class ViewerComponent implements OnInit {
 
   loadInfoAccount(): Promise<void> {
     return new Promise((resolve) => {
-      this.infoAccountService.getInfoAccount().subscribe(
-        (data: ModelInfoAccount[]) => {
-          this.listInfoAccount = data;
-          resolve();
-        },
-        (error) => {
-          console.error('Error fetching info accounts', error);
-        }
-      );
+      // this.infoAccountService.getInfoAccount().subscribe(
+      //   (data: ModelInfoAccount[]) => {
+      //     this.listInfoAccount = data;
+      //     resolve();
+      //   },
+      //   (error) => {
+      //     console.error('Error fetching info accounts', error);
+      //   }
+      // );
     })
   }
 
