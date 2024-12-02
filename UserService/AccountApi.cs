@@ -39,8 +39,6 @@ public static class AccountAPI
         {
             try
             {
-
-
                 var result = await AddMail.AddMail.SendMail(to, subject, body);
                 return Results.Ok(result);
             }

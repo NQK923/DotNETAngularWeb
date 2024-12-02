@@ -3,22 +3,17 @@
     <div class="form-container sign-up">
       <form>
         <h1 class="font-bold">Forgot PassWord</h1>
-        <div class="social-icons">
-          <a class="icons" href="#"><img
-            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/436.png?hash=hWSi-z_FfQquG902GF_KdA&expires=2145884400"></a>
-          <a class="icons" href="#"><img
-            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/38004.png?hash=NvALQnR4pRpsfk4Ul6QYdA&expires=2145884400"></a>
-          <a class="icons" href="#"><img
-            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/508.png?hash=AKSNNUJg2ttqhfWZ23dX6w&expires=2145884400"></a>
-          <a class="icons" href="#"><img
-            src="https://jumpg-assets.tokyo-cdn.com/secure/comment_icon/424.png?hash=sZTeD2UtSfMjYNqf0CmUiw&expires=2145884400"></a>
-
-        </div>
         <span>Lấy mã để đổi mật khẩu của bạn </span>
-
+        <div [ngClass]="{'hidden': isCodeVisible}">
         <input id="usernameInput" placeholder="User name" type="text">
         <input id="mailInput" placeholder="Enter G-mail" type="email">
-        <button (click)="takePassWord()" id="buttonGetCode"> get code</button>
+        <button (click)="takePassWord()" id="buttonGetCode" class="w-full"> get code</button>
+        </div>
+        <div [ngClass]="{'hidden': !isCodeVisible}">
+          <input id="Code" placeholder="Code" type="text">
+          <input id="Pass" placeholder="New Password" type="password">
+          <button (click)="update()" id="buttonUpdate" class="w-full"> Update Password</button>
+        </div>
 
 
       </form>
