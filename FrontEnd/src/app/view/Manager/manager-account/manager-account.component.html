@@ -113,9 +113,29 @@
           </div>
         </div>
       </div>
+
+      <div class="">
+        <div class="w-auto bg-white shadow-md rounded-lg p-6">
+          <div class="mb-4">
+            <label for="datetime" class="block text-lg font-semibold mb-2">Chọn ngày và giờ:</label>
+            <input
+              id="datetime"
+              type="datetime-local"
+              [(ngModel)]="selectedDateTime"
+              class="border border-gray-300 rounded-md px-4 py-2 w-full">
+          </div>
+          <button
+            (click)="showDateTime()"
+            class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition">
+            Hiển thị thời gian
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
+
 <p-confirmDialog #cd>
   <ng-template let-message pTemplate="headless">
     <div class="flex flex-column align-items-center pb-4 border-round bg-gray-800 rounded">

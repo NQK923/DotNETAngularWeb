@@ -21,6 +21,8 @@ export interface ModelDataAccount {
   cover_img: string,
 
 }
+
+
 @Component({
   selector: 'app-manager-account',
   templateUrl: './manager-account.component.html',
@@ -35,6 +37,8 @@ export class ManagerAccountComponent implements OnInit {
   dataAccounts: ModelDataAccount[] = [];
   dataSearch: ModelDataAccount[] = [];
   tempData: ModelDataAccount[] = [];
+  selectedDateTime: string = '';
+
 
 
   constructor(private InfoAccountService: InfoAccountService,
@@ -67,6 +71,11 @@ export class ManagerAccountComponent implements OnInit {
 
 
   //Get info account
+
+  // Hàm hiển thị thời gian
+  showDateTime() {
+    console.log(this.selectedDateTime);
+  }
   TakeData() {
     this.dataAccounts = [];
     this.infoAccounts = [];

@@ -17,4 +17,6 @@ public class Requests
     public record ChangeInformationRequest(int id_account, string? name, string? email);
 
     public record InfoMationRegisterRequest(int idAccount, string name, string email, string img);
+    
+    public record UpdateStatus(int idAccount, bool status,DateTime date);
 }

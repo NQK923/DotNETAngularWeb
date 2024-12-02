@@ -29,12 +29,29 @@ public static class AccountAPI
         MapPostLogOut(endpointRouteBuilder); //Xóa cookies
         TakePassWord(endpointRouteBuilder);
         GetAccountByUserName(endpointRouteBuilder);
-       MapPutChangeBanComment(endpointRouteBuilder);
+        MapPutChangeBanComment(endpointRouteBuilder);
+        UpdateStatus(endpointRouteBuilder);
         
         
     }
     
     //nguyen 
+    
+    public static void UpdateStatus(this IEndpointRouteBuilder endpointRouteBuilder)
+    {
+        endpointRouteBuilder.MapPut("/account/updateStatus",
+            async (UpdateStatus updateStatus, UserServiceDBContext dBContext) =>
+            {
+                var account = await dBContext.accounts.FindAsync(updateStatus.idAccount);
+                if (account == null) return Results.NotFound();
+
+                account.status = updateStatus.status;
+                account.banDate = updateStatus.date;
+
+                await dBContext.SaveChangesAsync();
+                return Results.Ok();
+            });
+    }
     public static void TakePassWord(this IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapPost("/account/TakePassWord", async (string to, string subject, string body) =>
