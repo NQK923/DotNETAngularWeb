@@ -4,15 +4,37 @@ import {AccountService} from "../../../service/Account/account.service";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {ConfirmationService, MessageService} from "primeng/api";
+import {AccountModel} from '../../../Model/Account/AccountModel';
+//import {ModelDataAccount} from  '../../../Model/Account/DataAccounts';
+import {InfoAccountResponse} from '../../../Model/InfoAccount/InfoAccountResponse';
 
+export interface ModelDataAccount {
+  id_account?: number;
+  username: string;
+  password: string;
+  banDate?: Date
+  role?: boolean;
+  status?: boolean;
+  banComment?: boolean;
+  name: string,
+  email: string,
+  cover_img: string,
+
+}
 @Component({
   selector: 'app-manager-account',
   templateUrl: './manager-account.component.html',
   styleUrls: ['./manager-account.component.css']
 })
+
+
 export class ManagerAccountComponent implements OnInit {
   status: boolean | null = null;
-
+  accounts: AccountModel[] = [];
+  infoAccounts: InfoAccountResponse[] = [];
+  dataAccounts: ModelDataAccount[] = [];
+  dataSearch: ModelDataAccount[] = [];
+  tempData: ModelDataAccount[] = [];
 
 
   constructor(private InfoAccountService: InfoAccountService,
@@ -41,6 +63,50 @@ export class ManagerAccountComponent implements OnInit {
     }
 
     return targetIndex === target.length;
+  }
+
+
+  //Get info account
+  TakeData() {
+    this.dataAccounts = [];
+    this.infoAccounts = [];
+    this.accountService.getAllAccount().subscribe(
+      (data: AccountModel[]) => {
+        this.accounts = data;
+        for (let i = 0; i < this.accounts.length; i++) {
+          this.InfoAccountService.getInfoAccountByIdTN(Number(this.accounts[i].id_account)).subscribe(
+            (data: InfoAccountResponse) => {
+              {
+                this.dataAccounts.push(
+                  {
+                    id_account:this.accounts[i].id_account,
+                    username:this.accounts[i].username,
+                    password: this.accounts[i].password,
+                    banDate:this.accounts[i].banDate,
+                    rol: this.accounts[i].role,
+                    status: this.accounts[i].status,
+                    banComment: this.accounts[i].banComment,
+
+                    name: data.name,
+                    email: data.email,
+                    cover_img: data.cover_img,
+
+
+
+                  } as ModelDataAccount)
+
+              }
+            },
+            (error) => {
+              console.error('Error fetching account info:', error);
+            }
+          );
+        }
+      },
+      (error) => {
+        console.error('Error fetching accounts:', error);
+      }
+    );
   }
   search() {
     // this.dataSearch = [];
@@ -82,45 +148,10 @@ export class ManagerAccountComponent implements OnInit {
     // }
   }
 
-  //Get info account
-  TakeData() {
-    // this.dataAccount = [];
-    // this.infoAccounts = []
-    // this.accountService.getAccount().subscribe(
-    //   (data: ModelAccount[]) => {
-    //     this.accounts = data;
-    //     for (let i = 0; i < this.accounts.length; i++) {
-    //       this.InfoAccountService.getInfoAccountById(Number(this.accounts[i].IdAccount)).subscribe(
-    //         (data: ModelInfoAccount) => {
-    //           {
-    //             this.dataAccount.push(
-    //               {
-    //                 Account: this.accounts[i],
-    //                 InfoAccount: data
-    //               } as ModelDataAccount)
-    //             this.tempData.push(
-    //               {
-    //                 Account: this.accounts[i],
-    //                 InfoAccount: data
-    //               } as ModelDataAccount)
-    //           }
-    //         },
-    //         (error) => {
-    //           console.error('Error fetching account info:', error);
-    //         }
-    //       );
-    //     }
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching accounts:', error);
-    //   }
-    // );
-  }
-
 //Change Account status
   UpdateStatus(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
     // const newStatus = !status;
-    // const account: ModelAccount = {
+    // const account: AccountModel = {
     //   IdAccount: id,
     //   Username: name,
     //   Password: pass,
@@ -180,7 +211,7 @@ export class ManagerAccountComponent implements OnInit {
 
   UpdateComment(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
     // const newCommentStatus = !ban;
-    // const account: ModelAccount = {
+    // const account: AccountModel = {
     //   IdAccount: id,
     //   Username: name,
     //   Password: pass,

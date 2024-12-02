@@ -4,6 +4,7 @@ import {AccountService} from "../../../service/Account/account.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {MessageService} from "primeng/api";
 import {AccountModel} from '../../../Model/Account/AccountModel';
+
 @Component({
   selector: 'app-update-account',
   templateUrl: './update-account.component.html',
@@ -39,6 +40,14 @@ export class UpdateAccountComponent implements AfterViewInit {
     const password = (document.getElementById('currentPassword') as HTMLInputElement).value;
     const newPassword = (document.getElementById('newPassword') as HTMLInputElement).value;
     const otherPass = (document.getElementById('confirmPassword') as HTMLInputElement).value;
+    if(newPassword.length<6){
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Mật khẩu dài hơn 6 ký tự'
+      });
+      return;
+    }
 
     if (newPassword !== otherPass) {
       this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Mật khẩu xác nhận không khớp'});
@@ -94,6 +103,14 @@ export class UpdateAccountComponent implements AfterViewInit {
     const newPassword = (document.getElementById('Pass') as HTMLInputElement).value;
     const CodePass = (document.getElementById('Code') as HTMLInputElement).value;
     this.code = localStorage.getItem('code');
+    if(newPassword.length<6){
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Mật khẩu dài hơn 6 ký tự'
+      });
+      return;
+    }
 
     if(this.code!=CodePass){
       this.messageService.add({
