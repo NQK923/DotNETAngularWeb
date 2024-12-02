@@ -1,9 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {ModelAccount} from "../../../Model/ModelAccount";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
 import {AccountService} from "../../../service/Account/account.service";
-import {ModelDataAccount} from "../../../Model/DataAccount";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {ConfirmationService, MessageService} from "primeng/api";
@@ -14,12 +11,8 @@ import {ConfirmationService, MessageService} from "primeng/api";
   styleUrls: ['./manager-account.component.css']
 })
 export class ManagerAccountComponent implements OnInit {
-  accounts: ModelAccount[] = [];
-  infoAccounts: ModelInfoAccount[] = [];
-  dataAccount: ModelDataAccount[] = [];
   status: boolean | null = null;
-  dataSearch: ModelDataAccount[] = [];
-  tempData: ModelDataAccount[] = [];
+
 
 
   constructor(private InfoAccountService: InfoAccountService,
@@ -32,8 +25,6 @@ export class ManagerAccountComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataAccount = [];
-    this.infoAccounts = [];
     this.setupEventListeners();
     this.applyTailwindClasses();
     this.TakeData();
@@ -52,43 +43,43 @@ export class ManagerAccountComponent implements OnInit {
     return targetIndex === target.length;
   }
   search() {
-    this.dataSearch = [];
-    const text = this.el.nativeElement.querySelector('#search').value;
-    if (text === "") {
-      this.dataAccount = [];
-      this.tempData = [];
-      this.TakeData();
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Thất bại',
-        detail: 'Không tìm thấy!'
-      });
-      return;
-    }
-
-    for (let i = 0; i < this.tempData.length; i++) {
-      let temp = this.isSimilar(this.tempData[i].Account.Username, text);
-      if (temp) {
-        const exists = this.dataSearch.some(
-          account => account.Account.Username === this.tempData[i].Account.Username
-        );
-        if (!exists) {
-          this.dataSearch.push(this.tempData[i]);
-        }
-      }
-    }
-    if (this.dataSearch.length > 0) {
-      this.dataAccount = this.dataSearch;
-    } else {
-      this.dataAccount = [];
-      this.tempData = [];
-      this.TakeData();
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Thất bại',
-        detail: 'Không tìm thấy!'
-      });
-    }
+    // this.dataSearch = [];
+    // const text = this.el.nativeElement.querySelector('#search').value;
+    // if (text === "") {
+    //   this.dataAccount = [];
+    //   this.tempData = [];
+    //   this.TakeData();
+    //   this.messageService.add({
+    //     severity: 'error',
+    //     summary: 'Thất bại',
+    //     detail: 'Không tìm thấy!'
+    //   });
+    //   return;
+    // }
+    //
+    // for (let i = 0; i < this.tempData.length; i++) {
+    //   let temp = this.isSimilar(this.tempData[i].Account.Username, text);
+    //   if (temp) {
+    //     const exists = this.dataSearch.some(
+    //       account => account.Account.Username === this.tempData[i].Account.Username
+    //     );
+    //     if (!exists) {
+    //       this.dataSearch.push(this.tempData[i]);
+    //     }
+    //   }
+    // }
+    // if (this.dataSearch.length > 0) {
+    //   this.dataAccount = this.dataSearch;
+    // } else {
+    //   this.dataAccount = [];
+    //   this.tempData = [];
+    //   this.TakeData();
+    //   this.messageService.add({
+    //     severity: 'error',
+    //     summary: 'Thất bại',
+    //     detail: 'Không tìm thấy!'
+    //   });
+    // }
   }
 
   //Get info account

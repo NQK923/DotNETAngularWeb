@@ -1,5 +1,5 @@
 <div *ngIf="!isLoading" class=" bg-gray-950">
-  <div *ngIf="(mangaDetails.is_deleted || !mangaDetails.is_posted); else mangaContent"
+  <div *ngIf="(mangaDetails.isDeleted || !mangaDetails.isPosted); else mangaContent"
        class="bg-gray-500 flex fullScreen items-center justify-center text-white">
     <div class="text-center p-4">
       <h1 class="text-6xl lg:text-9xl font-bold text-yellow-500 mb-4">404</h1>
@@ -13,12 +13,12 @@
     <div class="bg-gray-800 flex flex-col fullScreen">
       <div class="flex-grow">
         <div class="pt-2 m-0 p-0 relative">
-          <div [ngStyle]="{'background-image': 'url(' + mangaDetails.cover_img + ')'}"
+          <div [ngStyle]="{'background-image': 'url(' + mangaDetails.coverImg + ')'}"
                class="absolute top-0 left-0 w-full h-full opacity-30 bg-cover bg-center bg-no-repeat z-1">
           </div>
           <div class="flex z-10 relative ">
             <div class="p-2 pb-3 coverImg rounded">
-              <img [src]="mangaDetails.cover_img" alt="Cover Image" class="rounded" loading="lazy">
+              <img [src]="mangaDetails.coverImg" alt="Cover Image" class="rounded w-360" loading="lazy">
             </div>
             <div class="w-2/3 p-4 text-white infoManga">
               <div class="mangaTitle font-bold mb-2">{{ mangaDetails.name }}</div>

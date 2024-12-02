@@ -17,7 +17,7 @@ public class NotificationDbContext(DbContextOptions<NotificationDbContext> optio
         modelBuilder.Entity<NotificationMangaAccount>()
             .ToTable("Notification_Manga_Account")
             .HasKey(n => n.IdNotification);
-        
+
         modelBuilder.Entity<NotificationMangaAccount>(entity =>
         {
             entity.Property(n => n.IsRead).HasDefaultValue(false);

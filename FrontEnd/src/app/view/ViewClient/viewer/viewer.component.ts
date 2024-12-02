@@ -3,12 +3,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ChapterService} from '../../../service/Chapter/chapter.service';
 import {CommentService} from "../../../service/Comment/comment.service";
 import {ModelComment} from "../../../Model/ModelComment";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
 import {InfoAccountService} from '../../../service/InfoAccount/info-account.service';
 import {MangaHistoryService} from "../../../service/MangaHistory/manga_history.service";
 import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaViewHistory.service";
 import {AccountService} from "../../../service/Account/account.service";
-import {ModelAccount} from "../../../Model/ModelAccount";
 import {forkJoin, map} from "rxjs";
 import {MangaService} from "../../../service/Manga/manga.service";
 import {ConfirmationService, MessageService} from "primeng/api";
@@ -23,14 +21,14 @@ interface Chapter {
 
 export class CommentData {
   Comment: ModelComment | null;
-  InfoAccount: ModelInfoAccount | null;
+  //InfoAccount: ModelInfoAccount | null;
 
   constructor(
     comment: ModelComment | null,
-    infoAccount: ModelInfoAccount | null
+    //infoAccount: ModelInfoAccount | null
   ) {
     this.Comment = comment;
-    this.InfoAccount = infoAccount;
+    //this.InfoAccount = infoAccount;
   }
 }
 
@@ -46,11 +44,11 @@ export class ViewerComponent implements OnInit {
   chapters: Chapter[] = [];
   comment: ModelComment[] = [];
   comments: ModelComment[] = [];
-  listInfoAccount: ModelInfoAccount[] = [];
+  //listInfoAccount: ModelInfoAccount[] = [];
   listDataComment: CommentData[] = [];
   listYourComment: CommentData[] = [];
   yourId: number = -1;
-  yourAc: ModelAccount | null = null;
+  //yourAc: ModelAccount | null = null;
   chapterId: number = -1;
 
   constructor(
@@ -103,7 +101,7 @@ export class ViewerComponent implements OnInit {
     );
   }
 
-  goToChapter(index: any): void {
+  async goToChapter(index: any): Promise<void> {
     const numericIndex = +index;
     if (numericIndex >= 1 && numericIndex <= this.chapters.length) {
       this.images = [];
@@ -118,11 +116,10 @@ export class ViewerComponent implements OnInit {
         )
         if (selectedChapter && selectedChapter.idChapter !== undefined) {
           localStorage.setItem('id_chapter', selectedChapter.idChapter.toString());
-          if (this.isLoggedIn()) {
-            const id_user = localStorage.getItem('userId');
-            let numberId: number;
-            numberId = Number(id_user);
-            this.mangaHistoryService.addMangaHistory(numberId, this.id_manga, numericIndex).subscribe(
+          if (await this.isLoggedIn()) {
+            const cookie = await this.accountService.getAccountCookie();
+            const userId = cookie.id_account;
+            this.mangaHistoryService.addMangaHistory(userId, this.id_manga, numericIndex).subscribe(
               () => {
               },
               (error) => {
@@ -147,16 +144,18 @@ export class ViewerComponent implements OnInit {
     return this.chapter_index < this.chapters.length;
   }
 
-  isLoggedIn(): boolean {
-    const id_user = localStorage.getItem('userId');
+  async isLoggedIn(): Promise<boolean> {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
     return !!(id_user && Number(id_user) != -1);
   }
 
-  loadAllComment(chapterId: number) {
+  async loadAllComment(chapterId: number) {
     this.listDataComment = []
     this.listYourComment = []
-    const userId = localStorage.getItem('userId');
-    this.yourId = userId !== null ? parseInt(userId, 10) : 0;
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
+    this.yourId = id_user;
     this.loadComment()
       .then(() => this.loadInfoAccount())
       .then(() => this.takeData())

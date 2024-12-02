@@ -369,16 +369,16 @@
         </div>
 
         <!-- File Upload -->
-        <form #form="ngForm" (ngSubmit)="addAvatar(form)" class="text-center mb-4">
+        <form #form="ngForm" class="text-center mb-4">
           <label
             class="block w-full py-2 border-2 border-dashed border-gray-300 rounded-full cursor-pointer hover:border-blue-500"
             for="fileInput">
             <span class="text-gray-500">Chọn file</span>
             <input (change)="FileSelected($event)" class="hidden" id="fileInput" type="file">
           </label>
-       
+
         </form>
- 
+
         <!-- Update Information Buttons -->
         <div class="flex justify-center gap-4 mb-4">
           <button (click)="ChangeInfomation('userInfo')"  class="w-full border py-2 rounded-l-full hover:bg-gray-100" id="userupdate">Thông tin</button>

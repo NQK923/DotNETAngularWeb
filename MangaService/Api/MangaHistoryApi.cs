@@ -59,7 +59,7 @@ public static class MangaHistoryApi
         try
         {
             var existingHistory = await dbContext.MangaHistory
-                .FirstOrDefaultAsync(h =>
+                .AsNoTracking().FirstOrDefaultAsync(h =>
                     h.IdAccount == request.IdAccount &&
                     h.IdManga == request.IdManga &&
                     h.IndexChapter == request.IndexChapter);

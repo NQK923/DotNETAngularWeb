@@ -68,87 +68,87 @@
       <p>Bình luận</p>
     </div>
 
-    <!-- Ban Comment Notification -->
-    <div *ngIf="yourAc?.BanComment" class="flex justify-center mt-4 text-red-500 font-bold">
-      Tài khoản đã bị cấm bình luận, liên hệ quản lý để hỗ trợ.
-    </div>
-    <div (click)=" goToLogin()" *ngIf="yourId==-1"
-         class=" cursor-pointer flex justify-center mt-4 text-red-500 font-bold">
-      Đăng nhập để dùng chức năng bình luận
-    </div>
-    <!-- Add Comment Section -->
-    <div *ngIf="!yourAc?.BanComment && yourId!=-1" class="flex justify-center mt-4">
-      <div
-        class="p-4 w-90 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg hover:bg-gray-700 transition duration-300 ease-in-out">
-        <div class="font-bold text-blue-500 mb-2">Thêm bình luận</div>
-        <div class="flex">
-          <input class="p-3 w-full rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500" id="textComment"
-                 placeholder="Viết bình luận của bạn" type="text">
-          <button (click)="addComment()"
-                  class="bg-blue-500 text-white font-bold w-24 rounded-r-xl transition duration-300 ease-in-out hover:bg-blue-600">
-            Bình luận
-          </button>
-        </div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Ban Comment Notification &ndash;&gt;-->
+<!--    <div *ngIf="yourAc?.BanComment" class="flex justify-center mt-4 text-red-500 font-bold">-->
+<!--      Tài khoản đã bị cấm bình luận, liên hệ quản lý để hỗ trợ.-->
+<!--    </div>-->
+<!--    <div (click)=" goToLogin()" *ngIf="yourId==-1"-->
+<!--         class=" cursor-pointer flex justify-center mt-4 text-red-500 font-bold">-->
+<!--      Đăng nhập để dùng chức năng bình luận-->
+<!--    </div>-->
+<!--    &lt;!&ndash; Add Comment Section &ndash;&gt;-->
+<!--    <div *ngIf="!yourAc?.BanComment && yourId!=-1" class="flex justify-center mt-4">-->
+<!--      <div-->
+<!--        class="p-4 w-90 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg hover:bg-gray-700 transition duration-300 ease-in-out">-->
+<!--        <div class="font-bold text-blue-500 mb-2">Thêm bình luận</div>-->
+<!--        <div class="flex">-->
+<!--          <input class="p-3 w-full rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500" id="textComment"-->
+<!--                 placeholder="Viết bình luận của bạn" type="text">-->
+<!--          <button (click)="addComment()"-->
+<!--                  class="bg-blue-500 text-white font-bold w-24 rounded-r-xl transition duration-300 ease-in-out hover:bg-blue-600">-->
+<!--            Bình luận-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <!-- Your Comments -->
-    <div *ngFor="let listYourComment of listYourComment" class="flex justify-center mt-4">
-      <div
-        class="p-4 w-90 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg hover:bg-gray-700 transition duration-300 ease-in-out">
-        <div class="flex items-start">
-          <img alt="Avatar" class="h-16 w-16 object-cover p-1 bg-white rounded-full" loading="lazy"
-               src="{{listYourComment.InfoAccount?.CoverImg}}">
-          <div class="ml-4 w-full">
-            <div class="font-bold text-blue-500 ml-2 text-xl">{{ listYourComment.InfoAccount?.Name }}</div>
-            <div class="m-2 flex">
-              <input class="p-3 w-full  text-white border-none bg-gray-700 rounded"
-                     id="text{{listYourComment.Comment?.idComment}}"
-                     placeholder="{{ listYourComment.Comment?.content }}" type="text">
-              <button (click)="updateComment(listYourComment.Comment?.idComment)"
-                      class="hidden bg-blue-500 text-white font-bold w-24 rounded-r-xl"
-                      id="buttonUndate">Sửa bình luận
-              </button>
-            </div>
-            <div class="flex justify-between mt-2 text-white text-sm ml-2">
-              <span>{{ listYourComment.Comment?.time | date: 'dd-MM-yyyy' }}</span>
-              <div class="flex">
-                <button (click)="onUpdate()" class="text-blue-500 underline">Sửa
-                  bình luận
-                </button>
-                <div class="text-blue-500 m-1">/</div>
-                <button (click)="deleteComment(listYourComment.Comment?.idComment)" class="text-blue-500 underline">Xóa
-                  bình luận
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Your Comments &ndash;&gt;-->
+<!--    <div *ngFor="let listYourComment of listYourComment" class="flex justify-center mt-4">-->
+<!--      <div-->
+<!--        class="p-4 w-90 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg hover:bg-gray-700 transition duration-300 ease-in-out">-->
+<!--        <div class="flex items-start">-->
+<!--          <img alt="Avatar" class="h-16 w-16 object-cover p-1 bg-white rounded-full" loading="lazy"-->
+<!--               src="{{listYourComment.InfoAccount?.CoverImg}}">-->
+<!--          <div class="ml-4 w-full">-->
+<!--            <div class="font-bold text-blue-500 ml-2 text-xl">{{ listYourComment.InfoAccount?.Name }}</div>-->
+<!--            <div class="m-2 flex">-->
+<!--              <input class="p-3 w-full  text-white border-none bg-gray-700 rounded"-->
+<!--                     id="text{{listYourComment.Comment?.idComment}}"-->
+<!--                     placeholder="{{ listYourComment.Comment?.content }}" type="text">-->
+<!--              <button (click)="updateComment(listYourComment.Comment?.idComment)"-->
+<!--                      class="hidden bg-blue-500 text-white font-bold w-24 rounded-r-xl"-->
+<!--                      id="buttonUndate">Sửa bình luận-->
+<!--              </button>-->
+<!--            </div>-->
+<!--            <div class="flex justify-between mt-2 text-white text-sm ml-2">-->
+<!--              <span>{{ listYourComment.Comment?.time | date: 'dd-MM-yyyy' }}</span>-->
+<!--              <div class="flex">-->
+<!--                <button (click)="onUpdate()" class="text-blue-500 underline">Sửa-->
+<!--                  bình luận-->
+<!--                </button>-->
+<!--                <div class="text-blue-500 m-1">/</div>-->
+<!--                <button (click)="deleteComment(listYourComment.Comment?.idComment)" class="text-blue-500 underline">Xóa-->
+<!--                  bình luận-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <!-- Other Users' Comments -->
-    <div *ngFor="let listDataComments of listDataComment" class="flex justify-center mt-4">
-      <div
-        class="p-4 w-90 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg hover:bg-gray-700 transition duration-300 ease-in-out">
-        <div class="flex items-start">
-          <img alt="Avatar" class="h-16 w-16 object-cover p-1 bg-white rounded-full" loading="lazy"
-               src="{{listDataComments.InfoAccount?.CoverImg}}">
-          <div class="ml-4 w-full rounded">
-            <div class="font-bold text-blue-500 ml-2 text-xl">{{ listDataComments.InfoAccount?.Name }}</div>
-            <div class="p-3 w-full m-2 text-white text-sm bg-gray-700 rounded">{{ listDataComments.Comment?.content }}
-            </div>
-            <div class="flex justify-between mt-2 text-white text-sm ml-2">
-              <span>{{ listDataComments.Comment?.time | date: 'dd-MM-yyyy' }}</span>
-              <button
-                (click)="addReport(listDataComments.Comment?.idComment, listDataComments.Comment?.idChapter, listDataComments.InfoAccount?.IdAccount, listDataComments.Comment?.content)"
-                class="text-blue-500 underline">Báo cáo bình luận
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Other Users' Comments &ndash;&gt;-->
+<!--    <div *ngFor="let listDataComments of listDataComment" class="flex justify-center mt-4">-->
+<!--      <div-->
+<!--        class="p-4 w-90 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg hover:bg-gray-700 transition duration-300 ease-in-out">-->
+<!--        <div class="flex items-start">-->
+<!--          <img alt="Avatar" class="h-16 w-16 object-cover p-1 bg-white rounded-full" loading="lazy"-->
+<!--               src="{{listDataComments.InfoAccount?.CoverImg}}">-->
+<!--          <div class="ml-4 w-full rounded">-->
+<!--            <div class="font-bold text-blue-500 ml-2 text-xl">{{ listDataComments.InfoAccount?.Name }}</div>-->
+<!--            <div class="p-3 w-full m-2 text-white text-sm bg-gray-700 rounded">{{ listDataComments.Comment?.content }}-->
+<!--            </div>-->
+<!--            <div class="flex justify-between mt-2 text-white text-sm ml-2">-->
+<!--              <span>{{ listDataComments.Comment?.time | date: 'dd-MM-yyyy' }}</span>-->
+<!--              <button-->
+<!--                (click)="addReport(listDataComments.Comment?.idComment, listDataComments.Comment?.idChapter, listDataComments.InfoAccount?.IdAccount, listDataComments.Comment?.content)"-->
+<!--                class="text-blue-500 underline">Báo cáo bình luận-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 
 </div>

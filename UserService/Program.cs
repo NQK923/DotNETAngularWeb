@@ -1,4 +1,3 @@
-using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using UserService;
 
@@ -13,9 +12,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins", policyBuilder =>
     {
         policyBuilder.WithOrigins("https://localhost:4200", "http://localhost:4200")
-                     .AllowAnyMethod()
-                     .AllowAnyHeader()
-                     .AllowCredentials();
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
@@ -41,5 +40,3 @@ app.UseCors("AllowAllOrigins");
 app.InitBasicAccountApi();
 app.InitBasicInfoAccountApi(builder.Configuration);
 app.Run();
-
-

@@ -5,31 +5,33 @@ import {Observable, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import { AccountService } from './service/Account/account.service';
 
-interface Account {
-  id_account?: number;
-  role: boolean;
-}
 
 export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
-  const http = inject(HttpClient);
   const router = inject(Router);
   const accountService = inject(AccountService);
-
-  // const userId = localStorage.getItem('userId');
-
-  // if (!userId) {
-  //   router.navigate(['/']);
-  //   return of(false);
-  // }
 
   return accountService.isLoggedInObservable().pipe(
     map((loggedIn) => {
       if (loggedIn == false && state.url.includes("login")) return true;
       else if (loggedIn != false && state.url.includes("login")) return false;
-
       if (loggedIn == false) { router.navigate(['/login']); return false; }
       return true;
     })
     , catchError((error) => { ; return of(false); })
   );
 };
+
+export const authGuardManager: CanActivateFn = async (route, state): Promise<boolean> => {
+  const accountService = inject(AccountService);
+  const router = inject(Router);
+
+  const cookie = await accountService.getAccountCookie();
+  const role = cookie?.role;
+
+  if (!role||cookie==null) {
+    router.navigate(['/']);
+    return false;
+  }
+  return true;
+};
+

@@ -1,10 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ModelAccount } from "../../../Model/ModelAccount";
+import {  Component} from '@angular/core';
 import { Router } from "@angular/router";
 import { AccountService } from "../../../service/Account/account.service";
-import { InfoAccountService } from "../../../service/InfoAccount/info-account.service";
-import { Location } from '@angular/common';
-import { LoginRegisterRequest } from '../../../Model/Account/LoginRegisterRequest';
+
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { MessageService } from 'primeng/api';
 
@@ -15,7 +12,6 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  accounts: ModelAccount | undefined;
 
   // Two way data binding
   isActive: boolean = false;
@@ -65,7 +61,6 @@ export class LoginComponent {
     if (!this.checkLoginData()) return;
     let result: boolean = await this.accountService.loginNormal(this.username, this.password, this.reloadPage.bind(this), this.failCallback.bind(this));
     if (!result) {
-      // console.log("NOT OK");
       return;
     }
   }

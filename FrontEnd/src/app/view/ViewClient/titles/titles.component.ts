@@ -9,6 +9,7 @@ import {CategoryDetailsService} from "../../../service/Category_details/Category
 import {CategoriesService} from "../../../service/Categories/Categories.service";
 import {forkJoin} from "rxjs";
 import {ConfirmationService, MessageService} from "primeng/api";
+import { AccountService } from '../../../service/Account/account.service';
 
 interface Chapter {
   idChapter: number;
@@ -55,7 +56,7 @@ export class TitlesComponent implements OnInit {
   histories: History[] = [];
   @ViewChild('ratingSection') ratingSection!: ElementRef;
   ascending = false;
-  isLoading = true;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,6 +69,7 @@ export class TitlesComponent implements OnInit {
     private categoriesService: CategoriesService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private accountService: AccountService,
   ) {
   }
 
@@ -99,7 +101,6 @@ export class TitlesComponent implements OnInit {
       this.filteredCategories = this.categories.filter(category =>
         this.categoryDetails.some(detail => detail.idCategory === category.idCategory)
       );
-      this.isLoading = false;
     });
 
   }
@@ -108,6 +109,7 @@ export class TitlesComponent implements OnInit {
     this.mangaService.getMangaById(id).subscribe(
       (data) => {
         this.mangaDetails = data;
+        console.log(this.mangaDetails);
       },
       (error) => {
         console.error('Error fetching manga details', error);
@@ -115,12 +117,10 @@ export class TitlesComponent implements OnInit {
     );
   }
 
-  getReadingHistory(id_manga: number) {
-    const id_user = localStorage.getItem('userId');
-    let numberId: number;
-
-    // Convert the user ID to a number
-    numberId = Number(id_user);
+  async getReadingHistory(id_manga: number) {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
+    const numberId = Number(id_user);
 
     this.mangaHistoryService.getHistory(numberId, id_manga).subscribe(
       (data: History[]) => {
@@ -147,7 +147,7 @@ export class TitlesComponent implements OnInit {
     });
   }
 
-  goToChapter(index: number): void {
+  async goToChapter(index: number): Promise<void> {
     this.mangaViewHistoryService.createHistory(this.id_manga).subscribe(
       () => {
       },
@@ -155,10 +155,10 @@ export class TitlesComponent implements OnInit {
         console.error('Error: ', error);
       }
     )
-    if (this.isLoggedIn()) {
-      const id_user = localStorage.getItem('userId');
-      let numberId: number;
-      numberId = Number(id_user);
+    if (await this.isLoggedIn()) {
+      const cookie = await this.accountService.getAccountCookie();
+      const id_user = cookie.id_account;
+      const numberId = Number(id_user);
       this.mangaHistoryService.addMangaHistory(numberId, this.id_manga, index).subscribe(
         () => {
         },
@@ -170,8 +170,9 @@ export class TitlesComponent implements OnInit {
     this.router.navigate([`/manga/${this.id_manga}/chapter/${index}`]);
   }
 
-  isLoggedIn(): boolean {
-    const id_user = localStorage.getItem('userId');
+  async isLoggedIn(): Promise<boolean> {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
     return !!(id_user && Number(id_user) != -1);
   }
 
@@ -193,7 +194,7 @@ export class TitlesComponent implements OnInit {
         acceptButtonStyleClass: 'p-button-success',
         rejectButtonStyleClass: 'p-button-secondary',
         accept: () => {
-          this.mangaService.ratingChange(this.mangaDetails.id_manga, this.selectedRatingValue)
+          this.mangaService.ratingChange(this.id_manga, this.selectedRatingValue)
             .subscribe({
               next: (response) => {
                 this.mangaDetails.rating = response.rating;
@@ -224,11 +225,12 @@ export class TitlesComponent implements OnInit {
     }
   }
 
-  checkIfFavorited(): void {
-    const userId = localStorage.getItem('userId');
+  async checkIfFavorited(): Promise<void> {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
+    const userId = Number(id_user);
     if (userId) {
-      const id_user = parseInt(userId, 10);
-      this.mangaFavoriteService.isFavorited(id_user, this.id_manga).subscribe(
+      this.mangaFavoriteService.isFavorited(userId, this.id_manga).subscribe(
         (isFavorited: boolean) => {
           this.isFavorite = isFavorited;
         },
@@ -239,11 +241,12 @@ export class TitlesComponent implements OnInit {
     }
   }
 
-  toggleFavorite(): void {
-    const userId = localStorage.getItem('userId');
-    if (userId&&Number(userId)!=-1) {
-      const id_user = parseInt(userId, 10);
-      this.mangaFavoriteService.toggleFavorite(id_user, this.id_manga).subscribe(
+  async toggleFavorite(): Promise<void> {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
+    const userId = Number(id_user);
+    if (userId) {
+      this.mangaFavoriteService.toggleFavorite(userId, this.id_manga).subscribe(
         () => {
           this.isFavorite = !this.isFavorite;
           this.messageService.add({

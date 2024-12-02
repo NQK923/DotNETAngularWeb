@@ -1,9 +1,7 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {ModelAccount} from "../../../Model/ModelAccount";
 import {Router} from "@angular/router";
 import {AccountService} from "../../../service/Account/account.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
 import {MessageService} from "primeng/api";
 
 @Component({
@@ -16,8 +14,6 @@ export class UpdateAccountComponent implements AfterViewInit {
   @ViewChild('container') container!: ElementRef;
   @ViewChild('register') registerBtn!: ElementRef;
   @ViewChild('login') loginBtn!: ElementRef;
-  accounts: ModelAccount[] = [];
-  infoAccount: ModelInfoAccount[] = [];
   code: string | null = null;
 
   constructor(private router: Router,

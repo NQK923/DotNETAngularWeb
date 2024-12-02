@@ -1,8 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModelAccount } from "../../Model/ModelAccount";
 import { AccountService } from "../../service/Account/account.service";
-import { ModelInfoAccount } from "../../Model/ModelInfoAccoutn";
 import { ModelNotification } from "../../Model/ModelNotification";
 import { ModelManga } from "../../Model/ModelManga";
 import { ModelNotificationMangaAccount } from "../../Model/ModelNotificationMangaAccount";
@@ -25,12 +23,8 @@ import { ConfirmationService, MessageService } from "primeng/api";
 })
 export class HeaderComponent implements OnInit {
   searchQuery: string = '';
-  account: ModelAccount | undefined;
-  infoAccounts: ModelInfoAccount | undefined;
   url: string | null = null;
   name: string | null = null;
-  idAccount: number = -1;
-  infoAccount: ModelInfoAccount[] = [];
   mangas: ModelManga[] = [];
   mangaFavorite: ModelMangaFavorite[] = [];
   ListCombinedData: CombinedData[] = [];
@@ -38,7 +32,6 @@ export class HeaderComponent implements OnInit {
   isHidden: boolean = true;
   numberNotification: number | null = null;
   notification: ModelNotification | undefined;
-  info: ModelInfoAccount | undefined;
   isAdmin: boolean = false;
   menuOpen = false;
   urlAvatarUser: string | null = null;
@@ -64,7 +57,6 @@ export class HeaderComponent implements OnInit {
 
   async ngOnInit() {
     await this.checkLogin();
-
     this.ListCombinedData = [];
     this.ListCombinedDataIsRead = [];
     this.allFunction();
@@ -85,26 +77,26 @@ export class HeaderComponent implements OnInit {
   }
 
   private async checkLogin() {
-    // this.accountService.testlogin$.subscribe(status => {
-    //   this.isLoggedIn = status;
-    // });
-    //kiểm tra nếu account đã log
     (await this.accountService.isLoggedIn()).subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
       this.SetAvatarUser();
     });
   }
 
-  allFunction() {
+  async allFunction() {
     this.takeUserData();
-    if (this.idAccount != -1) {
-      this.takeOtherNotification(this.idAccount);
+    const cookie = await this.accountService.getAccountCookie();
+    if (cookie!=null) {
+      const userId = cookie.id_account;
+      this.takeOtherNotification(userId);
     }
   }
 
   takeMangaFavorite(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.mangaFavoriteService.getMangaFavByAccount(Number(this.idAccount)).subscribe(
+    return new Promise(async (resolve, reject) => {
+      const cookie = await this.accountService.getAccountCookie();
+      const userId = cookie.id_account;
+      this.mangaFavoriteService.getMangaFavByAccount(Number(userId)).subscribe(
         (data: ModelMangaFavorite[]) => {
           this.mangaFavorite = data;
           resolve();
@@ -120,10 +112,6 @@ export class HeaderComponent implements OnInit {
   takeDataNotification(id: number | undefined): Observable<ModelNotification> {
     return this.notificationService.getNotificationById(id);
   }
-
-  // takeDataInfoAccount(id: number): Observable<ModelInfoAccount> {
-  //   return this.infoAccountService.getInfoAccountById(id);
-  // }
 
   takeDataManga(id: number): Observable<ModelManga> {
     return this.mangaService.getMangaById(id);
@@ -155,7 +143,6 @@ export class HeaderComponent implements OnInit {
       notification: this.takeDataNotification(notificationAc.idNotification).pipe(
         map(notification => Array.isArray(notification) ? notification[0] : notification)
       ),
-      // account: this.takeDataInfoAccount(notificationAc.IdAccount)
     }).pipe(
       map(result => ({ ...result, notificationAc }))
     );
@@ -166,11 +153,10 @@ export class HeaderComponent implements OnInit {
       const combo: CombinedData = {
         Notification: result.notification,
         NotificationMangaAccounts: result.notificationAc,
-        InfoAccount: result.account,
         Mangainfo: result.manga
       };
       // @ts-ignore
-      const isFavorite = this.mangaFavorite.some(fav => fav.id_manga === combo.Mangainfo.id_manga);
+      const isFavorite = this.mangaFavorite.some(fav => fav.idManga === combo.Mangainfo.idManga);
       const isNotNewChapter = combo.Notification?.typeNoti !== "Đã thêm 1 chương mới";
 
       if (isFavorite || isNotNewChapter) {
@@ -205,59 +191,30 @@ export class HeaderComponent implements OnInit {
   }
 
   //get account info
-  takeUserData() {
-    // const userId = localStorage.getItem('userId');
-    // if (userId) {
-    //   this.idAccount = parseInt(userId, 10);
-    //   if (this.idAccount == -1) {
-    //     const History = this.el.nativeElement.querySelector('#History');
-    //     const Favorite = this.el.nativeElement.querySelector('#Favorite');
-    //     const HistoryMobile = this.el.nativeElement.querySelector('#HistoryMobile');
-    //     const FavoriteMobile = this.el.nativeElement.querySelector('#FavoriteMobile');
-    //     const clientManager = this.el.nativeElement.querySelector('#clientManager');
-    //     const iconNotification = this.el.nativeElement.querySelector('#iconNotification');
-    //     History.classList.add('hidden');
-    //     Favorite.classList.add('hidden');
-    //     clientManager.classList.add('hidden');
-    //     iconNotification.classList.add('hidden');
-    //     HistoryMobile.classList.add('hidden');
-    //     FavoriteMobile.classList.add('hidden');
-    //   } else {
-    //     const Login = this.el.nativeElement.querySelector('#Login');
-    //     const LoginMobile = this.el.nativeElement.querySelector('#LoginMobile');
-    //     Login.classList.add('hidden');
-    //     LoginMobile.classList.add('hidden');
-    //   }
-    // }
-    // if (userId && Number(userId)!=-1) {
-    //   this.idAccount = parseInt(userId, 10);
-    //   this.accountService.getAccountById(this.idAccount).subscribe(
-    //     (data: ModelAccount) => {
-    //       this.account = data;
-    //       this.name = this.account.Username || null;
-    //       if (this.account.Role) {
-    //         this.isAdmin = true;
-    //       }
-    //     },
-    //     (error) => {
-    //       console.error('Error fetching accounts:', error);
-    //     }
-    //   );
-    //   this.infoAccountService.getInfoAccountById(this.idAccount).subscribe(
-    //     (data: ModelInfoAccount) => {
-    //       this.infoAccounts = data;
-    //       if (this.idAccount !== null) {
-    //         this.url = this.infoAccounts.CoverImg || null;
-    //       }
-    //     },
-    //     (error) => {
-    //       console.error('Error fetching account info:', error);
-    //     }
-    //   );
-    //
-    // } else {
-    //   console.error('No userId found in localStorage');
-    // }
+  async takeUserData() {
+    const cookie = await this.accountService.getAccountCookie();
+    const id_user = cookie.id_account;
+    this.isAdmin = cookie.role;
+    const userId = Number(id_user);
+      if (!userId) {
+        const History = this.el.nativeElement.querySelector('#History');
+        const Favorite = this.el.nativeElement.querySelector('#Favorite');
+        const HistoryMobile = this.el.nativeElement.querySelector('#HistoryMobile');
+        const FavoriteMobile = this.el.nativeElement.querySelector('#FavoriteMobile');
+        const clientManager = this.el.nativeElement.querySelector('#clientManager');
+        const iconNotification = this.el.nativeElement.querySelector('#iconNotification');
+        History.classList.add('hidden');
+        Favorite.classList.add('hidden');
+        clientManager.classList.add('hidden');
+        iconNotification.classList.add('hidden');
+        HistoryMobile.classList.add('hidden');
+        FavoriteMobile.classList.add('hidden');
+      } else {
+        const Login = this.el.nativeElement.querySelector('#Login');
+        const LoginMobile = this.el.nativeElement.querySelector('#LoginMobile');
+        Login.classList.add('hidden');
+        LoginMobile.classList.add('hidden');
+      }
   }
 
   // delete all notification
@@ -276,7 +233,6 @@ export class HeaderComponent implements OnInit {
         for (let i = 0; i < allData.length; i++) {
           const notificationData = {
             idManga: allData[i].Mangainfo?.idManga,
-            idAccount: allData[i].InfoAccount?.IdAccount,
             idNotification: allData[i].Notification?.idNotification,
             isDeleted: true,
             isRead: true,

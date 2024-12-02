@@ -14,6 +14,7 @@ import {CategoriesService} from "../../../service/Categories/Categories.service"
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {ConfirmationService, MessageService} from "primeng/api";
 import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorite.service";
+import { AccountService } from '../../../service/Account/account.service';
 
 interface Manga {
   idManga: number;
@@ -102,18 +103,21 @@ export class ManagerComponent implements OnInit {
               private categoriesService: CategoriesService,
               private confirmationService: ConfirmationService,
               private messageService: MessageService,
-              private mangaFavoriteService: MangaFavoriteService,) {
+              private mangaFavoriteService: MangaFavoriteService,
+              private accountService: AccountService) {
   }
 
-  ngOnInit() {
-    const userId = Number(localStorage.getItem('userId'));
+  async ngOnInit() {
+    const cookie = await this.accountService.getAccountCookie();
+    const userId = cookie.id_account;
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchTerm => {
       this.filterMangas(searchTerm);
     });
-    this.loadMangas(userId).then(() => {});
+    this.loadMangas(userId).then(() => {
+    });
     this.categoriesService.getAllCategories().subscribe(categories => {
       this.categories = categories;
     });
@@ -194,7 +198,8 @@ export class ManagerComponent implements OnInit {
       });
       this.removeFromList(manga.idManga);
       this.filteredAllMangas = [manga, ...this.filteredAllMangas];
-      const userId = Number(localStorage.getItem('userId'));
+      const cookie = await this.accountService.getAccountCookie();
+      const userId = cookie.id_account;
       if (manga.idAccount === userId) {
         const existingMangaIndex = this.filteredMyMangas.findIndex(item => item.idManga === manga.idManga);
         if (existingMangaIndex !== -1) {
@@ -228,7 +233,7 @@ export class ManagerComponent implements OnInit {
       await this.mangaService.deleteMangaById(manga.idManga).toPromise();
       const categories = await this.categoryDetailsService.getCategoriesByIdManga(manga.idManga).toPromise();
       // @ts-ignore
-      const categoriesToDelete = [manga.id_manga, ...categories.map(c => c.id_category)];
+      const categoriesToDelete = [manga.idManga, ...categories.map(c => c.idCategory)];
       await this.categoryDetailsService.deleteCategoriesDetails(categoriesToDelete).toPromise();
       this.removeFromList(manga.idManga);
       this.messageService.add({
@@ -322,10 +327,9 @@ export class ManagerComponent implements OnInit {
     return formData;
   }
 
-  uploadOrUpdateManga(formData: FormData, action: 'upload' | 'update', mangaId?: number) {
-    const id_user = localStorage.getItem('userId');
-    const userId = Number(id_user);
-
+  async uploadOrUpdateManga(formData: FormData, action: 'upload' | 'update', mangaId?: number) {
+    const cookie = await this.accountService.getAccountCookie();
+    const userId = cookie.id_account;
     const mangaServiceMethod = action === 'upload'
       ? this.mangaService.uploadManga(formData, userId)
       : this.mangaService.updateManga(formData, mangaId!);
@@ -431,7 +435,7 @@ export class ManagerComponent implements OnInit {
       const existingChapter = error.error.existingChapter;
       this.confirmAction(
         `Chương ${this.chapterIndex} đã tồn tại. Bạn có muốn cập nhật không?`,
-        () => this.updateChapter(existingChapter.id_chapter),
+        () => this.updateChapter(existingChapter.idChapter),
         () => {
           this.isAddingChapter = false;
         }
@@ -758,7 +762,7 @@ export class ManagerComponent implements OnInit {
       }
     );
     this.categoryDetailsService.getCategoriesByIdManga(manga.idManga).subscribe(categories => {
-      const categoriesToDelete = [manga.idManga, ...categories.map(c => c.id_category)];
+      const categoriesToDelete = [manga.idManga, ...categories.map(c => c.idCategory)];
       this.categoryDetailsService.deleteCategoriesDetails(categoriesToDelete).subscribe();
     });
   }
@@ -982,8 +986,9 @@ export class ManagerComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.setItem('userId', "-1");
-    this.router.navigate([`/`]);
+    this.accountService.logOut(() => {
+      this.router.navigate([`/`]);
+    });
   }
 
   toggleAddChap(id: number, name: string): void {
@@ -1031,7 +1036,7 @@ export class ManagerComponent implements OnInit {
       });
       this.categoryDetailsService.getCategoriesByIdManga(id).subscribe(categories => {
         for (const category of categories) {
-          this.selectedCategories.push(category.id_category);
+          this.selectedCategories.push(category.idCategory);
         }
       })
     } else {

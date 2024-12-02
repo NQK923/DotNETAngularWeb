@@ -10,7 +10,7 @@ export class CategoryDetailsService {
   // private apiUrl = 'https://localhost:44347/api';
   // private Url = "https://localhost:44347/api/GetAll_category_details"
 
-  private apiUrl = 'http://localhost:5006/api';
+  private apiUrl = 'http://localhost:5005/api';
 
   constructor(private http: HttpClient) {
   }

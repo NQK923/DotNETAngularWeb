@@ -1,4 +1,6 @@
-﻿public class MangaHistoryRequest
+﻿namespace MangaService.Models;
+
+public abstract class MangaHistoryRequest
 {
     public int IdAccount { get; set; }
     public int IdManga { get; set; }

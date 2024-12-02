@@ -4,6 +4,7 @@ import {MangaFavoriteService} from "../../../service/MangaFavorite/manga-favorit
 import {MangaService} from "../../../service/Manga/manga.service";
 import {forkJoin, Observable} from 'rxjs';
 import {ConfirmationService, MessageService} from "primeng/api";
+import { AccountService } from '../../../service/Account/account.service';
 
 interface Manga {
   idManga: number;
@@ -47,6 +48,7 @@ export class FavoriteComponent implements OnInit {
     private mangaService: MangaService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
+    private accountService: AccountService,
   ) {
     this.updateItemsPerPage(window.innerWidth);
   }
@@ -56,9 +58,10 @@ export class FavoriteComponent implements OnInit {
     this.updateItemsPerPage(event.target.innerWidth);
   }
 
-  ngOnInit() {
-    const idNumber = Number(localStorage.getItem('userId'));
-    this.mangaFavoriteService.getMangaFavByAccount(idNumber).subscribe(fm => {
+  async ngOnInit() {
+    const cookie = await this.accountService.getAccountCookie();
+    const userId = cookie.id_account;
+    this.mangaFavoriteService.getMangaFavByAccount(userId).subscribe(fm => {
       this.favoriteMangas = fm;
       const mangaObservables: Observable<Manga>[] = this.favoriteMangas.map(fav =>
         this.mangaService.getMangaById(fav.idManga)
@@ -78,9 +81,10 @@ export class FavoriteComponent implements OnInit {
   removeFromFavorites(mangaId: number) {
     if (this.confirmationDialogOpen) return;
     this.confirmationDialogOpen = true;
-    this.confirmAction('Bạn có chắc chắn muốn bỏ yêu thích không?', () => {
-      const idNumber = Number(localStorage.getItem('userId'));
-      this.mangaFavoriteService.toggleFavorite(idNumber, mangaId).subscribe(() => {
+    this.confirmAction('Bạn có chắc chắn muốn bỏ yêu thích không?', async () => {
+      const cookie = await this.accountService.getAccountCookie();
+      const userId = cookie.id_account;
+      this.mangaFavoriteService.toggleFavorite(userId, mangaId).subscribe(() => {
         this.favoriteMangas = this.favoriteMangas.filter(manga => manga.idManga !== mangaId);
         this.mangas = this.mangas.filter(manga => manga.idManga !== mangaId);
         this.messageService.add({
@@ -99,11 +103,12 @@ export class FavoriteComponent implements OnInit {
     });
   }
 
-  toggleNotification(idManga: number) {
-    const idNumber = Number(localStorage.getItem('userId'));
+  async toggleNotification(idManga: number) {
+    const cookie = await this.accountService.getAccountCookie();
+    const userId = cookie.id_account;
     const mangaFavorite = this.favoriteMangas.find(fav => fav.idManga === idManga);
     if (mangaFavorite) {
-      this.mangaFavoriteService.toggleNotification(idNumber, mangaFavorite.idManga).subscribe(() => {
+      this.mangaFavoriteService.toggleNotification(userId, mangaFavorite.idManga).subscribe(() => {
         mangaFavorite.isNotification = !mangaFavorite.isNotification;
         const manga = this.mangas.find(m => m.idManga === idManga);
         if (manga) {

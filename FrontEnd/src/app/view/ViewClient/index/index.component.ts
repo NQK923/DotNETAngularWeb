@@ -208,9 +208,9 @@ export class IndexComponent implements OnInit {
       allCategories: this.categoriesService.getAllCategories()
     }).pipe(
       map(({categoryDetails, allCategories}) => {
-        const detailSet = new Set(categoryDetails.map(detail => detail.id_category));
+        const detailSet = new Set(categoryDetails.map(detail => detail.idCategory));
         return allCategories
-          .filter(category => detailSet.has(category.id_category))
+          .filter(category => detailSet.has(category.idCategory))
           .map(category => category.name);
       })
     );

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ModelInfoAccount } from '../../Model/ModelInfoAccoutn';
 import { AddInfoAccountRequest } from '../../Model/InfoAccount/AddInfoAccountRequest';
 import { InfoAccountResponse } from '../../Model/InfoAccount/InfoAccountResponse';
 import { InfoAccountRequest } from '../../Model/InfoAccount/InfoAccountRequest';
@@ -11,9 +10,7 @@ import { InfoAccountRequest } from '../../Model/InfoAccount/InfoAccountRequest';
 })
 export class InfoAccountService {
 
-  // private apiUrl = 'https://localhost:44387/api/InfoAccount';
-  // private api = 'https://localhost:44387/api/InfoAccountById';
-  private port = 7253;
+  private port = 5004;
   private apiAddInfomationUrl = `http://localhost:${this.port}/infoAccount/AddInfomation`;
   private apiGetInfomationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
   private apiChangeInfoMationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/ChangeInfoMationAccountByID`;

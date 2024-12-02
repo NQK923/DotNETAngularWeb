@@ -4,8 +4,6 @@ import {CommentService} from "../../../service/Comment/comment.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
 import {CommentData} from "../../ViewClient/viewer/viewer.component";
 import {ModelComment} from "../../../Model/ModelComment";
-import {ModelInfoAccount} from "../../../Model/ModelInfoAccoutn";
-import {ModelAccount} from "../../../Model/ModelAccount";
 import {AccountService} from "../../../service/Account/account.service";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {forkJoin, map} from "rxjs";
@@ -19,10 +17,8 @@ import {ConfirmationService, MessageService} from "primeng/api";
 export class ManagerCommentComponent implements OnInit {
   comment: ModelComment[] = [];
   comments: ModelComment[] = [];
-  listInfoAccount: ModelInfoAccount[] = [];
-  accountComment: ModelAccount | null = null;
   listDataComment: CommentData[] = [];
-  accounts: ModelAccount[] = [];
+
 
   constructor(private route: ActivatedRoute, private el: ElementRef, private router: Router,
               private commentService: CommentService,
@@ -153,46 +149,46 @@ export class ManagerCommentComponent implements OnInit {
   }
 
 // Cập nhật bình luận
-  updateComment(account: ModelAccount, gmail: string) {
-    // const title: string = "Thông báo tài khoản:";
-    // const text: string = "Tài khoản bị cấm bình luận";
-    //
-    // this.accountService.updateAccount(account).subscribe(
-    //   () => {
-    //     this.messageService.add({
-    //       severity: 'success',
-    //       summary: 'Thành công',
-    //       detail: 'Cập nhật thành công!'
-    //     });
-    //
-    //     this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
-    //       next: () => {
-    //         this.messageService.add({
-    //           severity: 'success',
-    //           summary: 'Thành công',
-    //           detail: 'Gửi mail thành công.'
-    //         });
-    //       },
-    //       error: (error) => {
-    //         console.error(error);
-    //         this.messageService.add({
-    //           severity: 'error',
-    //           summary: 'Lỗi',
-    //           detail: 'Có lỗi xảy ra khi gửi mail.'
-    //         });
-    //       }
-    //     });
-    //   },
-    //   (error) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Thất bại',
-    //       detail: 'Cập nhật thất bại!'
-    //     });
-    //     console.error('Update error:', error);
-    //   }
-    // );
-  }
+//   updateComment(account: ModelAccount, gmail: string) {
+//     const title: string = "Thông báo tài khoản:";
+//     const text: string = "Tài khoản bị cấm bình luận";
+//
+//     this.accountService.updateAccount(account).subscribe(
+//       () => {
+//         this.messageService.add({
+//           severity: 'success',
+//           summary: 'Thành công',
+//           detail: 'Cập nhật thành công!'
+//         });
+//
+//         this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
+//           next: () => {
+//             this.messageService.add({
+//               severity: 'success',
+//               summary: 'Thành công',
+//               detail: 'Gửi mail thành công.'
+//             });
+//           },
+//           error: (error) => {
+//             console.error(error);
+//             this.messageService.add({
+//               severity: 'error',
+//               summary: 'Lỗi',
+//               detail: 'Có lỗi xảy ra khi gửi mail.'
+//             });
+//           }
+//         });
+//       },
+//       (error) => {
+//         this.messageService.add({
+//           severity: 'error',
+//           summary: 'Thất bại',
+//           detail: 'Cập nhật thất bại!'
+//         });
+//         console.error('Update error:', error);
+//       }
+//     );
+//   }
 
   goToIndex() {
     this.router.navigate(['/']);

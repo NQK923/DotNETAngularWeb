@@ -2,8 +2,6 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MangaService } from '../../../service/Manga/manga.service';
 import { ChapterService } from "../../../service/Chapter/chapter.service";
-import { ModelAccount } from "../../../Model/ModelAccount";
-import { ModelInfoAccount } from "../../../Model/ModelInfoAccoutn";
 import { AccountService } from "../../../service/Account/account.service";
 import { CategoriesService } from "../../../service/Categories/Categories.service";
 import { FormControl, NgForm } from "@angular/forms";
@@ -91,10 +89,8 @@ export class ClientManagerComponent implements OnInit {
     totalViews: 0,
     latestChapter: 0,
   };
-  accounts: ModelAccount[] = [];
   infoManga: Manga | null = null;
   returnNotification: ModelNotification | null = null;
-  infoAccounts: ModelInfoAccount[] = [];
   url: string | null = null;
   nameUpdate: string | null = null;
   emailUpdate: string | null = null;
@@ -146,7 +142,6 @@ export class ClientManagerComponent implements OnInit {
   }
 
   async ngOnInit() {
-    // console.log(await this.accountService.getAccountCookie());
     this.SetInfoUser()
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
@@ -184,7 +179,6 @@ export class ClientManagerComponent implements OnInit {
             this.filteredMangas = updatedMangas;
           });
           this.setupEventListeners();
-          // this.takeData();
         },
         error: (err) => {
           console.error('Error loading data', err);
@@ -419,7 +413,7 @@ export class ClientManagerComponent implements OnInit {
       const existingChapter = error.error.existingChapter;
       this.confirmAction(
         `Chương ${this.chapterIndex} đã tồn tại. Bạn có muốn cập nhật không?`,
-        () => this.updateChapter(existingChapter.id_chapter),
+        () => this.updateChapter(existingChapter.idChapter),
         () => {
           this.isAddingChapter = false;
         }
@@ -677,7 +671,7 @@ export class ClientManagerComponent implements OnInit {
     );
 
     this.categoryDetailsService.getCategoriesByIdManga(mangaId).subscribe(categories => {
-      const categoriesToDelete = [mangaId, ...categories.map(c => c.id_category)];
+      const categoriesToDelete = [mangaId, ...categories.map(c => c.idCategory)];
       this.categoryDetailsService.deleteCategoriesDetails(categoriesToDelete).subscribe();
     });
   }
@@ -751,7 +745,9 @@ export class ClientManagerComponent implements OnInit {
       });
       this.categoryDetailsService.getCategoriesByIdManga(id).subscribe(categories => {
         for (const category of categories) {
-          this.selectedCategories.push(category.id_category);
+          console.log(category);
+          this.selectedCategories.push(category.idCategory);
+          console.log(this.selectedCategories);
         }
       })
     } else {
@@ -875,166 +871,11 @@ export class ClientManagerComponent implements OnInit {
     });
   }
 
-  addAvatar(form: any) {
-    // const idAccount = localStorage.getItem('userId');
-    // if (!this.selectedFile) {
-    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Chưa chọn file.'});
-    //   return;
-    // }
-    // if (!idAccount) {
-    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Chưa nhập ID.'});
-    //   return;
-    // }
-    // if (this.selectedFile && idAccount) {
-    //   const formData = new FormData();
-    //   formData.append('id', idAccount);
-    //   formData.append('file', this.selectedFile, this.selectedFile.name);
-    //   this.accountService.uploadavata(formData).subscribe(
-    //     () => {
-    //       this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Upload thành công!'});
-    //       this.ngOnInit();
-    //     },
-    //     (error) => {
-    //       this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Upload thất bại!'});
-    //       console.error('Upload failed:', error);
-    //     }
-    //   );
-    // } else {
-    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không có ảnh'});
-    // }
-  }
-
-
-  updateInfo() {
-    // const userId = localStorage.getItem('userId');
-    // if (userId === null) {
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Lỗi',
-    //     detail: 'Không tìm thấy User'
-    //   });
-    //   return;
-    // }
-    // const emailElement = this.el.nativeElement.querySelector('#emailUser');
-    // const nameElement = this.el.nativeElement.querySelector('#nameUser');
-    // if (emailElement.value === "" && nameElement.value === "") {
-    //   this.messageService.add({severity: 'warn', summary: 'Cảnh báo', detail: 'Vui lòng nhập đủ thông tin'});
-    //   return;
-    // }
-    // const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    // if (!emailPattern.test(emailElement.value)) {
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Lỗi',
-    //     detail: 'Email phải có định dạng: example@gmail.com'
-    //   });
-    //   return;
-    // }
-    // this.urlImg = '';
-    // this.accountService.getInfoAccount().subscribe(
-    //   (data: ModelInfoAccount[]) => {
-    //     this.infoAccounts = data;
-    //     if (this.idAccount !== null) {
-    //       this.findUrl(this.idAccount);
-    //     }
-    //   },
-    //   (error) => {
-    //     this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Lỗi khi lấy thông tin tài khoản.'});
-    //     console.error('Error fetching account info:', error);
-    //   }
-    // );
-    // for (let i = 0; i < this.infoAccounts.length; i++) {
-    //   if (this.infoAccounts[i].IdAccount === parseInt(userId, 10)) {
-    //     this.urlImg = this.infoAccounts[i].CoverImg || '';
-    //     break;
-    //   }
-    // }
-    // if (!emailElement || !nameElement) {
-    //   this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không tìm thấy trường Email hoặc Tên'});
-    //   return;
-    // }
-    // const updateInfo: ModelInfoAccount = {
-    //   IdAccount: parseInt(userId, 10),
-    //   Email: emailElement.value,
-    //   CoverImg: this.urlImg,
-    //   Name: nameElement.value
-    // };
-    // this.accountService.updateaccount(updateInfo).subscribe({
-    //   next: () => {
-    //     this.messageService.add({severity: 'success', summary: 'Thành công', detail: 'Cập nhật thành công'});
-    //     this.ngOnInit();
-    //   },
-    //   error: (error) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Lỗi',
-    //       detail: 'Đã xảy ra lỗi trong quá trình cập nhật. Vui lòng thử lại sau.'
-    //     });
-    //     console.error(error);
-    //   }
-    // });
-  }
-
-  takeData() {
-    // this.accounts = [];
-    // this.infoAccounts = [];
-    // const userId = localStorage.getItem('userId');
-    // if (userId) {
-    //   this.idAccount = parseInt(userId, 10);
-    //   this.accountService.getAccount().subscribe(
-    //     (data: ModelAccount[]) => {
-    //       this.accounts = data;
-    //       if (this.idAccount !== null) {
-    //         this.findUser(this.idAccount);
-    //       }
-    //     },
-    //     (error) => {
-    //       console.error('Error fetching accounts:', error);
-    //     }
-    //   );
-    //   this.accountService.getInfoAccount().subscribe(
-    //     (data: ModelInfoAccount[]) => {
-    //       this.infoAccounts = data;
-    //       if (this.idAccount !== null) {
-    //         this.findUrl(this.idAccount);
-    //       }
-    //     },
-    //     (error) => {
-    //       console.error('Error fetching account info:', error);
-    //     }
-    //   );
-    // } else {
-    //   console.error('No userId found in localStorage');
-    // }
-  }
-
-  findUser(userId: number) {
-    for (let i = 0; i < this.accounts.length; i++) {
-
-      if (this.accounts[i].IdAccount === userId) {
-        this.nameUpdate = this.accounts[i].Username || null;
-        break;
-      }
-    }
-  }
-
-  findUrl(userId: number) {
-    for (let i = 0; i < this.infoAccounts.length; i++) {
-      if (this.infoAccounts[i].IdAccount === userId) {
-        this.url = this.infoAccounts[i].CoverImg || null;
-        this.nameUser = this.infoAccounts[i].Name || null;
-        this.emailUpdate = this.infoAccounts[i].Email || null;
-        break;
-      }
-    }
-  }
 
   logOut() {
     this.accountService.logOut(() => {
       this.router.navigate([`/`]);
     });
-    // localStorage.setItem('userId', "-1");
-
   }
 
   addNotification(id_manga: any, text: any) {

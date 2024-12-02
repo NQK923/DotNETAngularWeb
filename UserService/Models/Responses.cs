@@ -1,7 +1,6 @@
-﻿namespace UserService.Models
+﻿namespace UserService.Models;
+
+public class Responses
 {
-    public class Responses
-    {
-        public record AccountCookieResponse (int id_account, bool role);
-    }
+    public record AccountCookieResponse(int id_account, bool role);
 }

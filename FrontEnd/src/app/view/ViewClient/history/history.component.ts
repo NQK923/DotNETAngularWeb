@@ -4,6 +4,7 @@ import {MangaService} from "../../../service/Manga/manga.service";
 import {Router} from "@angular/router";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {catchError, forkJoin, map, of} from "rxjs";
+import { AccountService } from '../../../service/Account/account.service';
 
 interface History {
   idAccount: number;
@@ -44,7 +45,8 @@ export class HistoryComponent implements OnInit {
               private mangaHistoryService: MangaHistoryService,
               private mangaService: MangaService,
               private confirmationService: ConfirmationService,
-              private messageService: MessageService,) {
+              private messageService: MessageService,
+              private accountService: AccountService) {
     this.updateItemsPerPage(window.innerWidth);
   }
 
@@ -53,10 +55,10 @@ export class HistoryComponent implements OnInit {
     this.updateItemsPerPage(event.target.innerWidth);
   }
 
-  ngOnInit(): void {
-    const id_user = localStorage.getItem('userId');
-    let numberId: number = Number(id_user);
-    this.mangaHistoryService.getSimpleHistory(numberId).subscribe((data: History[]) => {
+  async ngOnInit(): Promise<void> {
+    const cookie = await this.accountService.getAccountCookie();
+    const userId = cookie.id_account;
+    this.mangaHistoryService.getSimpleHistory(userId).subscribe((data: History[]) => {
       this.histories = data;
       this.getMangaDetails();
     }, (error) => {

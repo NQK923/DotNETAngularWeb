@@ -1,8 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ModelAccount } from '../../Model/ModelAccount'
-import { ModelInfoAccount } from "../../Model/ModelInfoAccoutn";
 import { LoginRegisterRequest } from '../../Model/Account/LoginRegisterRequest';
 import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { InfoAccountService } from '../InfoAccount/info-account.service';
@@ -15,7 +13,7 @@ import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse
   providedIn: 'root'
 })
 export class AccountService {
-  private port = 7253;
+  private port = 5004;
   private apiLoginUrl: string = 'http://localhost:' + this.port + '/account/login';
   private apiGetAccountCookieUrl: string = 'http://localhost:' + this.port + '/account/getAccountCookie';
   private apiCheckOldPasswordUrl: string = 'http://localhost:' + this.port + '/account/checkOldPasswordAccountByID';
@@ -151,7 +149,6 @@ export class AccountService {
 
   // Trả về cookie
   loginNormal(username: string, password: string, successCallback: () => void, failCallback: (error: string) => void): Promise<boolean> {
-
     let loginRequest: LoginRegisterRequest = { username: username, password: password };
     return new Promise((resolve, reject) => {
       this.http.post<any>(this.apiLoginUrl, loginRequest, { withCredentials: true }).subscribe({

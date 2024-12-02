@@ -8,9 +8,8 @@ import {Observable} from "rxjs";
   }
 )
 export class MangaHistoryService {
-  //private apiUrl = 'https://localhost:44352/api/mangas';
 
-  private apiUrl = 'http://localhost:5008/api/mangas';
+  private apiUrl = 'http://localhost:5001/api/mangas';
 
   constructor(private http: HttpClient) {
   }
@@ -25,9 +24,9 @@ export class MangaHistoryService {
 
   addMangaHistory(id_account: number, id_manga: number, index_chapter: number): Observable<any> {
     const body = {
-      id_account: id_account,
-      id_manga: id_manga,
-      index_chapter: index_chapter
+      IdAccount: id_account,
+      IdManga: id_manga,
+      IndexChapter: index_chapter
     };
     return this.http.post(`${this.apiUrl}/create/history`, body);
   }
