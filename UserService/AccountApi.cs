@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using UserService.Models;
@@ -26,7 +27,50 @@ public static class AccountAPI
             endpointRouteBuilder); //Kiểm tra tài khoản bên ngoài đã tồn tại trong hệ thống chưa
         MapGetIsLoggedIn(endpointRouteBuilder); //Kiểm tra xem đã đăng nhập web chưa qua cookies có tồn tại hay không ?
         MapPostLogOut(endpointRouteBuilder); //Xóa cookies
+        TakePassWord(endpointRouteBuilder);
+        GetAccountByUserName(endpointRouteBuilder);
+        
     }
+    
+    //nguyen 
+    public static void TakePassWord(this IEndpointRouteBuilder endpointRouteBuilder)
+    {
+        endpointRouteBuilder.MapPost("/account/TakePassWord", async (string to, string subject, string body) =>
+        {
+            try
+            {
+
+
+                var result = await AddMail.AddMail.SendMail(to, subject, body);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+
+        });
+    }
+    public static void GetAccountByUserName(this IEndpointRouteBuilder endpointRouteBuilder)
+    {
+        endpointRouteBuilder.MapGet("/account/GetAccountByUserName", async (UserServiceDBContext dBContext, string user) =>
+        {
+            try
+            {
+                var x = await dBContext.accounts.FirstOrDefaultAsync(x => x.username == user);
+                return Results.Ok(x);
+
+            }
+            catch (Exception ex)
+            {
+               return Results.BadRequest(ex.Message);
+            }
+
+        });
+    }
+
+    
+   
 
     public static void MapPutChangePassword(this IEndpointRouteBuilder endpointRouteBuilder)
     {

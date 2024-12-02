@@ -1,13 +1,14 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable , of} from 'rxjs';
 import { LoginRegisterRequest } from '../../Model/Account/LoginRegisterRequest';
 import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { InfoAccountService } from '../InfoAccount/info-account.service';
 import { AddInfoAccountRequest } from '../../Model/InfoAccount/AddInfoAccountRequest';
 import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse';
-
-
+import {  map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import {AccountModel, ChangePasswordRequest} from '../../Model/Account/AccountModel';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,11 @@ export class AccountService {
   private apiIsLoggedIn: string = 'http://localhost:' + this.port + '/account/isLoggedIn';
   private apiLogOut: string = 'http://localhost:' + this.port + '/account/logOut';
   private apiCheckEmail: string = 'http://localhost:' + this.port + '/infoAccount/CheckEmailValid';
-
+  //nguyen
+  private  apiTakePasswordUrl: string = 'http://localhost:' + this.port + '/account/takePassword';
+  private  apiGetAccountByUserName:string = 'http://localhost:' + this.port + '/account/GetAccountByUserName';
+  private  apiGetAllAccount:string = 'http://localhost:' + this.port + '/account/getListAccount';
+  private  apiUpdateAccount:string = 'http://localhost:' + this.port + '/account/changePasswordAccountByID';
 
   user: SocialUser | undefined;
 
@@ -32,6 +37,40 @@ export class AccountService {
   constructor(private authService: SocialAuthService, private http: HttpClient, private infoAccountService: InfoAccountService) {
 
   }
+  //nuyen
+  updatePassword(id: number, oldpass: string, newpass: string): Observable<boolean> {
+    const changePasswordRequest: ChangePasswordRequest = {
+      idAccount: id,
+      oldPassword: oldpass,
+      newPassword: newpass
+    };
+    return this.http.put<any>(this.apiUpdateAccount, changePasswordRequest).pipe(
+      map(response => {
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return of(false);
+      })
+    );
+  }
+
+
+  getAccountByUsername(username: string): Observable<AccountModel> {
+    const params = new HttpParams().set('username', username);
+    return this.http.get<AccountModel>(this.apiGetAccountByUserName, { params });
+  }
+  postMail(to: string, subject: string, body: string): Observable<any> {
+    const params = new HttpParams()
+      .set('to', to)
+      .set('subject', subject)
+      .set('body', body);
+    return this.http.post(this.apiTakePasswordUrl, null, {params});
+  }
+  getAllAccount(): Observable<AccountModel[]> {
+    return this.http.get<AccountModel[]>(this.apiGetAllAccount);
+  }
+//nguyen
 
   logOut(callback: () => void): Promise<void> {
     return new Promise(() => {
