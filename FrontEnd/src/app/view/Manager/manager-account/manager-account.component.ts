@@ -83,17 +83,15 @@ export class ManagerAccountComponent implements OnInit {
                     username:this.accounts[i].username,
                     password: this.accounts[i].password,
                     banDate:this.accounts[i].banDate,
-                    rol: this.accounts[i].role,
+                    role: this.accounts[i].role,
                     status: this.accounts[i].status,
                     banComment: this.accounts[i].banComment,
 
                     name: data.name,
                     email: data.email,
                     cover_img: data.cover_img,
-
-
-
                   } as ModelDataAccount)
+
 
               }
             },

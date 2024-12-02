@@ -76,9 +76,9 @@
               </div>
               <p class="text-gray-100 m-2 text-sm w-25">Gmail: {{ dataAccount.email }}</p>
 
-              <div class="text-gray-100 w-1/5 flex justify-between ">
+              <div class="text-gray-100 w-1/5 flex justify-between">
                 <div>
-                  Trạng thái:
+
                   <span *ngIf="dataAccount.status; else inactive">Khích hoạt</span>
                   <ng-template #inactive>Vô hiệu</ng-template>
                 </div>
@@ -94,23 +94,22 @@
 
               <div class=" text-sm text-gray-100 ml-4 w-1/5 flex justify-between">
                 <div class="flex">
-                  Bình luận:
-                  <span *ngIf="dataAccount.banComment; else inactive">Vô hiệu</span>
-                  <ng-template #inactive>Kích hoạt</ng-template>
+                  <span *ngIf="dataAccount.banComment; else inactives">Vô hiệu</span>
+                  <ng-template #inactives>Kích hoạt</ng-template>
                 </div>
                 <button (click)="UpdateComment(dataAccount.id_account, dataAccount.username,
               dataAccount.password, dataAccount.status,
               dataAccount.email, dataAccount.banComment)"
                         [ngClass]="dataAccount.banComment ? 'bg-green-500' : 'bg-red-500'"
                         class="border text-sm text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
-                  <span *ngIf="dataAccount.banComment; else inactives">Kích hoạt</span>
-                  <ng-template #inactives>Vô hiệu</ng-template>
+                  <span *ngIf="dataAccount.banComment; else inactivesz">Kích hoạt</span>
+                  <ng-template #inactivesz>Vô hiệu</ng-template>
                 </button>
               </div>
               <p class=" my-2 mx-6 text-gray-100 text-sm ">
                 Phân quyền:
-                <span *ngIf="dataAccount.role; else inactive">Quản lý</span>
-                <ng-template #inactive>Người dùng</ng-template>
+                <span *ngIf="dataAccount.role; else inactivex">Quản lý</span>
+                <ng-template #inactivex>Người dùng</ng-template>
               </p>
             </div>
           </div>

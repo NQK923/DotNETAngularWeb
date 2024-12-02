@@ -54,8 +54,6 @@ export class AccountService {
       })
     );
   }
-
-
   getAccountByUsername(username: string): Observable<AccountModel> {
     const params = new HttpParams().set('user', username);
     return this.http.get<AccountModel>(this.apiGetAccountByUserName, { params });

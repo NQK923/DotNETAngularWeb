@@ -29,6 +29,8 @@ public static class AccountAPI
         MapPostLogOut(endpointRouteBuilder); //Xóa cookies
         TakePassWord(endpointRouteBuilder);
         GetAccountByUserName(endpointRouteBuilder);
+       MapPutChangeBanComment(endpointRouteBuilder);
+        
         
     }
     
@@ -49,6 +51,9 @@ public static class AccountAPI
 
         });
     }
+ 
+
+    
     public static void GetAccountByUserName(this IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapGet("/account/GetAccountByUserName", async (UserServiceDBContext dBContext, string user) =>
@@ -66,8 +71,20 @@ public static class AccountAPI
 
         });
     }
-
+      public static void MapPutChangeBanComment(this IEndpointRouteBuilder endpointRouteBuilder)
+        {
+            endpointRouteBuilder.MapPut("/acccount/ChangeBanCommentRequest",
+                async (ChangeBanCommentRequest changeBanCommentRequest , UserServiceDBContext dBContext) =>
+                {
+                    var account = await dBContext.accounts.FindAsync(changeBanCommentRequest.idAccount);
+                    if (account == null) return Results.NotFound();
     
+                    account.banComment = changeBanCommentRequest.banComment ;
+                    await dBContext.SaveChangesAsync();
+                    return Results.Ok();
+                });
+        }
+    //nguyen
    
 
     public static void MapPutChangePassword(this IEndpointRouteBuilder endpointRouteBuilder)

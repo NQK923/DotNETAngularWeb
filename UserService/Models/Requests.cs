@@ -7,6 +7,8 @@ public class Requests
     public record ChangePasswordRequest(int idAccount, string oldPassword, string newPassword);
 
     public record ChangeStatusRequest(int idAccount, bool status);
+    
+    public record ChangeBanCommentRequest(int idAccount, bool banComment);
 
     public record ChangeBanDateRequest(int idAccount, DateTime banDate);
 
