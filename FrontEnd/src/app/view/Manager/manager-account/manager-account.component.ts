@@ -86,7 +86,20 @@ export class ManagerAccountComponent implements OnInit {
                     role: this.accounts[i].role,
                     status: this.accounts[i].status,
                     banComment: this.accounts[i].banComment,
+                    name: data.name,
+                    email: data.email,
+                    cover_img: data.cover_img,
+                  } as ModelDataAccount)
 
+                this.tempData.push(
+                  {
+                    id_account:this.accounts[i].id_account,
+                    username:this.accounts[i].username,
+                    password: this.accounts[i].password,
+                    banDate:this.accounts[i].banDate,
+                    role: this.accounts[i].role,
+                    status: this.accounts[i].status,
+                    banComment: this.accounts[i].banComment,
                     name: data.name,
                     email: data.email,
                     cover_img: data.cover_img,
@@ -107,165 +120,144 @@ export class ManagerAccountComponent implements OnInit {
     );
   }
   search() {
-    // this.dataSearch = [];
-    // const text = this.el.nativeElement.querySelector('#search').value;
-    // if (text === "") {
-    //   this.dataAccount = [];
-    //   this.tempData = [];
-    //   this.TakeData();
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Thất bại',
-    //     detail: 'Không tìm thấy!'
-    //   });
-    //   return;
-    // }
-    //
-    // for (let i = 0; i < this.tempData.length; i++) {
-    //   let temp = this.isSimilar(this.tempData[i].Account.Username, text);
-    //   if (temp) {
-    //     const exists = this.dataSearch.some(
-    //       account => account.Account.Username === this.tempData[i].Account.Username
-    //     );
-    //     if (!exists) {
-    //       this.dataSearch.push(this.tempData[i]);
-    //     }
-    //   }
-    // }
-    // if (this.dataSearch.length > 0) {
-    //   this.dataAccount = this.dataSearch;
-    // } else {
-    //   this.dataAccount = [];
-    //   this.tempData = [];
-    //   this.TakeData();
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Thất bại',
-    //     detail: 'Không tìm thấy!'
-    //   });
-    // }
+    this.dataSearch = [];
+    const text = this.el.nativeElement.querySelector('#search').value;
+    if (text === "") {
+      this.dataAccounts = [];
+      this.tempData = [];
+      this.TakeData();
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thất bại',
+        detail: 'Không tìm thấy!'
+      });
+      return;
+    }
+
+    for (let i = 0; i < this.tempData.length; i++) {
+      let temp = this.isSimilar(this.tempData[i].username, text);
+      if (temp) {
+        const exists = this.dataSearch.some(
+          account => account.username === this.tempData[i].username
+        );
+        if (!exists) {
+          this.dataSearch.push(this.tempData[i]);
+        }
+      }
+    }
+    if (this.dataSearch.length > 0) {
+      this.dataAccounts = this.dataSearch;
+    } else {
+      this.dataAccounts= [];
+      this.tempData = [];
+      this.TakeData();
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thất bại',
+        detail: 'Không tìm thấy!'
+      });
+    }
   }
 
 //Change Account status
-  UpdateStatus(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
-    // const newStatus = !status;
-    // const account: AccountModel = {
-    //   IdAccount: id,
-    //   Username: name,
-    //   Password: pass,
-    //   Status: newStatus,
-    //   BanComment: ban
-    // };
-    // const title: string = "Thông báo tài khoản:";
-    // const text: string = "Tài khoản bị vô hiệu";
-    // this.confirmAction(
-    //   `Bạn có chắc chắn muốn ${newStatus ? 'vô hiệu' : 'kích hoạt'} tài khoản "${name}"?`,
-    //   () => {
-    //     this.accountService.updateAccount(account).subscribe({
-    //       next: () => {
-    //         this.snackBar.open('Cập nhật thành công!', 'Đóng', {
-    //           duration: 3000,
-    //           verticalPosition: 'top',
-    //           horizontalPosition: 'center',
-    //         });
-    //
-    //         if (newStatus) {
-    //           this.accountService.postMail(gmail.toString(), title, text).subscribe({
-    //             next: () => {
-    //               this.messageService.add({
-    //                 severity: 'success',
-    //                 summary: 'Thông báo',
-    //                 detail: 'Đã gửi thông báo vô hiệu tài khoản qua email'
-    //               });
-    //               this.ngOnInit();
-    //             },
-    //             error: (error) => {
-    //               this.messageService.add({
-    //                 severity: 'error',
-    //                 summary: 'Lỗi',
-    //                 detail: 'Có lỗi xảy ra khi gửi email thông báo.'
-    //               });
-    //               console.error('Email error:', error);
-    //             }
-    //           });
-    //         } else {
-    //           this.ngOnInit();
-    //         }
-    //       },
-    //       error: (error) => {
-    //         this.snackBar.open('Cập nhật thất bại!', 'Đóng', {
-    //           duration: 3000,
-    //           verticalPosition: 'top',
-    //           horizontalPosition: 'center',
-    //         });
-    //         console.error('Update error:', error);
-    //       }
-    //     });
-    //   },
-    //   () => console.log('Thao tác cập nhật tài khoản đã bị hủy')
-    // );
+  UpdateStatus(id: any, status: any, gmail: any) {
+    const title: string = "Thông báo tài khoản:";
+    const text: string = "Tài khoản bị vô hiệu";
+    const updateStatus = !status;
+    this.accountService.updateStatus(id,updateStatus).subscribe(
+      response => {
+
+        if(updateStatus==false){
+          this.accountService.postMail(gmail,title, text)
+            .subscribe(
+              response => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Thành công',
+                  detail: 'Đổi thành công'
+                });
+              },
+
+              error => {
+                console.error('Error sending email:', error);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Lỗi',
+                  detail: 'Lỗi gửi mail'
+                });
+              }
+            );
+        }
+        this.TakeData()
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Cập nhật mật khẩu thành công'
+        });
+      },
+      error => {
+        console.error('Error updating password:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Cập nhật mật khẩu thất bại'
+        });
+      }
+    );
   }
 
 
-  UpdateComment(id: any, name: string, pass: string, status: any, gmail: any, ban: any) {
-    // const newCommentStatus = !ban;
-    // const account: AccountModel = {
-    //   IdAccount: id,
-    //   Username: name,
-    //   Password: pass,
-    //   Status: status,
-    //   BanComment: newCommentStatus
-    // };
-    // const title: string = "Thông báo tài khoản:";
-    // const text: string = "Tài khoản đã bị khóa quyền bình luận";
-    // this.confirmAction(
-    //   `Bạn có chắc chắn muốn ${newCommentStatus ? 'khóa' : 'mở'} quyền bình luận cho tài khoản "${name}"?`,
-    //   () => {
-    //     this.accountService.updateAccount(account).subscribe({
-    //       next: () => {
-    //         this.messageService.add({
-    //           severity: 'success',
-    //           summary: 'Thành công',
-    //           detail: 'Cập nhật quyền bình luận thành công!'
-    //         });
-    //         if (newCommentStatus) {
-    //           this.accountService.postMail(gmail.toString(), title, text).subscribe({
-    //             next: () => {
-    //               this.messageService.add({
-    //                 severity: 'success',
-    //                 summary: 'Thông báo',
-    //                 detail: 'Đã gửi thông báo khóa quyền bình luận qua email'
-    //               });
-    //               this.ngOnInit();
-    //             },
-    //             error: (error) => {
-    //               this.messageService.add({
-    //                 severity: 'error',
-    //                 summary: 'Lỗi',
-    //                 detail: 'Có lỗi xảy ra khi gửi email thông báo.'
-    //               });
-    //               console.error('Email error:', error);
-    //             }
-    //           });
-    //         } else {
-    //           this.ngOnInit();
-    //         }
-    //       },
-    //       error: (error) => {
-    //         this.messageService.add({
-    //           severity: 'error',
-    //           summary: 'Thất bại',
-    //           detail: 'Cập nhật quyền bình luận thất bại!'
-    //         });
-    //         console.error('Update error:', error);
-    //       }
-    //     });
-    //   },
-    //   () => console.log('Thao tác cập nhật quyền bình luận đã bị hủy')
-    // );
-  }
 
-  goToIndex() {
+
+  UpdatebanComment(id: any, banComment: any, gmail: any) {
+      const title: string = "Thông báo tài khoản:";
+      const text: string = "Tài khoản bị khóa bình luận";
+      const banComments = !banComment;
+      console.log(id,banComments);
+      this.accountService.updateBanComment(id,banComments).subscribe(
+        response => {
+
+          if(banComments==true){
+            this.accountService.postMail(gmail,title, text)
+              .subscribe(
+                response => {
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Thành công',
+                    detail: 'Đổi thành công'
+                  });
+                },
+
+                error => {
+                  console.error('Error sending email:', error);
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Lỗi',
+                    detail: 'Lỗi gửi mail'
+                  });
+                }
+              );
+          }
+          this.TakeData()
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Thành công',
+            detail: 'Cập nhật mật khẩu thành công'
+          });
+        },
+        error => {
+          console.error('Error updating password:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: 'Cập nhật mật khẩu thất bại'
+          });
+        }
+      );
+    }
+
+
+    goToIndex() {
     this.router.navigate(['/']);
   }
 

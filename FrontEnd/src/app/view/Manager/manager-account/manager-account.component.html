@@ -82,9 +82,8 @@
                   <span *ngIf="dataAccount.status; else inactive">Khích hoạt</span>
                   <ng-template #inactive>Vô hiệu</ng-template>
                 </div>
-                <button (click)="UpdateStatus(dataAccount.id_account, dataAccount.username,
-              dataAccount.password, dataAccount.status,
-              dataAccount.email, dataAccount.banComment)"
+                <button (click)="UpdateStatus(dataAccount.id_account,dataAccount.status,
+              dataAccount.email)"
                         [ngClass]="dataAccount.status ? 'bg-red-500':'bg-green-500'"
                         class=" text-sm border text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
                   <span *ngIf="dataAccount.status; else inactives">Vô hiệu</span>
@@ -97,9 +96,8 @@
                   <span *ngIf="dataAccount.banComment; else inactives">Vô hiệu</span>
                   <ng-template #inactives>Kích hoạt</ng-template>
                 </div>
-                <button (click)="UpdateComment(dataAccount.id_account, dataAccount.username,
-              dataAccount.password, dataAccount.status,
-              dataAccount.email, dataAccount.banComment)"
+                <button (click)=" UpdatebanComment(dataAccount.id_account,
+              dataAccount.banComment, dataAccount.email)"
                         [ngClass]="dataAccount.banComment ? 'bg-green-500' : 'bg-red-500'"
                         class="border text-sm text-white border-yellow-500 hover:bg-gray-400 rounded-full w-24">
                   <span *ngIf="dataAccount.banComment; else inactivesz">Kích hoạt</span>

@@ -9,10 +9,18 @@ import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse
 import {  map } from 'rxjs/operators';
 import { catchError } from 'rxjs/operators';
 import {AccountModel, ChangePasswordRequest} from '../../Model/Account/AccountModel';
-
+export interface updateBanComment {
+  idAccount: number;
+  banComment: boolean;
+}
+export interface updateStatus {
+  idAccount: number;
+  status: boolean;
+}
 @Injectable({
   providedIn: 'root'
 })
+
 export class AccountService {
   private port = 5004;
   private apiLoginUrl: string = 'http://localhost:' + this.port + '/account/login';
@@ -29,6 +37,9 @@ export class AccountService {
   private  apiGetAccountByUserName:string = 'http://localhost:' + this.port + '/account/GetAccountByUserName';
   private  apiGetAllAccount:string = 'http://localhost:' + this.port + '/account/getListAccount';
   private  apiUpdateAccount:string = 'http://localhost:' + this.port + '/account/changePasswordAccountByID';
+  private  ApiUpdateStatus:string = 'http://localhost:' + this.port + '/account/changeStatusAccountByID';
+  private  ApiUpdateBancode:string ='http://localhost:' + this.port + '/account/ChangeBanCommentRequest';
+
 
   user: SocialUser | undefined;
 
@@ -38,6 +49,39 @@ export class AccountService {
 
   }
   //nuyen
+  updateStatus(id: number,status:boolean): Observable<boolean> {
+    const UpdateStatus: updateStatus = {
+      idAccount: id,
+      status: status,
+    };
+    return this.http.put<any>(this.ApiUpdateStatus, UpdateStatus).pipe(
+      map(response => {
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return of(false);
+      })
+    );
+  }
+  updateBanComment(id: number,banComment:boolean): Observable<boolean> {
+
+    console.log(this.ApiUpdateBancode);
+    const UpdateBancomment:updateBanComment = {
+      idAccount: id,
+      banComment:banComment,
+    };
+    console.log(UpdateBancomment);
+    return this.http.put<any>(this.ApiUpdateBancode, UpdateBancomment).pipe(
+      map(response => {
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return of(false);
+      })
+    );
+  }
   updatePassword(id: number, oldpass: string, newpass: string): Observable<boolean> {
     const changePasswordRequest: ChangePasswordRequest = {
       idAccount: id,

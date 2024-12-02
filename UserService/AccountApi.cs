@@ -73,7 +73,7 @@ public static class AccountAPI
     }
       public static void MapPutChangeBanComment(this IEndpointRouteBuilder endpointRouteBuilder)
         {
-            endpointRouteBuilder.MapPut("/acccount/ChangeBanCommentRequest",
+            endpointRouteBuilder.MapPut("/account/ChangeBanCommentRequest",
                 async (ChangeBanCommentRequest changeBanCommentRequest , UserServiceDBContext dBContext) =>
                 {
                     var account = await dBContext.accounts.FindAsync(changeBanCommentRequest.idAccount);
