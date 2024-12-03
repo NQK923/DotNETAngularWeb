@@ -131,6 +131,7 @@ export class ManagerAccountComponent implements OnInit {
   TakeData() {
     this.dataAccounts = [];
     this.infoAccounts = [];
+    this.isCodeVisible= false;
     this.accountService.getAllAccount().subscribe(
       (data: AccountModel[]) => {
         this.accounts = data;
