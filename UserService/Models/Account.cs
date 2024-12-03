@@ -10,7 +10,8 @@ public class Account
 
     public string? password { get; set; }
     public DateTime? banDate { get; set; }
-
+    
+    public bool? banComment { get; set; }
     [Required] public required bool role { get; set; }
 
     [Required] public required bool status { get; set; }

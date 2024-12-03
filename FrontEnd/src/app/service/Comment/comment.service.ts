@@ -10,14 +10,15 @@ import {ModelComment} from "../../Model/ModelComment";
 export class CommentService {
 
   //private apiUrl = 'https://localhost:44372/api/comment';
-
-  private apiUrl = 'https://localhost:5013/api/comment';
-
+  private port = 5006;
+  private   apiUrl:string = 'http://localhost:' + this.port + '/api/comment';
 
   constructor(private http: HttpClient) {
   }
 
   addComment(Comment: ModelComment): Observable<ModelComment> {
+
+    console.log(Comment)
     return this.http.post<ModelComment>(this.apiUrl, Comment);
   }
 

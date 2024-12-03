@@ -7,6 +7,8 @@ public class Requests
     public record ChangePasswordRequest(int idAccount, string oldPassword, string newPassword);
 
     public record ChangeStatusRequest(int idAccount, bool status);
+    
+    public record ChangeBanCommentRequest(int idAccount, bool banComment);
 
     public record ChangeBanDateRequest(int idAccount, DateTime banDate);
 
@@ -15,4 +17,6 @@ public class Requests
     public record ChangeInformationRequest(int id_account, string? name, string? email);
 
     public record InfoMationRegisterRequest(int idAccount, string name, string email, string img);
+    
+    public record UpdateStatus(int idAccount, bool status,DateTime date);
 }

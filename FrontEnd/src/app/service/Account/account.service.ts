@@ -1,17 +1,32 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable , of} from 'rxjs';
 import { LoginRegisterRequest } from '../../Model/Account/LoginRegisterRequest';
 import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { InfoAccountService } from '../InfoAccount/info-account.service';
 import { AddInfoAccountRequest } from '../../Model/InfoAccount/AddInfoAccountRequest';
 import { AccountCookieResponse } from '../../Model/Account/AccountCookieResponse';
+import {  map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import {AccountModel, ChangePasswordRequest} from '../../Model/Account/AccountModel';
+export interface updateBanComment {
+  idAccount: number;
+  banComment: boolean;
+}
 
-
-
+export interface updateStatustrue {
+  idAccount: number;
+  status: boolean;
+}
+export interface updateStatus {
+  idAccount: number;
+  status: boolean;
+  date:string;
+}
 @Injectable({
   providedIn: 'root'
 })
+
 export class AccountService {
   private port = 5004;
   private apiLoginUrl: string = 'http://localhost:' + this.port + '/account/login';
@@ -23,6 +38,15 @@ export class AccountService {
   private apiIsLoggedIn: string = 'http://localhost:' + this.port + '/account/isLoggedIn';
   private apiLogOut: string = 'http://localhost:' + this.port + '/account/logOut';
   private apiCheckEmail: string = 'http://localhost:' + this.port + '/infoAccount/CheckEmailValid';
+  //nguyen
+  private  apiTakePasswordUrl: string = 'http://localhost:' + this.port + '/account/takePassword';
+  private  apiGetAccountByUserName:string = 'http://localhost:' + this.port + '/account/GetAccountByUserName';
+  private  apiGetAccountByid:string = 'http://localhost:' + this.port + '/account/getAccountByID';
+  private  apiGetAllAccount:string = 'http://localhost:' + this.port + '/account/getListAccount';
+  private  apiUpdateAccount:string = 'http://localhost:' + this.port + '/account/changePasswordAccountByID';
+  private  ApiUpdateStatustrue:string = 'http://localhost:' + this.port + '/account/changeStatusAccountByID';
+  private  ApiUpdateBancode:string ='http://localhost:' + this.port + '/account/ChangeBanCommentRequest';
+  private  ApiUpdateStatus:string = 'http://localhost:' + this.port + '/account/updateStatus';
 
 
   user: SocialUser | undefined;
@@ -32,6 +56,96 @@ export class AccountService {
   constructor(private authService: SocialAuthService, private http: HttpClient, private infoAccountService: InfoAccountService) {
 
   }
+  //nuyen
+  updateStatus(id: number, status: boolean, time: string): Observable<boolean> {
+    const UpdateStatus: updateStatus = {
+      idAccount: id,
+      status: status,
+      date: time
+    };
+    console.log("Sending UpdateStatus:", UpdateStatus);
+
+    return this.http.put<any>(this.ApiUpdateStatus, UpdateStatus, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      map(response => true),
+      catchError((error) => {
+        console.error('Error updating status:', error);
+        return of(false);
+      })
+    );
+  }
+
+  updateStatustrue(id: number,status:boolean): Observable<boolean> {
+    const UpdateStatus: updateStatustrue = {
+      idAccount: id,
+      status: status,
+    };
+    return this.http.put<any>(this.ApiUpdateStatustrue, UpdateStatus).pipe(
+      map(response => {
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return of(false);
+      })
+    );
+  }
+  updateBanComment(id: number,banComment:boolean): Observable<boolean> {
+
+    console.log(this.ApiUpdateBancode);
+    const UpdateBancomment:updateBanComment = {
+      idAccount: id,
+      banComment:banComment,
+    };
+    console.log(UpdateBancomment);
+    return this.http.put<any>(this.ApiUpdateBancode, UpdateBancomment).pipe(
+      map(response => {
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return of(false);
+      })
+    );
+  }
+  updatePassword(id: number, oldpass: string, newpass: string): Observable<boolean> {
+    const changePasswordRequest: ChangePasswordRequest = {
+      idAccount: id,
+      oldPassword: oldpass,
+      newPassword: newpass
+    };
+    return this.http.put<any>(this.apiUpdateAccount, changePasswordRequest).pipe(
+      map(response => {
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error updating password:', error);
+        return of(false);
+      })
+    );
+  }
+  getAccountByUsername(username: string): Observable<AccountModel> {
+    const params = new HttpParams().set('user', username);
+    return this.http.get<AccountModel>(this.apiGetAccountByUserName, { params });
+  }
+  getAccountByid(Id:number): Observable<AccountModel> {
+    const params = new HttpParams().set('idAccount', Id);
+    return this.http.get<AccountModel>(this.apiGetAccountByid, { params });
+  }
+
+  postMail(to: string, subject: string, body: string): Observable<any> {
+    const params = new HttpParams()
+      .set('to', to)
+      .set('subject', subject)
+      .set('body', body);
+    console.log(params);
+    return this.http.post(this.apiTakePasswordUrl, null, {params});
+  }
+  getAllAccount(): Observable<AccountModel[]> {
+    return this.http.get<AccountModel[]>(this.apiGetAllAccount);
+  }
+//nguyen
 
   logOut(callback: () => void): Promise<void> {
     return new Promise(() => {

@@ -18,7 +18,22 @@ public static class InfoAccountApi
         MapGetInfoMationAccountByID(endpointRouteBuilder);
         MapPostValidEmail(endpointRouteBuilder);
         MapPutChangeInfoMationAccountByID(endpointRouteBuilder, configuration);
+        MapGetInfoMationAccount(endpointRouteBuilder);
     }
+    // nguyen
+     public static void MapGetInfoMationAccount(this IEndpointRouteBuilder endpointRouteBuilder)
+        {
+            endpointRouteBuilder.MapGet("/infoAccount/GetInfoMationAccount",
+                async (UserServiceDBContext dBContext) =>
+                {
+                    var infoAccount =
+                        await dBContext.infoAccounts.ToListAsync();
+                    if (infoAccount == null) return Results.BadRequest();
+                    return Results.Ok(infoAccount);
+                });
+        }
+    
+    //nguyen
 
     public static void MapPutChangeInfoMationAccountByID(this IEndpointRouteBuilder endpointRouteBuilder,
         IConfiguration configuration)
