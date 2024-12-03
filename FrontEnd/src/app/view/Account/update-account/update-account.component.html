@@ -12,6 +12,7 @@
         <div [ngClass]="{'hidden': !isCodeVisible}">
           <input id="Code" placeholder="Code" type="text">
           <input id="Pass" placeholder="New Password" type="password">
+          <input id="PassConfirm" placeholder="Confirm Password" type="password">
           <button (click)="update()" id="buttonUpdate" class="w-full"> Update Password</button>
         </div>
 

@@ -39,7 +39,10 @@ export class ManagerAccountComponent implements OnInit {
   tempData: ModelDataAccount[] = [];
   selectedDateTime: string = '';
 
-
+  IdTemp:number = 0;
+  StatusTemp: boolean=false;
+  GmailTemp:string="";
+  isCodeVisible: boolean = false;
 
   constructor(private InfoAccountService: InfoAccountService,
               private el: ElementRef,
@@ -73,8 +76,57 @@ export class ManagerAccountComponent implements OnInit {
   //Get info account
 
   // Hàm hiển thị thời gian
-  showDateTime() {
-    console.log(this.selectedDateTime);
+
+  checkAndShowDateTime() {
+    const currentTime = new Date();
+    const selectedTime = this.selectedDateTime ? new Date(this.selectedDateTime) : null;
+    if (selectedTime && selectedTime< currentTime) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thất bại',
+        detail: 'Thời gian lớn hơn hiện tại'
+      });
+      return;
+    }
+    const title: string = "Thông báo tài khoản:";
+    const text: string = "Tài khoản bị vô hiệu";
+    const updateStatus = !this.StatusTemp;
+    this.accountService.updateStatus(this.IdTemp,updateStatus,this.selectedDateTime).subscribe(
+      response => {
+          this.accountService.postMail(this.GmailTemp,title, text)
+            .subscribe(
+              response => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Thành công',
+                  detail: 'Đổi thành công'
+                });
+              },
+              error => {
+                console.error('Error sending email:', error);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Lỗi',
+                  detail: 'Lỗi gửi mail'
+                });
+              }
+            );
+        this.TakeData()
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Cập nhật mật khẩu thành công'
+        });
+      },
+      error => {
+        console.error('Error updating password:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Cập nhật mật khẩu thất bại'
+        });
+      }
+    );
   }
   TakeData() {
     this.dataAccounts = [];
@@ -170,52 +222,38 @@ export class ManagerAccountComponent implements OnInit {
 
 //Change Account status
   UpdateStatus(id: any, status: any, gmail: any) {
-    const title: string = "Thông báo tài khoản:";
-    const text: string = "Tài khoản bị vô hiệu";
-    const updateStatus = !status;
-    this.accountService.updateStatus(id,updateStatus).subscribe(
-      response => {
+    if (status == false) {
 
-        if(updateStatus==false){
-          this.accountService.postMail(gmail,title, text)
-            .subscribe(
-              response => {
-                this.messageService.add({
-                  severity: 'success',
-                  summary: 'Thành công',
-                  detail: 'Đổi thành công'
-                });
-              },
-
-              error => {
-                console.error('Error sending email:', error);
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Lỗi',
-                  detail: 'Lỗi gửi mail'
-                });
-              }
-            );
+      const title: string = "Thông báo tài khoản:";
+      const text: string = "Tài khoản bị vô hiệu";
+      const updateStatus = !status;
+      this.accountService.updateStatustrue(id, updateStatus).subscribe(
+        response => {
+          this.TakeData()
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Thành công',
+            detail: 'Cập nhật mật khẩu thành công'
+          });
+        },
+        error => {
+          console.error('Error updating password:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: 'Cập nhật mật khẩu thất bại'
+          });
         }
-        this.TakeData()
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Thành công',
-          detail: 'Cập nhật mật khẩu thành công'
-        });
-      },
-      error => {
-        console.error('Error updating password:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Lỗi',
-          detail: 'Cập nhật mật khẩu thất bại'
-        });
-      }
-    );
+      );
+    }
+
+    else{
+      this.IdTemp = id;
+      this.StatusTemp = status;
+      this.GmailTemp = gmail;
+      this.isCodeVisible = true;
+    }
   }
-
-
 
 
   UpdatebanComment(id: any, banComment: any, gmail: any) {

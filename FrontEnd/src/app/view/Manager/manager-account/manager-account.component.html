@@ -57,8 +57,27 @@
           </div>
         </div>
       </div>
+
+      <div class=""  [ngClass]="{'hidden': !isCodeVisible}" >
+        <div class="w-auto shadow-md border-Yellow-500 border-1 rounded-sm p-6 ">
+          <div class="mb-4">
+            <label for="datetime" class="block text-lg font-semibold mb-2 text-white">Chọn thời gian khóa tài khoản: {{IdTemp}}</label>
+            <input
+              id="datetime"
+              type="datetime-local"
+              [(ngModel)]="selectedDateTime"
+              class="border border-gray-300 rounded-md px-4 py-2 w-full">
+          </div>
+          <button
+            (click)="checkAndShowDateTime()"
+            class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition ">
+            Xác nhận khóa tài khoản
+          </button>
+        </div>
+      </div>
+
       <div>
-        <div class=" flex flex-wrap bg-zinc-600 ">
+        <div class=" flex flex-wrap bg-zinc-600  mt-2">
           <div class="flex min-w-full border-1 border-yellow-500 py-2">
             <div class="ml-4 w-1/6 text-gray-100"> Tài khoản</div>
             <div class="w-25 text-gray-100"> mail</div>
@@ -111,24 +130,6 @@
               </p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="">
-        <div class="w-auto bg-white shadow-md rounded-lg p-6">
-          <div class="mb-4">
-            <label for="datetime" class="block text-lg font-semibold mb-2">Chọn ngày và giờ:</label>
-            <input
-              id="datetime"
-              type="datetime-local"
-              [(ngModel)]="selectedDateTime"
-              class="border border-gray-300 rounded-md px-4 py-2 w-full">
-          </div>
-          <button
-            (click)="showDateTime()"
-            class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition">
-            Hiển thị thời gian
-          </button>
         </div>
       </div>
 

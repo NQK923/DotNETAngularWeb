@@ -13,9 +13,15 @@ export interface updateBanComment {
   idAccount: number;
   banComment: boolean;
 }
+
+export interface updateStatustrue {
+  idAccount: number;
+  status: boolean;
+}
 export interface updateStatus {
   idAccount: number;
   status: boolean;
+  date:string;
 }
 @Injectable({
   providedIn: 'root'
@@ -37,8 +43,9 @@ export class AccountService {
   private  apiGetAccountByUserName:string = 'http://localhost:' + this.port + '/account/GetAccountByUserName';
   private  apiGetAllAccount:string = 'http://localhost:' + this.port + '/account/getListAccount';
   private  apiUpdateAccount:string = 'http://localhost:' + this.port + '/account/changePasswordAccountByID';
-  private  ApiUpdateStatus:string = 'http://localhost:' + this.port + '/account/changeStatusAccountByID';
+  private  ApiUpdateStatustrue:string = 'http://localhost:' + this.port + '/account/changeStatusAccountByID';
   private  ApiUpdateBancode:string ='http://localhost:' + this.port + '/account/ChangeBanCommentRequest';
+  private  ApiUpdateStatus:string = 'http://localhost:' + this.port + '/account/updateStatus';
 
 
   user: SocialUser | undefined;
@@ -49,12 +56,31 @@ export class AccountService {
 
   }
   //nuyen
-  updateStatus(id: number,status:boolean): Observable<boolean> {
+  updateStatus(id: number, status: boolean, time: string): Observable<boolean> {
     const UpdateStatus: updateStatus = {
       idAccount: id,
       status: status,
+      date: time
     };
-    return this.http.put<any>(this.ApiUpdateStatus, UpdateStatus).pipe(
+    console.log("Sending UpdateStatus:", UpdateStatus);
+
+    return this.http.put<any>(this.ApiUpdateStatus, UpdateStatus, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      map(response => true),
+      catchError((error) => {
+        console.error('Error updating status:', error);
+        return of(false);
+      })
+    );
+  }
+
+  updateStatustrue(id: number,status:boolean): Observable<boolean> {
+    const UpdateStatus: updateStatustrue = {
+      idAccount: id,
+      status: status,
+    };
+    return this.http.put<any>(this.ApiUpdateStatustrue, UpdateStatus).pipe(
       map(response => {
         return true;
       }),
@@ -107,6 +133,7 @@ export class AccountService {
       .set('to', to)
       .set('subject', subject)
       .set('body', body);
+    console.log(params);
     return this.http.post(this.apiTakePasswordUrl, null, {params});
   }
   getAllAccount(): Observable<AccountModel[]> {

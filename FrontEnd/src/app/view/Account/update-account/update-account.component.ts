@@ -102,7 +102,18 @@ export class UpdateAccountComponent implements AfterViewInit {
   update(){
     const newPassword = (document.getElementById('Pass') as HTMLInputElement).value;
     const CodePass = (document.getElementById('Code') as HTMLInputElement).value;
+    const confirm = (document.getElementById('PassConfirm') as HTMLInputElement).value;
     this.code = localStorage.getItem('code');
+
+    if(newPassword!=confirm){
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Mật khẩu không trùng với mật khẩu xác nhận'
+      });
+      return;
+    }
+
     if(newPassword.length<6){
       this.messageService.add({
         severity: 'error',
