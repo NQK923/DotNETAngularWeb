@@ -41,6 +41,7 @@ export class AccountService {
   //nguyen
   private  apiTakePasswordUrl: string = 'http://localhost:' + this.port + '/account/takePassword';
   private  apiGetAccountByUserName:string = 'http://localhost:' + this.port + '/account/GetAccountByUserName';
+  private  apiGetAccountByid:string = 'http://localhost:' + this.port + '/account/getAccountByID';
   private  apiGetAllAccount:string = 'http://localhost:' + this.port + '/account/getListAccount';
   private  apiUpdateAccount:string = 'http://localhost:' + this.port + '/account/changePasswordAccountByID';
   private  ApiUpdateStatustrue:string = 'http://localhost:' + this.port + '/account/changeStatusAccountByID';
@@ -128,6 +129,11 @@ export class AccountService {
     const params = new HttpParams().set('user', username);
     return this.http.get<AccountModel>(this.apiGetAccountByUserName, { params });
   }
+  getAccountByid(Id:number): Observable<AccountModel> {
+    const params = new HttpParams().set('idAccount', Id);
+    return this.http.get<AccountModel>(this.apiGetAccountByid, { params });
+  }
+
   postMail(to: string, subject: string, body: string): Observable<any> {
     const params = new HttpParams()
       .set('to', to)

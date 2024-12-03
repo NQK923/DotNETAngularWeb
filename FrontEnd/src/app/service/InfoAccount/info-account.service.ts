@@ -16,7 +16,7 @@ export class InfoAccountService {
   private apiAddInfomationUrl = `http://localhost:${this.port}/infoAccount/AddInfomation`;
   private apiGetInfomationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/GetInfoMationAccountByID`;
   private apiChangeInfoMationAccountByIDUrl = `http://localhost:${this.port}/infoAccount/ChangeInfoMationAccountByID`;
-
+  private apigetall= `http://localhost:${this.port}/infoAccount/GetInfoMationAccount`;
 
   constructor(private http: HttpClient) {
   }
@@ -38,5 +38,8 @@ export class InfoAccountService {
 
   addInfoAccount(InfoAccount: AddInfoAccountRequest): Observable<string> {
     return this.http.post<string>(this.apiAddInfomationUrl, InfoAccount);
+  }
+  getAllInfoAccount(): Observable<InfoAccountResponse[]> {
+    return this.http.get<InfoAccountResponse[]>(this.apigetall);
   }
 }

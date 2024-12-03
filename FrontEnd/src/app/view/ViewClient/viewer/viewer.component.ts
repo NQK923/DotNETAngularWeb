@@ -2,7 +2,6 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ChapterService} from '../../../service/Chapter/chapter.service';
 import {CommentService} from "../../../service/Comment/comment.service";
-import {ModelComment} from "../../../Model/ModelComment";
 import {InfoAccountService} from '../../../service/InfoAccount/info-account.service';
 import {MangaHistoryService} from "../../../service/MangaHistory/manga_history.service";
 import {MangaViewHistoryService} from "../../../service/MangaViewHistory/MangaViewHistory.service";
@@ -19,16 +18,43 @@ interface Chapter {
   index: number;
 }
 
+export interface ModelComment {
+  idComment?: number;
+  idChapter: number;
+  idAccount: number;
+  content: string;
+  isReported: boolean;
+  time: Date;
+}
+
+export interface  ModelInfoAccount {
+  id_infoAccount : number,
+  id_account:number,
+  name: string,
+  email: string,
+  cover_img: string,
+}
+export  interface ModelAccount{
+  id_account?: number;
+  username: string;
+  password: string;
+  banDate?: Date
+  role?: boolean;
+  status?: boolean;
+  banComment?: boolean;
+
+}
+
 export class CommentData {
   Comment: ModelComment | null;
-  //InfoAccount: ModelInfoAccount | null;
+  InfoAccount: ModelInfoAccount | null;
 
   constructor(
     comment: ModelComment | null,
-    //infoAccount: ModelInfoAccount | null
+    infoAccount: ModelInfoAccount | null
   ) {
     this.Comment = comment;
-    //this.InfoAccount = infoAccount;
+    this.InfoAccount = infoAccount;
   }
 }
 
@@ -44,11 +70,11 @@ export class ViewerComponent implements OnInit {
   chapters: Chapter[] = [];
   comment: ModelComment[] = [];
   comments: ModelComment[] = [];
-  //listInfoAccount: ModelInfoAccount[] = [];
+  listInfoAccount: ModelInfoAccount[] = [];
   listDataComment: CommentData[] = [];
   listYourComment: CommentData[] = [];
   yourId: number = -1;
-  //yourAc: ModelAccount | null = null;
+  yourAc: ModelAccount | null = null;
   chapterId: number = -1;
 
   constructor(
@@ -169,18 +195,18 @@ export class ViewerComponent implements OnInit {
 
   loadAccount(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // this.accountService.getAccountById(Number(this.yourId)).subscribe(
-      //   (data: ModelAccount) => {
-      //     {
-      //       this.yourAc = data
-      //       resolve()
-      //     }
-      //     reject(new Error('Account not found'));
-      //   },
-      //   (error) => {
-      //     reject(error);
-      //   }
-      // );
+      this.accountService.getAccountByid(Number(this.yourId)).subscribe(
+        (data: ModelAccount) => {
+          {
+            this.yourAc = data
+            resolve()
+          }
+          reject(new Error('Account not found'));
+        },
+        (error) => {
+          reject(error);
+        }
+      );
     });
   }
 
@@ -286,42 +312,42 @@ export class ViewerComponent implements OnInit {
   }
 
   takeData() {
-    // for (let i = 0; i < this.comments.length; i++) {
-    //   const comment = this.comments[i];
-    //   const existsInList = this.listDataComment.some(item => item.Comment?.IdComment === comment.IdComment);
-    //   if (existsInList) {
-    //     continue;
-    //   }
-    //   if (comment.IdChapter === this.chapterId && comment.IdAccount !== this.yourId) {
-    //     this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).subscribe(
-    //       (data: ModelInfoAccount) => {
-    //         this.listDataComment.push(new CommentData(comment, data));
-    //       }
-    //     );
-    //   }
-    // }
+    for (let i = 0; i < this.comments.length; i++) {
+      const comment = this.comments[i];
+      const existsInList = this.listDataComment.some(item => item.Comment?.idComment === comment.idComment);
+      if (existsInList) {
+        continue;
+      }
+      if (comment.idChapter === this.chapterId && comment.idAccount !== this.yourId) {
+        this.infoAccountService.getInfoAccountByIdTN(Number(comment.idAccount)).subscribe(
+          (data: ModelInfoAccount) => {
+            this.listDataComment.push(new CommentData(comment, data));
+          }
+        );
+      }
+    }
   }
 
   takeYourData() {
-    // const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.IdComment));
-    // const relevantComments = this.comments.filter(comment =>
-    //   comment.IdChapter === this.chapterId &&
-    //   comment.IdAccount === this.yourId &&
-    //   !existingCommentIds.has(comment.IdComment)
-    // );
-    // const accountRequests = relevantComments.map(comment =>
-    //   this.infoAccountService.getInfoAccountById(Number(comment.IdAccount)).pipe(
-    //     map((data: ModelInfoAccount) => new CommentData(comment, data))
-    //   )
-    // );
-    // forkJoin(accountRequests).subscribe(
-    //   (dataComments: CommentData[]) => {
-    //     this.listYourComment.push(...dataComments);
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching account info:', error);
-    //   }
-    // );
+    const existingCommentIds = new Set(this.listYourComment.map(comment => comment.Comment?.idComment));
+    const relevantComments = this.comments.filter(comment =>
+      comment.idChapter === this.chapterId &&
+      comment.idAccount === this.yourId &&
+      !existingCommentIds.has(comment.idComment)
+    );
+    const accountRequests = relevantComments.map(comment =>
+      this.infoAccountService.getInfoAccountByIdTN(Number(comment.idAccount)).pipe(
+        map((data: ModelInfoAccount) => new CommentData(comment, data))
+      )
+    );
+    forkJoin(accountRequests).subscribe(
+      (dataComments: CommentData[]) => {
+        this.listYourComment.push(...dataComments);
+      },
+      (error) => {
+        console.error('Error fetching account info:', error);
+      }
+    );
   }
 
   loadComment(): Promise<void> {
@@ -341,15 +367,15 @@ export class ViewerComponent implements OnInit {
 
   loadInfoAccount(): Promise<void> {
     return new Promise((resolve) => {
-      // this.infoAccountService.getInfoAccount().subscribe(
-      //   (data: ModelInfoAccount[]) => {
-      //     this.listInfoAccount = data;
-      //     resolve();
-      //   },
-      //   (error) => {
-      //     console.error('Error fetching info accounts', error);
-      //   }
-      // );
+      this.infoAccountService.getAllInfoAccount().subscribe(
+        (data: ModelInfoAccount[]) => {
+          this.listInfoAccount = data;
+          resolve();
+        },
+        (error) => {
+          console.error('Error fetching info accounts', error);
+        }
+      );
     })
   }
 

@@ -2,22 +2,62 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommentService} from "../../../service/Comment/comment.service";
 import {InfoAccountService} from "../../../service/InfoAccount/info-account.service";
-import {CommentData} from "../../ViewClient/viewer/viewer.component";
-import {ModelComment} from "../../../Model/ModelComment";
 import {AccountService} from "../../../service/Account/account.service";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {forkJoin, map} from "rxjs";
 import {ConfirmationService, MessageService} from "primeng/api";
+
+export interface ModelComment {
+  idComment?: number;
+  idChapter: number;
+  idAccount: number;
+  content: string;
+  isReported: boolean;
+  time: Date;
+}
+
+export interface  ModelInfoAccount {
+  id_infoAccount : number,
+  id_account:number,
+  name: string,
+  email: string,
+  cover_img: string,
+}
+export  interface ModelAccount{
+  id_account?: number;
+  username: string;
+  password: string;
+  banDate?: Date
+  role?: boolean;
+  status?: boolean;
+  banComment?: boolean;
+
+}
+export class CommentData {
+  Comment: ModelComment | null;
+  InfoAccount: ModelInfoAccount | null;
+
+  constructor(
+    comment: ModelComment | null,
+    infoAccount: ModelInfoAccount | null
+  ) {
+    this.Comment = comment;
+    this.InfoAccount = infoAccount;
+  }
+}
 
 @Component({
   selector: 'app-manager-comment',
   templateUrl: './manager-comment.component.html',
   styleUrls: ['./manager-comment.component.css']
 })
+
+
 export class ManagerCommentComponent implements OnInit {
   comment: ModelComment[] = [];
   comments: ModelComment[] = [];
   listDataComment: CommentData[] = [];
+  listInfoAccount: ModelInfoAccount[] = [];
 
 
   constructor(private route: ActivatedRoute, private el: ElementRef, private router: Router,
@@ -39,15 +79,15 @@ export class ManagerCommentComponent implements OnInit {
 
   loadInfoAccount(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // this.infoAccountService.getInfoAccount().subscribe(
-      //   (data: ModelInfoAccount[]) => {
-      //     this.listInfoAccount = data;
-      //     resolve();
-      //   },
-      //   (error) => {
-      //     console.error('Error fetching info accounts', error);
-      //   }
-      // );
+      this.infoAccountService.getAllInfoAccount().subscribe(
+        (data: ModelInfoAccount[]) => {
+          this.listInfoAccount = data;
+          resolve();
+        },
+        (error) => {
+          console.error('Error fetching info accounts', error);
+        }
+      );
     })
   }
 
@@ -70,24 +110,24 @@ export class ManagerCommentComponent implements OnInit {
   //get comment data
   //get comment data
   takeData() {
-    // this.listDataComment = [];
-    // const existingCommentIds = new Set(this.listDataComment.map(comment => comment.Comment?.IdComment));
-    // const reportedComments = this.comments.filter(comment =>
-    //   comment.IsReported && !existingCommentIds.has(comment.IdComment)
-    // );
-    // const accountRequests = reportedComments.map(comment =>
-    //   this.infoAccountService.getInfoAccountById(Number(comment.IdComment)).pipe(
-    //     map((data: ModelInfoAccount) => new CommentData(comment, data))
-    //   )
-    // );
-    // forkJoin(accountRequests).subscribe(
-    //   (dataComments: CommentData[]) => {
-    //     this.listDataComment.push(...dataComments);
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching account info:', error);
-    //   }
-    // );
+    this.listDataComment = [];
+    const existingCommentIds = new Set(this.listDataComment.map(comment => comment.Comment?.idComment));
+    const reportedComments = this.comments.filter(comment =>
+      comment.isReported && !existingCommentIds.has(comment.idComment)
+    );
+    const accountRequests = reportedComments.map(comment =>
+      this.infoAccountService.getInfoAccountByIdTN(Number(comment.idAccount)).pipe(
+        map((data: ModelInfoAccount) => new CommentData(comment, data))
+      )
+    );
+    forkJoin(accountRequests).subscribe(
+      (dataComments: CommentData[]) => {
+        this.listDataComment.push(...dataComments);
+      },
+      (error) => {
+        console.error('Error fetching account info:', error);
+      }
+    );
   }
 
 // Xóa bình luận
@@ -119,77 +159,49 @@ export class ManagerCommentComponent implements OnInit {
     );
   }
 
+//cấm bl
+  BanComment(id: any, gmail: any) {
+    const title: string = "Thông báo tài khoản:";
+    const text: string = "Tài khoản bị khóa bình luận";
+    const banComments = true;
+    console.log(id,banComments);
+    this.accountService.updateBanComment(id,banComments).subscribe(
+      response => {
+          this.accountService.postMail(gmail,title, text)
+            .subscribe(
+              response => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Thành công',
+                  detail: 'Đổi thành công'
+                });
+              },
 
-  banComment(id: any, gmail: any) {
-    // this.accountService.getAccount().subscribe(
-    //   (data: ModelAccount[]) => {
-    //     this.accounts = data;
-    //     for (const account of this.accounts) {
-    //       if (account.IdAccount === id) {
-    //         this.accountComment = account;
-    //         const newAccount: ModelAccount = {
-    //           IdAccount: this.accountComment.IdAccount,
-    //           Username: this.accountComment.Username,
-    //           Password: this.accountComment.Password,
-    //           Status: this.accountComment.Status,
-    //           BanComment: true
-    //         };
-    //         this.updateComment(newAccount, gmail)
-    //         return;
-    //       }
-    //     }
-    //     if (!this.accountComment) {
-    //       console.error('Không tìm thấy đối tượng với id khớp trong mảng.');
-    //     }
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching accounts:', error);
-    //   }
-    // );
+              error => {
+                console.error('Error sending email:', error);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Lỗi',
+                  detail: 'Lỗi gửi mail'
+                });
+              }
+            );
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Cập nhật mật khẩu thành công'
+        });
+      },
+      error => {
+        console.error('Error updating password:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Cập nhật mật khẩu thất bại'
+        });
+      }
+    );
   }
-
-// Cập nhật bình luận
-//   updateComment(account: ModelAccount, gmail: string) {
-//     const title: string = "Thông báo tài khoản:";
-//     const text: string = "Tài khoản bị cấm bình luận";
-//
-//     this.accountService.updateAccount(account).subscribe(
-//       () => {
-//         this.messageService.add({
-//           severity: 'success',
-//           summary: 'Thành công',
-//           detail: 'Cập nhật thành công!'
-//         });
-//
-//         this.accountService.postMail(gmail.toString(), title.toString(), text.toString()).subscribe({
-//           next: () => {
-//             this.messageService.add({
-//               severity: 'success',
-//               summary: 'Thành công',
-//               detail: 'Gửi mail thành công.'
-//             });
-//           },
-//           error: (error) => {
-//             console.error(error);
-//             this.messageService.add({
-//               severity: 'error',
-//               summary: 'Lỗi',
-//               detail: 'Có lỗi xảy ra khi gửi mail.'
-//             });
-//           }
-//         });
-//       },
-//       (error) => {
-//         this.messageService.add({
-//           severity: 'error',
-//           summary: 'Thất bại',
-//           detail: 'Cập nhật thất bại!'
-//         });
-//         console.error('Update error:', error);
-//       }
-//     );
-//   }
-
   goToIndex() {
     this.router.navigate(['/']);
   }
