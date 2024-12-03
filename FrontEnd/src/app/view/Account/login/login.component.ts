@@ -36,7 +36,7 @@ export class LoginComponent {
 
   constructor(private router: Router,
     private accountService: AccountService, private messageService: MessageService,) {
-    this.accountService.checkExternalLogin(this.gotToIndex.bind(this), this.failCallback.bind(this) );
+    this.accountService.checkExternalLogin(this.gotToIndex.bind(this), this.failCallback.bind(this));
   }
 
 
@@ -118,7 +118,11 @@ export class LoginComponent {
   async registerAccount(): Promise<void> {
     if (!await this.checkRegisterData()) return;
     let result: boolean = await this.accountService.register(this.username, this.password, this.email)
-    if (!result) { console.log("NOT OK"); return; }
+    if (!result) {
+      this.isInvalidUsername = true;
+      this.messageErrorUsername = "Tên tài khoản đã tồn tại"
+      return;
+    }
     this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công' });
     setTimeout(() => { this.reloadPage() }, 1500); // 1000 milliseconds = 1 second }
   }
