@@ -53,7 +53,9 @@ export class LoginComponent {
   }
 
   reloadPage(): void {
-    window.location.reload();
+    this.router.navigate(['/']).then(() => {
+      window.location.reload();
+    });
   }
 
   // check login
@@ -115,7 +117,7 @@ export class LoginComponent {
     let result: boolean = await this.accountService.register(this.username, this.password, this.email)
     if (!result) { console.log("NOT OK"); return; }
     this.messageService.add({ severity: 'success', summary: 'Thành công', detail: 'Đăng ký thành công' });
-    setTimeout(() => { this.reloadPage() }, 1500); // 1000 milliseconds = 1 second }
+    setTimeout(() => { window.location.reload() }, 1500); // 1000 milliseconds = 1 second }
   }
 
   private async checkRegisterData(): Promise<boolean> {
