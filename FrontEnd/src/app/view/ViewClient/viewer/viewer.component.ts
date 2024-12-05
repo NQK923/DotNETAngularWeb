@@ -76,6 +76,7 @@ export class ViewerComponent implements OnInit {
   yourId: number = -1;
   yourAc: ModelAccount | null = null;
   chapterId: number = -1;
+  NoLoggin: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -113,6 +114,7 @@ export class ViewerComponent implements OnInit {
         }
       );
     });
+
   }
 
 
@@ -292,6 +294,15 @@ export class ViewerComponent implements OnInit {
   addComment() {
     const text = this.el.nativeElement.querySelector('#textComment');
     const id = this.yourId;
+    if (id==null){
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Đăng nhập để thêm bình luận' });
+      return;
+    }
+    if (this.yourAc && this.yourAc.banComment === true) {
+      this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Tài khoản bị cấm bình luận' });
+      return;
+    }
+    console.log("mo",this.yourAc)
     const comment: ModelComment = {
       idChapter: this.chapterId,
       idAccount: id,
@@ -351,6 +362,17 @@ export class ViewerComponent implements OnInit {
   }
 
   loadComment(): Promise<void> {
+    this.accountService.getAccountByid(this.yourId).subscribe(
+      (data: ModelAccount) => {
+        this.yourAc = data;
+      },
+      (error) => {
+        console.error('Error fetching info accounts', error);
+      }
+    );
+    if(this.yourId==undefined){
+      this.NoLoggin = true;
+    }
     return new Promise((resolve) => {
         this.commentService.getCommnet().subscribe(
           (data: ModelComment[]) => {
