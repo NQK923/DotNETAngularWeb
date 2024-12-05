@@ -1,4 +1,5 @@
-using Comment.Data;
+﻿using Comment.Data;
+using Comment.Hubs;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +15,12 @@ builder.Services.AddCors(options =>
         policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -29,60 +33,72 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.UseStaticFiles(); // Bật phục vụ tệp tĩnh
+
+//Cau hinh Hubs
+app.MapHub<CommentHub>("/commentHub");
+
 
 //get all comment
-app.MapGet("/api/comment", async (CommentDbContext dbContext) =>
-{
-    var comments = await dbContext.Comment.ToListAsync();
-    return Results.Ok(comments);
-});
+//app.MapGet("/api/comment", async (CommentDbContext dbContext) =>
+//{
+//    var comments = await dbContext.Comment.ToListAsync();
+//    return Results.Ok(comments);
+//});
 
 //get by id
-app.MapGet("/api/comment/{idChapter}", async (CommentDbContext dbContext, int idChapter) =>
-{
-    var comments =
-        await dbContext.Comment.Where(c => c.IdChapter == idChapter).ToListAsync();
+//app.MapGet("/api/comment/{idChapter}", async (CommentDbContext dbContext, int idChapter) =>
+//{
+//    var comments =
+//        await dbContext.Comment.Where(c => c.IdChapter == idChapter).ToListAsync();
 
-    return comments.Count == 0 ? Results.NotFound() : Results.Ok(comments);
-});
+//    return comments.Count == 0 ? Results.NotFound() : Results.Ok(comments);
+//});
 
 //add new comment
-app.MapPost("/api/comment", async (Comment.Model.Comment comment, CommentDbContext dbContext) =>
-{
-    try
-    {
-        dbContext.Comment.Add(comment);
-        await dbContext.SaveChangesAsync();
-        return Results.Ok(true);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
-});
+//app.MapPost("/api/comment", async (Comment.Model.CommentDTO comment, CommentDbContext dbContext) =>
+//{
+//    try
+//    {
+//        dbContext.Comment.Add(comment);
+//        await dbContext.SaveChangesAsync();
+//        return Results.Ok(true);
+//    }
+//    catch (Exception ex)
+//    {
+//        return Results.Problem(ex.Message);
+//    }
+//});
 
 //update comment
-app.MapPut("/api/comment", async (Comment.Model.Comment comment, CommentDbContext dbContext) =>
-{
-    try
-    {
-        dbContext.Comment.Update(comment);
-        await dbContext.SaveChangesAsync();
-        return Results.Ok(true);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem("An error occurred during account creation: " + ex.Message);
-    }
-});
+//app.MapPut("/api/comment", async (Comment.Model.CommentDTO comment, CommentDbContext dbContext) =>
+//{
+//    try
+//    {
+//        dbContext.Comment.Update(comment);
+//        await dbContext.SaveChangesAsync();
+//        return Results.Ok(true);
+//    }
+//    catch (Exception ex)
+//    {
+//        return Results.Problem("An error occurred during account creation: " + ex.Message);
+//    }
+//});
 
 //delete comment
-app.MapDelete("/api/comment/{id:int}", async (int id, CommentDbContext dbContext) =>
-{
-    var comment = await dbContext.Comment.FindAsync(id);
-    if (comment == null) return Results.NotFound();
-    dbContext.Comment.Remove(comment);
-    await dbContext.SaveChangesAsync();
-    return Results.Ok(true);
-});
+//app.MapDelete("/api/comment/{id:int}", async (int id, CommentDbContext dbContext) =>
+//{
+//    var comment = await dbContext.Comment.FindAsync(id);
+//    if (comment == null) return Results.NotFound();
+//    dbContext.Comment.Remove(comment);
+//    await dbContext.SaveChangesAsync();
+//    return Results.Ok(true);
+//});
+
 app.Run();

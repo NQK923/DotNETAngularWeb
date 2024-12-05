@@ -2,7 +2,7 @@
 
 namespace Comment.Model;
 
-public class Comment
+public class CommentDTO
 {
     [Key] public int IdComment { get; init; }
 
