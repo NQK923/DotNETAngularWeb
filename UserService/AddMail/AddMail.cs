@@ -15,14 +15,12 @@ namespace UserService.AddMail
                 BodyEncoding = Encoding.UTF8,
                 IsBodyHtml = true,
             };
-
             using var smtp = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
                 EnableSsl = true,
-                Credentials = new NetworkCredential("nguyennrdz123@gmail.com", "heyl njmw paiz tsbt") 
+                Credentials = new NetworkCredential("nguyennrdz123@gmail.com", "heyl njmw paiz tsbt")
             };
-
             try
             {
                 await smtp.SendMailAsync(messenger);
