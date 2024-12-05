@@ -9,6 +9,7 @@ builder.Services.AddDbContext<NotificationDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
+        
         policyBuilder => policyBuilder
             .AllowAnyOrigin()
             .AllowAnyMethod()
@@ -16,6 +17,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
