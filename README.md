@@ -92,5 +92,5 @@ root   /usr/share/nginx/html/browser;
 [1.1]: https://massgrave.dev/img/logo_discord.png
 [1.2]: https://massgrave.dev/img/logo_github.png
 
-[1]: [https://discord.gg/tVFN4N84PP](https://discord.gg/cKxnjsxM)
+[1]: https://discord.gg/cKxnjsxM
 [2]: https://github.com/NQK923/DotNETAngularWeb
