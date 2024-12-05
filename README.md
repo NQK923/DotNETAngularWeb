@@ -80,7 +80,7 @@ root   /usr/share/nginx/html/browser;
 > [!NOTE]
 >
 > - Nếu bạn muốn sử dụng trên mạng LAN, có thể thay `localhost` bằng địa chỉ IPv4 của bạn.
-> - Nếu bạn không biết địa chỉ IPv4 của mình, có thể tham khảo hướng dẫn [tại đây])(https://support.microsoft.com/en-us/windows/find-your-ip-address-in-windows-f21a9bbc-c582-55cd-35e0-73431160a1b9).
+> - Nếu bạn không biết địa chỉ IPv4 của mình, có thể tham khảo hướng dẫn [tại đây](https://support.microsoft.com/en-us/windows/find-your-ip-address-in-windows-f21a9bbc-c582-55cd-35e0-73431160a1b9).
 ---
 <div align="center">
   
