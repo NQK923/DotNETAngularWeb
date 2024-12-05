@@ -113,6 +113,10 @@ export class LoginComponent {
 
   // create new account
   async registerAccount(): Promise<void> {
+    if(this.username==""|| this.password==""|| this.email==""){
+      this.messageService.add({severity: 'error', summary: 'Lỗi', detail: 'Không nhập đủ dữ liệu'});
+      return ;
+    }
     if (!await this.checkRegisterData()) return;
     let result: boolean = await this.accountService.register(this.username, this.password, this.email)
     if (!result) { console.log("NOT OK"); return; }
