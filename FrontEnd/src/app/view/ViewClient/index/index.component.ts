@@ -180,7 +180,8 @@ export class IndexComponent implements OnInit {
 
   getTimeDifference(updatedTime: string | Date): string {
     const updatedDate = typeof updatedTime === 'string' ? new Date(updatedTime) : updatedTime;
-    const currentDate = new Date();
+    const date = new Date();
+    const currentDate = new Date(date.getTime() - 7 * 60 * 60 * 1000);
 
     const diffInMs = currentDate.getTime() - updatedDate.getTime();
     const diffInMinutes = Math.floor(diffInMs / (1000 * 60));

@@ -12,8 +12,8 @@ main {
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
-  padding-top: 3%;
+  height: auto;
+  padding: 20px;
 }
 
 .container {
@@ -23,7 +23,7 @@ main {
   width: 768px;
   max-width: 100%;
   min-height: 480px;
-  height: 700px;
+  height: 400px;
 }
 
 .container p {
