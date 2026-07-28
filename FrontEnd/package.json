@@ -31,7 +31,7 @@
     "run-script-os": "^1.1.6",
     "rxjs": "^7.8.1",
     "tailwindcss": "^3.4.14",
-    "swiper": "^11.1.14",
+    "swiper": "^14.0.6",
     "primeng": "^22.0.0",
     "primeicons": "^7.0.0",
     "ngx-pagination": "^6.0.3",
@@ -52,8 +52,20 @@
     "karma-coverage": "^2.2.1",
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
-    "postcss": "^8.4.48",
+    "postcss": "^8.5.18",
     "tailwindcss": "^3.4.14",
     "typescript": "~5.5.4"
+  },
+  "overrides": {
+    "postcss": "^8.5.18",
+    "brace-expansion": "^5.0.8",
+    "@babel/core": "^7.29.7",
+    "@hono/node-server": "^2.0.5",
+    "uuid": "^11.1.1",
+    "tar": "^7.5.19",
+    "js-yaml": "^4.2.1",
+    "fast-uri": "^3.1.4",
+    "body-parser": "^1.20.6",
+    "webpack-dev-server": "^5.2.6"
   }
 }
