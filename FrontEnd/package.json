@@ -16,7 +16,7 @@
     "@abacritt/angularx-social-login": "^2.2.0",
     "@angular/animations": "^22.0.7",
     "@angular/common": "^22.0.7",
-    "@angular/compiler": "^20.3.25",
+    "@angular/compiler": "^20.3.27",
     "@angular/core": "^22.0.7",
     "@angular/forms": "^22.0.7",
     "@angular/material": "^22.0.5",
